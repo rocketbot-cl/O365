@@ -12,6 +12,8 @@ Module to connect Outlook for O365.
 
 ![alt text](https://i.imgur.com/GP8vrSU.png)
 
+## Updates
+- 9-3-21: Add filters to read email. 
 
 <h2>License</h2>
 

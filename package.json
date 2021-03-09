@@ -190,7 +190,7 @@
         "inputs": [
           {
             "type": "input",
-            "placeholder": "SUBJECT \"COMPRA*\"",
+            "placeholder": "subject eq 'compras'",
             "title": {
               "es": "Filtro:",
               "en": "Filter:",

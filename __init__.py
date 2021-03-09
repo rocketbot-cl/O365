@@ -24,7 +24,6 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 
 """
 
-
 base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
 sys.path.append(cur_path)
@@ -47,7 +46,6 @@ if module == "connect":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
-
 
 if module == "sendEmail":
     to_ = GetParams("to_")
@@ -80,33 +78,11 @@ if module == "getAllEmails":
     res = GetParams("res")
     filtro = GetParams("filtro")
     try:
-        list_messages = account.mailbox().get_messages()
+        list_messages = account.mailbox().get_messages(query=filtro)
         list_object_id = []
         for message in list_messages:
-            if filtro:
-                if message.subject.find(filtro) != -1:
-                    list_object_id.append(message.object_id)
-            if not filtro:
-                list_object_id.append(message.object_id)
-        SetVar(res,list_object_id)
-    except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
-        PrintException()
-        raise e
-
-if module == "getAllEmails":
-    res = GetParams("res")
-    filtro = GetParams("filtro")
-    try:
-        list_messages = account.mailbox().get_messages()
-        list_object_id = []
-        for message in list_messages:
-            if filtro:
-                if message.subject.find(filtro) != -1:
-                    list_object_id.append(message.object_id)
-            if not filtro:
-                list_object_id.append(message.object_id)
-        SetVar(res,list_object_id)
+            list_object_id.append(message.object_id)
+        SetVar(res, list_object_id)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -114,11 +90,12 @@ if module == "getAllEmails":
 
 if module == "readEmail":
     import json
+
     att_folder = GetParams("att_folder")
     res = GetParams("res")
-    id_= GetParams("id_")
+    id_ = GetParams("id_")
     try:
-        message = account.mailbox().get_message(id_,download_attachments = True)
+        message = account.mailbox().get_message(id_, download_attachments=True)
         for att in message.attachments:
             att.save(att_folder)
         message_all = {
