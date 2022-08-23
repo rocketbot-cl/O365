@@ -106,5 +106,9 @@ __pycache__
 
 # flask session files
 flask_session/
+
 main.py
+graph.py
+config.cfg
 o365_token.txt
+O365.zip

@@ -139,7 +139,7 @@ if module == "getFolders":
 if module == "getAllEmails":
     folder = GetParams("folder")
     res = GetParams("res")
-    filter = GetParams("filter")
+    filter = GetParams("filtro") or GetParams("filter")
     
     OutlookWellKnowFolderNames = {
         'Inbox': 'Inbox',
