@@ -5,7 +5,8 @@
 # O365
   
 Connect to Outlook for O365.  
-
+  
+![banner](/docs/imgs/Banner_O365.png)
 ## How to install this module
   
 __Download__ and __install__ the content in 'modules' folder in Rocketbot path  
@@ -19,8 +20,7 @@ portal.
 1. Sign in to the Azure portal (Applications Registration: 
 https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade ).
 2. Select "New record".
-3. Under 
-“Compatible account types” supported choose:
+3. Under “Compatible account types” supported choose:
     a. "Accounts in any organizational directory (any Azure AD directory: 
 multi-tenant) and personal Microsoft accounts (such as Skype or Xbox)" for this case use Tenant ID = common
     b. "Only
@@ -48,38 +48,50 @@ the API." and a file will have been created with your credentials, in the root f
 o365_token.txt
 
 
-## Overview
+## Description of the commands
 
-
-1. Connect to O365  
-Connect to O365 application instance
-
-2. Send Email  
-Send email
-
-3. Email folders list  
-List of email folders
-
-4. List all emails  
-List all email, you can specify a filter
-
-5. Read email for ID  
-Read email for ID  
-
-
-
-
-----
-### OS
-
-- windows
-- mac
-- linux
-- docker
-
-### Dependencies
-- [**bs4**](https://pypi.org/project/bs4/)
-### License
+### Connect to O365
   
-![MIT](https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265)  
-[MIT](http://opensource.org/licenses/mit-license.ph)
+Connect to O365 application instance
+|Parameters|Description|example|
+| --- | --- | --- |
+|client_id||client_id|
+|client_secret||client_secret|
+|tenant_id||tenant_id|
+
+### Send Email
+  
+Send email
+|Parameters|Description|example|
+| --- | --- | --- |
+|To||to@mail.com, to2@mail.com|
+|Subject||Nuevo mail|
+|Body||Esto es una prueba|
+|Attached File||C:\User\Desktop\test.txt|
+|Folder (Multiple files)||C:\User\Desktop\Files|
+
+### Email folders list
+  
+List of the email folders
+|Parameters|Description|example|
+| --- | --- | --- |
+|Asign to variable||Variable|
+
+### List all emails
+  
+List all email, you can specify a filter
+|Parameters|Description|example|
+| --- | --- | --- |
+|Filter||subject eq 'compras'|
+|Folder ID||Inbox|
+|Asign to variable||Variable|
+
+### Read email for ID
+  
+Read email for ID
+|Parameters|Description|example|
+| --- | --- | --- |
+|Email ID||345|
+|Path for download attachment||C:\User\Desktop|
+|Asign to variable||Variable|
+|Mark as read||-|

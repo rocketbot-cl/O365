@@ -373,6 +373,7 @@ class ApiComponent:
         Builds the base url of this ApiComponent
         :param str resource: the resource to build the base url
         """
+        # main_resource = 'myOrganization'
         main_resource = self._parse_resource(resource if resource is not None else self.protocol.default_resource)
         # noinspection PyUnresolvedReferences
         base_url = '{}{}'.format(self.protocol.service_url, main_resource)
