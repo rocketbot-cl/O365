@@ -46,7 +46,7 @@ if module == "connect":
         credentials = (client_id, client_secret)
         account = Account(credentials, tenant_id = tenant)
         if not account.is_authenticated:
-            account.authenticate(scopes=['basic', 'message_all'])
+            account.authenticate(scopes=['basic', 'message_all', 'sharepoint', 'GroupMember.Read.All'])
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -106,8 +106,9 @@ if module == "replyEmail":
             reply.attachments.add(filenames)
         reply.send()
         
-        if read == True:
-            message.mark_as_read()
+        if read:
+            if eval(read) == True:
+                message.mark_as_read()
         
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -245,10 +246,41 @@ if module == "readEmail":
             'body': BeautifulSoup(message.body, "html.parser").body.get_text(),
             'files': files
         }
-        if read == True:
-            message.mark_as_read()
+        
+        if read:
+            if eval(read) == True:
+                message.mark_as_read()
         
         SetVar(res, message_all)
+    except Exception as e:
+        SetVar(res, False)
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "downAtt":
+    res = GetParams("res")
+    att_folder = GetParams("att_folder")
+    id_ = GetParams("id_")
+    read = GetParams("markasread")
+    
+    if not id_:
+        raise Exception("Missing Email ID...")
+    
+    try:
+        # It creates a message object and makes available attachments to be downloaded
+        message = account.mailbox().get_message(id_, download_attachments=True)
+        files = []
+        for att in message.attachments:
+            files.append(att)
+            att.save(att_folder)
+        print(message.attachments)
+        
+        if read:
+            if eval(read) == True:
+                message.mark_as_read()
+        
+        SetVar(res, )
     except Exception as e:
         SetVar(res, False)
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -260,11 +292,11 @@ if module == "listRootLists":
     res = GetParams("res")
     
     try:
-        sharepoint = account.sharepoint().get_root_site().get_default_document_library()
-        sharepoint_1 = account.sharepoint().get_root_site().get_lists()
+        sharepoint = account.groups().list_groups()
+        sharepoint_1 = account.sharepoint()
         sharepoint_2 = account.sharepoint().get_root_site().get_subsites()
         
-        SetVar(res, sharepoint_2)
+        SetVar(res, sharepoint_1)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
