@@ -46,7 +46,7 @@ if module == "connect":
         credentials = (client_id, client_secret)
         account = Account(credentials, tenant_id = tenant)
         if not account.is_authenticated:
-            account.authenticate(scopes=['basic', 'message_all', 'sharepoint', 'GroupMember.Read.All'])
+            account.authenticate(scopes=['basic', 'message_all', 'sharepoint'])
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -62,9 +62,13 @@ if module == "sendEmail":
     try:
         message = account.new_message()
         list_to = to_.split(",")
+        if not to_:
+            raise Exception("'To' field must not be empty.")
+        list_to = to_.split(",")
         message.to.add(list_to)
-        list_cc = cc.split(",")
-        message.cc.add(list_cc)
+        if cc:
+            list_cc = cc.split(",")
+            message.cc.add(list_cc)
         message.subject = subject
         message.body = body
         if attached_file:
@@ -115,6 +119,48 @@ if module == "replyEmail":
         PrintException()
         raise e
 
+if module == "forwardEmail":
+    to_ = GetParams("to_")
+    cc = GetParams("cc")
+    id_ = GetParams("id_")
+    body = GetParams("body")
+    attached_file = GetParams("attached_file")
+    attached_folder = GetParams("attached_folder")
+    read = GetParams("markasread")
+    
+    if not id_:
+        raise Exception("Missing Email ID...")
+    
+    try:
+        message = account.mailbox().get_message(id_)
+        forward = message.forward()
+        if not to_:
+            raise Exception("'To' field must not be empty.")
+        list_to = to_.split(",")
+        forward.to.add(list_to)
+        if cc:
+            list_cc = cc.split(",")
+            forward.cc.add(list_cc)
+        forward.body = body
+        
+        if attached_file:
+            forward.attachments.add(attached_file)
+        if attached_folder:
+            filenames = []
+            for f in os.listdir(attached_folder):
+                f = os.path.join(attached_folder, f)
+                filenames.append(f)
+            forward.attachments.add(filenames)
+        forward.send()
+        
+        if read:
+            if eval(read) == True:
+                message.mark_as_read()
+        
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
 
 if module == "getFolders":
     
@@ -280,7 +326,7 @@ if module == "downAtt":
             if eval(read) == True:
                 message.mark_as_read()
         
-        SetVar(res, )
+        SetVar(res, True)
     except Exception as e:
         SetVar(res, False)
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -292,11 +338,9 @@ if module == "listRootLists":
     res = GetParams("res")
     
     try:
-        sharepoint = account.groups().list_groups()
-        sharepoint_1 = account.sharepoint()
-        sharepoint_2 = account.sharepoint().get_root_site().get_subsites()
+        sharepoint = account.sharepoint().get_root_site().get_subsites()[0].get_lists()[0].get_items()[0].fields
         
-        SetVar(res, sharepoint_1)
+        SetVar(res, sharepoint)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
