@@ -74,9 +74,9 @@ if module == "sendEmail":
     attached_folder = GetParams("attached_folder")
     try:
         message = account.new_message()
-        list_to = to_.split(",")
         if not to_:
             raise Exception("'To' field must not be empty.")
+        list_to = to_.split(",")
         list_to = to_.split(",")
         message.to.add(list_to)
         if cc:
