@@ -37,6 +37,19 @@ import os
 module = GetParams("module")
 global credentials
 global account
+global OutlookWellKnowFolderNames 
+
+OutlookWellKnowFolderNames= {
+        'Inbox': 'Inbox',
+        'Junk': 'JunkEmail',
+        'Deleted Items': 'DeletedItems',
+        'Drafts': 'Drafts',
+        'Sent': 'SentItems',
+        'Outbox': 'Outbox',
+        'Archive': 'Archive'
+    }
+
+
 
 if module == "connect":
     client_id = GetParams("client_id")
@@ -162,77 +175,11 @@ if module == "forwardEmail":
         PrintException()
         raise e
 
-if module == "getFolders":
-    
-    from O365 import utils
-
-    def get_folders_new(mailbox, limit=None, *, query=None, order_by=None, batch=None):
-
-        NEXT_LINK_KEYWORD = '@odata.nextLink'
-        
-        if mailbox.root:
-            url = mailbox.build_url(mailbox._endpoints.get('root_folders'))
-        else:
-            url = mailbox.build_url(
-                mailbox._endpoints.get('child_folders').format(id=mailbox.folder_id))
-
-        if limit is None or limit > mailbox.protocol.max_top_value:
-            batch = mailbox.protocol.max_top_value
-
-        params = {'$top': batch if batch else limit}
-
-        if order_by:
-            params['$orderby'] = order_by
-
-        if query:
-            if isinstance(query, str):
-                params['$filter'] = query
-            else:
-                params.update(query.as_params())
-
-        response = mailbox.con.get(url, params=params)
-        if not response:
-            return []
-
-        data = response.json()
-        
-        # Everything received from cloud must be passed as self._cloud_data_key
-        self_class = getattr(mailbox, 'folder_constructor', type(mailbox))
-        
-        folders = [self_class(parent=mailbox, **{mailbox._cloud_data_key: folder}) for
-                folder in data.get('value', [])]
-        
-        next_link = data.get(NEXT_LINK_KEYWORD, None)
-        
-        if batch and next_link:
-            return utils.Pagination(parent=mailbox, data=folders, constructor=self_class,
-                            next_link=next_link, limit=limit)
-        else:
-            return self_class
-    
-    
-    res = GetParams('folders')
-    
-    list_folders = get_folders_new(account.mailbox())
-    print(list_folders)
-    
-    SetVar(res, list_folders)
-
 if module == "getAllEmails":
     folder = GetParams("folder")
     res = GetParams("res")
     limit = GetParams("limit")
     filter = GetParams("filtro") or GetParams("filter")
-    
-    OutlookWellKnowFolderNames = {
-        'Inbox': 'Inbox',
-        'Junk': 'JunkEmail',
-        'Deleted Items': 'DeletedItems',
-        'Drafts': 'Drafts',
-        'Sent': 'SentItems',
-        'Outbox': 'Outbox',
-        'Archive': 'Archive'
-    }
     
     if OutlookWellKnowFolderNames.get(folder) == None:
         pass
@@ -333,15 +280,110 @@ if module == "downAtt":
         PrintException()
         raise e
 
-if module == "listRootLists":
-      
+if module == "markUnread":
     res = GetParams("res")
+    id_ = GetParams("id_")
+    
+    if not id_:
+        raise Exception("Missing Email ID...")
     
     try:
-        sharepoint = account.sharepoint().get_root_site().get_subsites()[0].get_lists()[0].get_items()[0].fields
+        # It creates a message object and makes available attachments to be downloaded
+        message = account.mailbox().get_message(id_)
+   
+        unread = message.mark_as_unread()
         
-        SetVar(res, sharepoint)
+        SetVar(res, unread)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+if module == "moveEmail":
+    folderId = GetParams("folderId")
+    id_ = GetParams("id_")
+    res = GetParams("res")
+    
+    if folderId == "" or folderId == None:
+        folderId = "Inbox"
+    
+    try:
+        message = account.mailbox().get_message(id_)
+        move = message.move(folderId)
+        
+        SetVar(res, move)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "getFolders":
+    
+    from O365 import utils
+    import json
+    
+    def get_folders_new(mailbox, limit=None, *, query=None, order_by=None, batch=None):
+
+        NEXT_LINK_KEYWORD = '@odata.nextLink'
+        
+        if mailbox.root:
+            url = mailbox.build_url(mailbox._endpoints.get('root_folders'))
+        else:
+            url = mailbox.build_url(
+                mailbox._endpoints.get('child_folders').format(id=mailbox.folder_id))
+
+        if limit is None or limit > mailbox.protocol.max_top_value:
+            batch = mailbox.protocol.max_top_value
+
+        params = {'$top': batch if batch else limit}
+
+        if order_by:
+            params['$orderby'] = order_by
+
+        if query:
+            if isinstance(query, str):
+                params['$filter'] = query
+            else:
+                params.update(query.as_params())
+
+        response = mailbox.con.get(url, params=params)
+        if not response:
+            return []
+
+        data = response.json()
+       
+        return data['value']
+    
+    folders = GetParams('res')
+    try:
+        list_folders = get_folders_new(account.mailbox())
+        print(list_folders)
+        
+        SetVar(folders, list_folders)
+    
+    except Exception as e:
+        SetVar(folders, False)
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "newFolder":
+    parent = GetParams("parent")
+    new_folder = GetParams("new_folder")
+    res = GetParams("res")
+    
+    try:
+        try:
+            parent = account.mailbox().get_folder(folder_id = parent)
+        except:
+            parent = account.mailbox()
+        
+        parent.create_child_folder(new_folder)
+        SetVar(res, True)
+    
+    except Exception as e:
+        SetVar(res, False)
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
