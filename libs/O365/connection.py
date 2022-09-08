@@ -3,7 +3,7 @@ import logging
 import os
 import time
 
-from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient
+from oauthlib.oauth2 import TokenExpiredError, WebApplicationClient, BackendApplicationClient, LegacyApplicationClient
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError, RequestException, ProxyError
@@ -100,7 +100,7 @@ class Protocol:
         try:
             self.timezone = timezone or get_localzone()  # pytz timezone
         except UnknownTimeZoneError as e:
-            log.info('Timezone not provided and the local timezone could not be found. Default to UTC.')
+            log.debug('Timezone not provided and the local timezone could not be found. Default to UTC.')
             self.timezone = UTC  # pytz.timezone('UTC')
         self.max_top_value = 500  # Max $top parameter value
 
@@ -322,10 +322,11 @@ class Connection:
 
     def __init__(self, credentials, *, scopes=None,
                  proxy_server=None, proxy_port=8080, proxy_username=None,
-                 proxy_password=None, requests_delay=200, raise_http_errors=True,
+                 proxy_password=None, proxy_http_only=False, requests_delay=200, raise_http_errors=True,
                  request_retries=3, token_backend=None,
                  tenant_id='common',
                  auth_flow_type='authorization',
+                 username=None, password=None,
                  timeout=None, json_encoder=None,
                  verify_ssl=True, **kwargs):
         """ Creates an API connection object
@@ -355,28 +356,34 @@ class Connection:
             - 'authorization': 2 step web style grant flow using an authentication url
             - 'public': 2 step web style grant flow using an authentication url for public apps where
             client secret cannot be secured
-            - 'credentials': also called client credentials grant flow using only the cliend id and secret
+            - 'credentials': also called client credentials grant flow using only the client id and secret
+        :param str username: The user's email address to provide in case of auth_flow_type == 'password'
+        :param str password: The user's password to provide in case of auth_flow_type == 'password'
         :param float or tuple timeout: How long to wait for the server to send
             data before giving up, as a float, or a tuple (connect timeout, read timeout)
-        :param JSONEncoder json_encoder: The JSONEnocder to use during the JSON serialization on the request.
+        :param JSONEncoder json_encoder: The JSONEncoder to use during the JSON serialization on the request.
         :param bool verify_ssl: set the verify flag on the requests library
         :param dict kwargs: any extra params passed to Connection
         :raises ValueError: if credentials is not tuple of
          (client_id, client_secret)
         """
-        if auth_flow_type == 'public':  # allow client id only for public flow
+        if auth_flow_type in ('public', 'password'):  # allow client id only for public or password flow
+            if isinstance(credentials, str): 
+                credentials = (credentials,)
             if not isinstance(credentials, tuple) or len(credentials) != 1 or (not credentials[0]):
-                raise ValueError('Provide client id only for public flow credentials')
+                raise ValueError('Provide client id only for public or password flow credentials')
         else:
             if not isinstance(credentials, tuple) or len(credentials) != 2 or (not credentials[0] and not credentials[1]):
                 raise ValueError('Provide valid auth credentials')
 
         self._auth_flow_type = auth_flow_type  # 'authorization' or 'credentials' or 'public'
-        if auth_flow_type == 'credentials' and tenant_id == 'common':
-            raise ValueError('When using the "credentials" auth_flow the "tenant_id" must be set')
+        if auth_flow_type in ('credentials', 'password') and tenant_id == 'common':
+            raise ValueError('When using the "credentials" or "password" auth_flow the "tenant_id" must be set')
 
         self.tenant_id = tenant_id
         self.auth = credentials
+        self.username = username
+        self.password = password
         self.scopes = scopes
         self.store_token = True
         token_backend = token_backend or FileSystemTokenBackend(**kwargs)
@@ -386,7 +393,7 @@ class Connection:
         self.session = None  # requests Oauth2Session object
 
         self.proxy = {}
-        self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password)
+        self.set_proxy(proxy_server, proxy_port, proxy_username, proxy_password, proxy_http_only)
         self.requests_delay = requests_delay or 0
         self._previous_request_at = None  # store previous request time
         self.raise_http_errors = raise_http_errors
@@ -408,7 +415,7 @@ class Connection:
         return self._auth_flow_type
 
     def set_proxy(self, proxy_server, proxy_port, proxy_username,
-                  proxy_password):
+                  proxy_password, proxy_http_only):
         """ Sets a proxy on the Session
 
         :param str proxy_server: the proxy server
@@ -418,20 +425,23 @@ class Connection:
         """
         if proxy_server and proxy_port:
             if proxy_username and proxy_password:
+                proxy_uri = "{}:{}@{}:{}".format(proxy_username,
+                                                proxy_password,
+                                                proxy_server,
+                                                proxy_port)
+            else:
+                proxy_uri = "{}:{}".format(proxy_server,
+                                            proxy_port)
+            
+            if proxy_http_only is False:
                 self.proxy = {
-                    "http": "http://{}:{}@{}:{}".format(proxy_username,
-                                                        proxy_password,
-                                                        proxy_server,
-                                                        proxy_port),
-                    "https": "https://{}:{}@{}:{}".format(proxy_username,
-                                                          proxy_password,
-                                                          proxy_server,
-                                                          proxy_port),
+                    "http": "http://{}".format(proxy_uri),
+                    "https": "https://{}".format(proxy_uri)
                 }
             else:
                 self.proxy = {
-                    "http": "http://{}:{}".format(proxy_server, proxy_port),
-                    "https": "https://{}:{}".format(proxy_server, proxy_port),
+                    "http": "http://{}".format(proxy_uri),
+                    "https": "http://{}".format(proxy_uri)
                 }
 
     def get_authorization_url(self, requested_scopes=None,
@@ -500,6 +510,8 @@ class Connection:
                                                 redirect_uri=redirect_uri)
             elif self.auth_flow_type == 'credentials':
                 self.session = self.get_session(scopes=scopes)
+            elif self.auth_flow_type == 'password':
+                self.session = self.get_session(scopes=scopes)
             else:
                 raise ValueError('"auth_flow_type" must be "authorization", "public" or "credentials"')
 
@@ -509,18 +521,29 @@ class Connection:
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
                     include_client_id=True,
-                    client_secret=self.auth[1]))
+                    client_secret=self.auth[1],
+                    verify=self.verify_ssl))
             elif self.auth_flow_type == 'public':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     authorization_response=authorization_url,
-                    include_client_id=True))
+                    include_client_id=True,
+                    verify=self.verify_ssl))
             elif self.auth_flow_type == 'credentials':
                 self.token_backend.token = Token(self.session.fetch_token(
                     token_url=self._oauth2_token_url,
                     include_client_id=True,
                     client_secret=self.auth[1],
-                    scope=scopes))
+                    scope=scopes,
+                    verify=self.verify_ssl))
+            elif self.auth_flow_type == 'password':
+                self.token_backend.token = Token(self.session.fetch_token(
+                    token_url=self._oauth2_token_url,
+                    include_client_id=True,
+                    username=self.username,
+                    password=self.password,
+                    scope=scopes,
+                    verify=self.verify_ssl))
         except Exception as e:
             log.error('Unable to fetch auth token. Error: {}'.format(str(e)))
             return False
@@ -551,6 +574,8 @@ class Connection:
             oauth_client = WebApplicationClient(client_id=client_id)
         elif self.auth_flow_type == 'credentials':
             oauth_client = BackendApplicationClient(client_id=client_id)
+        elif self.auth_flow_type == 'password':
+            oauth_client = LegacyApplicationClient(client_id=client_id)
         else:
             raise ValueError('"auth_flow_type" must be "authorization", "credentials" or "public"')
 
@@ -563,7 +588,7 @@ class Connection:
                 raise RuntimeError('No auth token found. Authentication Flow needed')
 
             oauth_client.token = token
-            if self.auth_flow_type in ('authorization', 'public'):
+            if self.auth_flow_type in ('authorization', 'public', 'password'):
                 requested_scopes = None  # the scopes are already in the token (Not if type is backend)
             session = OAuth2Session(client_id=client_id,
                                     client=oauth_client,
@@ -583,7 +608,8 @@ class Connection:
             retry = Retry(total=self.request_retries, read=self.request_retries,
                           connect=self.request_retries,
                           backoff_factor=RETRIES_BACKOFF_FACTOR,
-                          status_forcelist=RETRIES_STATUS_LIST)
+                          status_forcelist=RETRIES_STATUS_LIST,
+                          respect_retry_after_header=True)
             adapter = HTTPAdapter(max_retries=retry)
             session.mount('http://', adapter)
             session.mount('https://', adapter)
@@ -623,29 +649,31 @@ class Connection:
             raise RuntimeError('Token not found.')
 
         if token.is_long_lived or self.auth_flow_type == 'credentials':
-            log.info('Refreshing token')
+            log.debug('Refreshing token')
             if self.auth_flow_type == 'authorization':
                 client_id, client_secret = self.auth
                 self.token_backend.token = Token(
                     self.session.refresh_token(
                         self._oauth2_token_url,
                         client_id=client_id,
-                        client_secret=client_secret)
+                        client_secret=client_secret,
+                        verify=self.verify_ssl)
                 )
-            elif self.auth_flow_type == 'public':
+            elif self.auth_flow_type in ('public', 'password'):
                 client_id = self.auth[0]
                 self.token_backend.token = Token(
                     self.session.refresh_token(
                         self._oauth2_token_url,
-                        client_id=client_id)
+                        client_id=client_id,
+                        verify=self.verify_ssl)
                 )
             elif self.auth_flow_type == 'credentials':
                 if self.request_token(None, store_token=False) is False:
                     log.error('Refresh for Client Credentials Grant Flow failed.')
                     return False
-            log.info('New oauth token fetched by refresh method')
+            log.debug('New oauth token fetched by refresh method')
         else:
-            log.error('You can not refresh an access token that has no "refreh_token" available.'
+            log.error('You can not refresh an access token that has no "refresh_token" available.'
                       'Include "offline_access" scope when authenticating to get a "refresh_token"')
             return False
 
@@ -657,10 +685,10 @@ class Connection:
         """ Checks if a delay is needed between requests and sleeps if True """
         if self._previous_request_at:
             dif = round(time.time() - self._previous_request_at,
-                        2) * 1000  # difference in miliseconds
+                        2) * 1000  # difference in milliseconds
             if dif < self.requests_delay:
                 sleep_for = (self.requests_delay - dif)
-                log.info('Sleeping for {} miliseconds'.format(sleep_for))
+                log.debug('Sleeping for {} milliseconds'.format(sleep_for))
                 time.sleep(sleep_for / 1000)  # sleep needs seconds
         self._previous_request_at = time.time()
 
@@ -692,24 +720,26 @@ class Connection:
         if self.timeout is not None:
             kwargs['timeout'] = self.timeout
 
+        kwargs.setdefault("verify", self.verify_ssl)
+
         request_done = False
         token_refreshed = False
 
         while not request_done:
             self._check_delay()  # sleeps if needed
             try:
-                log.info('Requesting ({}) URL: {}'.format(method.upper(), url))
-                log.info('Request parameters: {}'.format(kwargs))
+                log.debug('Requesting ({}) URL: {}'.format(method.upper(), url))
+                log.debug('Request parameters: {}'.format(kwargs))
                 # auto_retry will occur inside this function call if enabled
                 response = request_obj.request(method, url, **kwargs)
                 response.raise_for_status()  # raise 4XX and 5XX error codes.
-                log.info('Received response ({}) from URL {}'.format(
+                log.debug('Received response ({}) from URL {}'.format(
                     response.status_code, response.url))
                 request_done = True
                 return response
             except TokenExpiredError as e:
                 # Token has expired, try to refresh the token and try again on the next loop
-                log.info('Oauth Token is expired')
+                log.debug('Oauth Token is expired')
                 if self.token_backend.token.is_long_lived is False and self.auth_flow_type == 'authorization':
                     raise e
                 if token_refreshed:
@@ -857,8 +887,8 @@ class Connection:
         There is no guarantee that this method will be called by the garbage collection
         But this is not an issue because this connections will be automatically closed.
         """
-        if self.session:
-            self.session.close()
+        if hasattr(self, 'session') and self.session is not None:
+                self.session.close()
 
 
 def oauth_authentication_flow(client_id, client_secret, scopes=None,

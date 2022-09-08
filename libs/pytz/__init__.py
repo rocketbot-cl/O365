@@ -22,8 +22,8 @@ from pytz.tzfile import build_tzinfo
 
 
 # The IANA (nee Olson) database is updated several times a year.
-OLSON_VERSION = '2020e'
-VERSION = '2020.5'  # pip compatible version number.
+OLSON_VERSION = '2022b'
+VERSION = '2022.2.1'  # pip compatible version number.
 __version__ = VERSION
 
 OLSEN_VERSION = OLSON_VERSION  # Old releases had this misspelling
@@ -86,7 +86,7 @@ def open_resource(name):
     """
     name_parts = name.lstrip('/').split('/')
     for part in name_parts:
-        if part == os.path.pardir or os.path.sep in part:
+        if part == os.path.pardir or os.sep in part:
             raise ValueError('Bad path segment: %r' % part)
     zoneinfo_dir = os.environ.get('PYTZ_TZDATADIR', None)
     if zoneinfo_dir is not None:
@@ -964,6 +964,7 @@ all_timezones = \
  'Europe/Kaliningrad',
  'Europe/Kiev',
  'Europe/Kirov',
+ 'Europe/Kyiv',
  'Europe/Lisbon',
  'Europe/Ljubljana',
  'Europe/London',
@@ -1058,6 +1059,7 @@ all_timezones = \
  'Pacific/Guam',
  'Pacific/Honolulu',
  'Pacific/Johnston',
+ 'Pacific/Kanton',
  'Pacific/Kiritimati',
  'Pacific/Kosrae',
  'Pacific/Kwajalein',
@@ -1455,8 +1457,8 @@ common_timezones = \
  'Europe/Istanbul',
  'Europe/Jersey',
  'Europe/Kaliningrad',
- 'Europe/Kiev',
  'Europe/Kirov',
+ 'Europe/Kyiv',
  'Europe/Lisbon',
  'Europe/Ljubljana',
  'Europe/London',
@@ -1513,7 +1515,6 @@ common_timezones = \
  'Pacific/Chuuk',
  'Pacific/Easter',
  'Pacific/Efate',
- 'Pacific/Enderbury',
  'Pacific/Fakaofo',
  'Pacific/Fiji',
  'Pacific/Funafuti',
@@ -1522,6 +1523,7 @@ common_timezones = \
  'Pacific/Guadalcanal',
  'Pacific/Guam',
  'Pacific/Honolulu',
+ 'Pacific/Kanton',
  'Pacific/Kiritimati',
  'Pacific/Kosrae',
  'Pacific/Kwajalein',
