@@ -6,7 +6,7 @@
   
 Connect to Outlook for O365.  
   
-![banner](/imgs/Banner_O365.png)
+![banner](imgs/Banner_O365.png)
 ## How to install this module
   
 __Download__ and __install__ the content in 'modules' folder in Rocketbot path  
