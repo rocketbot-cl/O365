@@ -49,6 +49,8 @@ class MessageAttachments(BaseAttachments):
         'attachments': '/messages/{id}/attachments',
         'attachment': '/messages/{id}/attachments/{ida}',
         'get_mime': '/messages/{id}/attachments/{ida}/$value',
+        'create_upload_session': '/messages/{id}/attachments/createUploadSession'
+
     }
     _attachment_constructor = MessageAttachment
 
@@ -196,8 +198,10 @@ class MessageFlag(ApiComponent):
             self._cc('flagStatus'): self._cc(self.__status.value)
         }
         if self.__status is Flag.Flagged:
-            data[self._cc('startDateTime')] = self._build_date_time_time_zone(self.__start) if self.__start is not None else None
-            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(self.__due_date) if self.__due_date is not None else None
+            data[self._cc('startDateTime')] = self._build_date_time_time_zone(
+                self.__start) if self.__start is not None else None
+            data[self._cc('dueDateTime')] = self._build_date_time_time_zone(
+                self.__due_date) if self.__due_date is not None else None
 
         if self.__status is Flag.Complete:
             data[self._cc('completedDateTime')] = self._build_date_time_time_zone(self.__completed)
@@ -258,6 +262,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes = TrackerSet(casing=cc)
         self.object_id = cloud_data.get(cc('id'), kwargs.get('object_id', None))
 
+        self.__inferenceClassification = cloud_data.get(cc('inferenceClassification'), None)
+
         self.__created = cloud_data.get(cc('createdDateTime'), None)
         self.__modified = cloud_data.get(cc('lastModifiedDateTime'), None)
         self.__received = cloud_data.get(cc('receivedDateTime'), None)
@@ -275,7 +281,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
         self.__attachments = MessageAttachments(parent=self, attachments=[])
         self.__attachments.add({self._cloud_data_key: cloud_data.get(cc('attachments'), [])})
-        self.has_attachments = cloud_data.get(cc('hasAttachments'), False)
+        self.__has_attachments = cloud_data.get(cc('hasAttachments'), False)
         self.__subject = cloud_data.get(cc('subject'), '')
         self.__body_preview = cloud_data.get(cc('bodyPreview'), '')
         body = cloud_data.get(cc('body'), {})
@@ -286,12 +292,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self.__unique_body = unique_body.get(cc('content'), '')
         self.unique_body_type = unique_body.get(cc('contentType'), 'HTML')  # default to HTML for new messages
 
-        if self.has_attachments is False and self.body_type.upper() == 'HTML':
-            # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
-            if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
-                self.has_attachments = True
-
-        if self.has_attachments and download_attachments:
+        if download_attachments and self.has_attachments:
             self.attachments.download_attachments()
 
         self.__sender = self._recipient_from_cloud(
@@ -361,6 +362,18 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         self._track_changes.add('isRead')
 
     @property
+    def has_attachments(self):
+        """ Check if the message contains attachments
+
+        :type: bool
+        """
+        if self.__has_attachments is False and self.body_type.upper() == 'HTML':
+            # test for inline attachments (Azure responds with hasAttachments=False when there are only inline attachments):
+            if any(img.get('src', '').startswith('cid:') for img in self.get_body_soup().find_all('img')):
+                self.__has_attachments = True
+        return self.__has_attachments
+
+    @property
     def is_draft(self):
         """ Check if the message is marked as draft
 
@@ -397,6 +410,11 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         :type: str
         """
         return self.__body
+
+    @property
+    def inferenceClassification(self):
+        """ Message is focused or not"""
+        return self.__inferenceClassification
 
     @body.setter
     def body(self, value):
@@ -893,7 +911,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
         """
         if self.object_id and not self.__is_draft:
             # we are only allowed to save some properties:
-            allowed_changes = {self._cc('isRead'), self._cc('categories'), self._cc('flag')}  # allowed changes to be saved by this method
+            allowed_changes = {self._cc('isRead'), self._cc('categories'),
+                               self._cc('flag'), self._cc('subject')}  # allowed changes to be saved by this method
             changes = {tc for tc in self._track_changes if tc in allowed_changes}
 
             if not changes:
@@ -1030,7 +1049,7 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
             return None
 
         # select a dummy field (eg. subject) to avoid pull unneccesary data
-        query = self.q().select('subject').expand('event')
+        query = self.q().expand('event')
 
         url = self.build_url(self._endpoints.get('get_message').format(id=self.object_id))
 

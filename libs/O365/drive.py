@@ -63,7 +63,10 @@ class DownloadableMixin:
                 name = name + Path(self.name).suffix
 
             name = name or self.name
-            to_path = to_path / name
+            if convert_to_pdf:
+                to_path = to_path / Path(name).with_suffix(".pdf")
+            else:
+                to_path = to_path / name
 
         url = self.build_url(
             self._endpoints.get('download').format(id=self.object_id))
@@ -774,7 +777,7 @@ class DriveItem(ApiComponent):
         # Find out if the server has run a Sync or Async operation
         location = response.headers.get('Location', None)
 
-        if 'monitor' in location:
+        if response.status_code == 202:
             # Async operation
             return CopyOperation(parent=self.drive, monitor_url=location)
         else:
@@ -827,7 +830,7 @@ class DriveItem(ApiComponent):
         # Everything received from cloud must be passed as self._cloud_data_key
         return DriveItemVersion(parent=self, **{self._cloud_data_key: data})
 
-    def share_with_link(self, share_type='view', share_scope='anonymous'):
+    def share_with_link(self, share_type='view', share_scope='anonymous', share_password=None, share_expiration_date=None):
         """ Creates or returns a link you can share with others
 
         :param str share_type: 'view' to allow only view access,
@@ -835,6 +838,8 @@ class DriveItem(ApiComponent):
          'embed' to allow the DriveItem to be embedded
         :param str share_scope: 'anonymous': anyone with the link can access.
          'organization' Only organization members can access
+        :param str share_password: sharing link password that is set by the creator. Optional.
+        :param str share_expiration_date: format of yyyy-MM-dd (e.g., 2022-02-14) that indicates the expiration date of the permission. Optional.
         :return: link to share
         :rtype: DriveItemPermission
         """
@@ -849,6 +854,10 @@ class DriveItem(ApiComponent):
             'type': share_type,
             'scope': share_scope
         }
+        if share_password is not None:
+            data['password'] = share_password
+        if share_expiration_date is not None:
+            data['expirationDateTime'] = share_expiration_date
 
         response = self.con.post(url, data=data)
         if not response:
@@ -1136,18 +1145,20 @@ class Folder(DriveItem):
             to_folder = Path() / to_folder
             if not to_folder.exists():
                 to_folder.mkdir()
-        if not isinstance(to_folder,str):
+        if not isinstance(to_folder, str):
             if not to_folder.exists():
                 to_folder.mkdir()
         else:
             to_folder = Path() / self.name
-        
+
         for item in self.get_items(query=self.new_query().select('id', 'size', 'folder', 'name')):
             if item.is_folder and item.child_count > 0:
                 item.download_contents(to_folder=to_folder / item.name)
             elif item.is_folder and item.child_count == 0:
-                if not to_folder.exists():
-                    to_folder.mkdir()
+                # Create child folder without contents.
+                child_folder = to_folder / item.name
+                if not child_folder.exists():
+                    child_folder.mkdir()
             else:
                 item.download(to_folder)
 
@@ -1283,7 +1294,7 @@ class Folder(DriveItem):
             # If not None, add conflict handling to request
             file_data = {}
             if conflict_handling:
-                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling }
+                file_data["item"] = {"@microsoft.graph.conflictBehavior": conflict_handling}
 
             response = self.con.post(url, data=file_data)
             if not response:
@@ -1332,6 +1343,7 @@ class Folder(DriveItem):
                         data = response.json()
                         return self._classifier(data)(parent=self, **{
                             self._cloud_data_key: data})
+
             if stream:
                 return write_stream(stream)
             else:
@@ -1452,13 +1464,13 @@ class Drive(ApiComponent):
                                       **{self._cloud_data_key: data})
 
     def _base_get_list(self, url, limit=None, *, query=None, order_by=None,
-                       batch=None):
+                       batch=None, params={}):
         """ Returns a collection of drive items """
 
         if limit is None or limit > self.protocol.max_top_value:
             batch = self.protocol.max_top_value
 
-        params = {'$top': batch if batch else limit}
+        params['$top'] = batch if batch else limit
 
         if order_by:
             params['$orderby'] = order_by
@@ -1562,7 +1574,7 @@ class Drive(ApiComponent):
         return self._base_get_list(url, limit=limit, query=query,
                                    order_by=order_by, batch=batch)
 
-    def get_shared_with_me(self, limit=None, *, query=None, order_by=None,
+    def get_shared_with_me(self, limit=None, allow_external=False, *, query=None, order_by=None,
                            batch=None):
         """ Returns a collection of DriveItems shared with me
 
@@ -1573,6 +1585,8 @@ class Drive(ApiComponent):
         :type order_by: Query or str
         :param int batch: batch size, retrieves items in
          batches allowing to retrieve more items than the limit.
+        :param allow_external: includes items shared from external tenants
+        :type allow_external: bool
         :return: items in this folder
         :rtype: generator of DriveItem or Pagination
         """
@@ -1585,8 +1599,11 @@ class Drive(ApiComponent):
             # we don't know the drive_id so go to the default
             url = self.build_url(self._endpoints.get('shared_with_me_default'))
 
+        # whether to include driveitems external to tenant
+        params = {"allowexternal": allow_external}
+
         return self._base_get_list(url, limit=limit, query=query,
-                                   order_by=order_by, batch=batch)
+                                   order_by=order_by, batch=batch, params=params)
 
     def get_item(self, item_id):
         """ Returns a DriveItem by it's Id
