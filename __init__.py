@@ -221,12 +221,22 @@ if module == "readEmail":
         # It creates a message object and makes available attachments to be downloaded
         message = account.mailbox().get_message(id_, download_attachments=True)
         files = []
+        
         for att in message.attachments:
-            files.append(att)
+            files.append(att.__str__())
             if download_att:
                 if eval(download_att) == True:
                     att.save(att_folder)
+
         print(message.attachments)
+        
+        # This is for the case of an email with no body
+        body = BeautifulSoup(message.body, "html.parser").body
+        if body == None:
+            pass
+        else:
+            body = body.get_text()
+        
         message_all = {
             # Recipient object
             'sender': message.sender.address,
@@ -236,7 +246,7 @@ if module == "readEmail":
             # Parses elements datetime.datetime into string
             'sent_time': message.sent.strftime('%d-%m-%Y %H:%M'),
             'received': message.received.strftime('%d-%m-%Y %H:%M'),
-            'body': BeautifulSoup(message.body, "html.parser").body.get_text(),
+            'body': body,
             'files': files
         }
         
@@ -386,4 +396,164 @@ if module == "newFolder":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+"""-----------------------------------------------------------------------------------------------------------------------------------------------------"""
+global _endpoints
+
+_endpoints = {
+    'get_user_groups': '/users/{user_id}/memberOf',
+    'get_group_by_id': '/groups/{group_id}',
+    'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
+    'list_groups': '/groups',
+    'get_group_site': '/groups/{group_id}/sites/{site_name}',
+    'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists'
+    }
     
+def list_groups(gs):
+    """ Returns list of groups orderer alphabetically by name
+    
+    :rtype: list[{Group Name: name, Group Id: ID}]
+    
+    """
+
+    url = gs.build_url(_endpoints.get('list_groups'))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+    
+    groups = []
+    for g in data['value']:
+        group = {}  
+        group['displayName'] = g['displayName']
+        group['id'] = g['id']
+        groups.append(group)
+        groups.sort(key = lambda g: g['displayName'])
+    
+    return groups
+
+def get_group_by_id(gs, group_id = None):
+    """ Returns Microsoft O365/AD group with given id
+
+    :param group_id: group id of group
+
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+
+    if group_id:
+        # get channels by the team id
+        url = gs.build_url(_endpoints.get('get_group_by_id').format(group_id=group_id))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+    
+    return data
+
+def get_group_site(gs, group_id = None, group_site = None):
+    """ Returns Microsoft O365/AD group with given id
+
+    :param group_id: group id of group
+
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+    
+    if group_id:
+        # get channels by the team id
+        url = gs.build_url(_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
+        print(url)
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+    
+    return data
+
+def get_group_site(gs, group_id = None, group_site = None):
+    """ Returns Microsoft O365/AD group with given id
+
+    :param group_id: group id of group
+
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+    
+    if group_id:
+        # get channels by the team id
+        url = gs.build_url(_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
+        print(url)
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+    
+    return data
+
+import traceback
+
+if module == "listGroups":
+      
+    res = GetParams("res")
+    
+    try:
+        groups_list = list_groups(account.groups())
+        
+        SetVar(res, groups_list) 
+           
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "group":
+    
+    id_ = GetParams("groupId")
+    res = GetParams("res")
+    
+    try:
+       
+        group = get_group_by_id(account.groups(), id_)
+        
+        SetVar(res, group)
+        
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "site":
+    
+    id_ = GetParams("groupId")
+    res = GetParams("res")
+    
+    try:
+       
+        site = get_group_site(account.groups(), id_, get_group_by_id(account.groups(), id_)['displayName'])
+        
+        SetVar(res, site)
+        
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
