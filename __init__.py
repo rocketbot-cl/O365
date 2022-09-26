@@ -35,8 +35,8 @@ from bs4 import BeautifulSoup
 import os
 
 module = GetParams("module")
-global credentials
-global account
+
+global mod_o365_session
 global OutlookWellKnowFolderNames 
 
 OutlookWellKnowFolderNames= {
@@ -49,17 +49,26 @@ OutlookWellKnowFolderNames= {
         'Archive': 'Archive'
     }
 
+session = GetParams("session")
+if not session:
+    session = 'default'
 
+try:
+    if not mod_o365_session : #type:ignore
+        mod_o365_session = {}
+except NameError:
+    mod_o365_session = {}
 
 if module == "connect":
     client_id = GetParams("client_id")
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
+
     try:
         credentials = (client_id, client_secret)
-        account = Account(credentials, tenant_id = tenant)
-        if not account.is_authenticated:
-            account.authenticate(scopes=['basic', 'message_all', 'sharepoint'])
+        mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = "o365_token_{s}.txt".format(s=session))
+        if not mod_o365_session[session].is_authenticated:
+            mod_o365_session[session].authenticate(scopes=['basic', 'message_all', 'sharepoint'])
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -72,8 +81,9 @@ if module == "sendEmail":
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
+    
     try:
-        message = account.new_message()
+        message = mod_o365_session[session].new_message()
         if not to_:
             raise Exception("'To' field must not be empty.")
         list_to = to_.split(",")
@@ -109,7 +119,7 @@ if module == "replyEmail":
         raise Exception("Missing Email ID...")
     
     try:
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
         reply = message.reply()
         reply.body = body
         
@@ -145,7 +155,7 @@ if module == "forwardEmail":
         raise Exception("Missing Email ID...")
     
     try:
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
         forward = message.forward()
         if not to_:
             raise Exception("'To' field must not be empty.")
@@ -195,7 +205,7 @@ if module == "getAllEmails":
         limit = None
     
     try:
-        list_messages = account.mailbox().folder_constructor(parent=account.mailbox(), name=folder,
+        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
                                                              folder_id=folder).get_messages(limit=limit, query=filter)
         list_object_id = []
         for message in list_messages:
@@ -207,19 +217,18 @@ if module == "getAllEmails":
         raise e
 
 if module == "readEmail":
-      
     att_folder = GetParams("att_folder")
     download_att = GetParams("down")
     res = GetParams("res")
     id_ = GetParams("id_")
     read = GetParams("markasread")
-    
+        
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
-        message = account.mailbox().get_message(id_, download_attachments=True)
+        message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
         files = []
         
         for att in message.attachments:
@@ -227,8 +236,6 @@ if module == "readEmail":
             if download_att:
                 if eval(download_att) == True:
                     att.save(att_folder)
-
-        print(message.attachments)
         
         # This is for the case of an email with no body
         body = BeautifulSoup(message.body, "html.parser").body
@@ -272,12 +279,11 @@ if module == "downAtt":
     
     try:
         # It creates a message object and makes available attachments to be downloaded
-        message = account.mailbox().get_message(id_, download_attachments=True)
+        message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
         files = []
         for att in message.attachments:
             files.append(att)
             att.save(att_folder)
-        print(message.attachments)
         
         if read:
             if eval(read) == True:
@@ -299,7 +305,7 @@ if module == "markUnread":
     
     try:
         # It creates a message object and makes available attachments to be downloaded
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
    
         unread = message.mark_as_unread()
         
@@ -318,7 +324,7 @@ if module == "moveEmail":
         folderId = "Inbox"
     
     try:
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
         move = message.move(folderId)
         
         SetVar(res, move)
@@ -366,7 +372,7 @@ if module == "getFolders":
     
     folders = GetParams('res')
     try:
-        list_folders = get_folders_new(account.mailbox())
+        list_folders = get_folders_new(mod_o365_session[session].mailbox())
         print(list_folders)
         
         SetVar(folders, list_folders)
@@ -384,176 +390,15 @@ if module == "newFolder":
     
     try:
         try:
-            parent = account.mailbox().get_folder(folder_id = parent)
+            parent = mod_o365_session[session].mailbox().get_folder(folder_id = parent)
         except:
-            parent = account.mailbox()
+            parent = mod_o365_session[session].mailbox()
         
         parent.create_child_folder(new_folder)
         SetVar(res, True)
     
     except Exception as e:
         SetVar(res, False)
-        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
-        PrintException()
-        raise e
-
-"""-----------------------------------------------------------------------------------------------------------------------------------------------------"""
-global _endpoints
-
-_endpoints = {
-    'get_user_groups': '/users/{user_id}/memberOf',
-    'get_group_by_id': '/groups/{group_id}',
-    'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
-    'list_groups': '/groups',
-    'get_group_site': '/groups/{group_id}/sites/{site_name}',
-    'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists'
-    }
-    
-def list_groups(gs):
-    """ Returns list of groups orderer alphabetically by name
-    
-    :rtype: list[{Group Name: name, Group Id: ID}]
-    
-    """
-
-    url = gs.build_url(_endpoints.get('list_groups'))
-
-    response = gs.con.get(url)
-
-    if not response:
-        return None
-
-    data = response.json()
-    
-    groups = []
-    for g in data['value']:
-        group = {}  
-        group['displayName'] = g['displayName']
-        group['id'] = g['id']
-        groups.append(group)
-        groups.sort(key = lambda g: g['displayName'])
-    
-    return groups
-
-def get_group_by_id(gs, group_id = None):
-    """ Returns Microsoft O365/AD group with given id
-
-    :param group_id: group id of group
-
-    :rtype: Group
-    """
-
-    if not group_id:
-        raise RuntimeError('Provide the group_id')
-
-    if group_id:
-        # get channels by the team id
-        url = gs.build_url(_endpoints.get('get_group_by_id').format(group_id=group_id))
-
-    response = gs.con.get(url)
-
-    if not response:
-        return None
-
-    data = response.json()
-    
-    return data
-
-def get_group_site(gs, group_id = None, group_site = None):
-    """ Returns Microsoft O365/AD group with given id
-
-    :param group_id: group id of group
-
-    :rtype: Group
-    """
-
-    if not group_id:
-        raise RuntimeError('Provide the group_id')
-    
-    if group_id:
-        # get channels by the team id
-        url = gs.build_url(_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
-        print(url)
-
-    response = gs.con.get(url)
-
-    if not response:
-        return None
-
-    data = response.json()
-    
-    return data
-
-def get_group_site(gs, group_id = None, group_site = None):
-    """ Returns Microsoft O365/AD group with given id
-
-    :param group_id: group id of group
-
-    :rtype: Group
-    """
-
-    if not group_id:
-        raise RuntimeError('Provide the group_id')
-    
-    if group_id:
-        # get channels by the team id
-        url = gs.build_url(_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
-        print(url)
-
-    response = gs.con.get(url)
-
-    if not response:
-        return None
-
-    data = response.json()
-    
-    return data
-
-import traceback
-
-if module == "listGroups":
-      
-    res = GetParams("res")
-    
-    try:
-        groups_list = list_groups(account.groups())
-        
-        SetVar(res, groups_list) 
-           
-    except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
-        PrintException()
-        raise e
-    
-if module == "group":
-    
-    id_ = GetParams("groupId")
-    res = GetParams("res")
-    
-    try:
-       
-        group = get_group_by_id(account.groups(), id_)
-        
-        SetVar(res, group)
-        
-    except Exception as e:
-        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
-        PrintException()
-        raise e
-    
-if module == "site":
-    
-    id_ = GetParams("groupId")
-    res = GetParams("res")
-    
-    try:
-       
-        site = get_group_site(account.groups(), id_, get_group_by_id(account.groups(), id_)['displayName'])
-        
-        SetVar(res, site)
-        
-    except Exception as e:
-        print(traceback.format_exc())
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
