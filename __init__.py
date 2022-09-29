@@ -601,6 +601,25 @@ if module == "siteLists":
         PrintException()
         raise e
 
+if module == "createList":
+    
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listInfo = GetParams("listInfo")
+    res = GetParams("res")
+
+    try:
+        
+        new_list = mod_o365_session[session].sharepoint().get_site(site_).create_list(eval(listInfo))
+        
+        SetVar(res, new_list)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
 if module == "listItems":
     
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
