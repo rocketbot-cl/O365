@@ -25,8 +25,7 @@ Before using this module, you need to register your app in the Azure App Registr
 7. Under "API permissions", click "Add a permission", select "Microsoft Graph", then "Delegated permissions", find and select "Mail.ReadWrite" and "User.Read", and finally " Add permissions".
 8. In the Rocketbot console a url will be generated (Example: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline ), copy and paste it into your browser.
 9. Accept the permissions granting and it will return a screen without content. Copy the URL (Example: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) and paste it into Rocketbot console below "Paste the authenticated url here:".
-10. Press "enter" and if the operation was successful you will see in the console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." and a file will have been created with your credentials, in the root folder of Rocketbot, called o365_token.txt
-o365_token.txt
+10. Press "enter" and if the operation was successful you will see in the console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." and a file will have been created with your credentials, in the root folder of Rocketbot, called o365_token.txt or o365_token_{session}.txt.
 
 
 ## Overview
@@ -63,7 +62,37 @@ List of email folders
 Move an email from one folder to another
 
 11. Create folder  
-Creates a new folder in the email  
+Creates a new folder in the email
+
+12. Get groups  
+Get list of Groups
+
+13. Get group  
+Get Group by ID
+
+14. Get site  
+Get site of the Group
+
+15. Get site lists  
+Get lists of the Site
+
+16. Create List  
+Create a new list
+
+17. Get list Items  
+Get the items of a list
+
+18. Get Item  
+Get an item from a list
+
+19. Create Item  
+Create an item in a list
+
+20. Delete Item  
+Delete an item from a list
+
+21. Update Item  
+Update an item data  
 
 
 

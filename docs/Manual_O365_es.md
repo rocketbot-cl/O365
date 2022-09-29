@@ -26,7 +26,9 @@ Antes de usar este modulo, es necesario registrar tu aplicación en el portal de
 7. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
 8. En la consola de Rocketbot se generara una url (Ejemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline ), copiarla y pegarla en su navegador.
 9. Aceptar el otorgamiento de permisos y devolvera una pantalla sin contenido. Copiar la URL (Ejemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) y pegarla en la consola de Rocketbot debajo de "Paste the authenticated url here:".
-10. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt
+10. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
+
+## Descripción de los comandos
 
 ## Descripción de los comandos
 
@@ -38,6 +40,7 @@ Conectar a una insancia de la aplicación de O365
 |client_id||client_id|
 |client_secret||client_secret|
 |tenant_id||tenant_id|
+|session||session|
 
 ### Lista todos los email
   
@@ -48,6 +51,7 @@ Lista todos los email, se puede especificar un filtro
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
 |Asignar a variable||Variable|
+|session||session|
 
 ### Leer email por ID
   
@@ -59,6 +63,7 @@ Leer email por ID
 |Descargar adjuntos||-|
 |Marcar como leído||-|
 |Asignar a variable||Variable|
+|session||session|
 
 ### Enviar Email
   
@@ -71,6 +76,7 @@ Envia un email
 |Mensaje||Esto es una prueba|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
+|session||session|
 
 ### Responder Email
   
@@ -82,6 +88,7 @@ Responder un email
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
 |Marcar como leído||-|
+|session||session|
 
 ### Reenviar Email
   
@@ -95,6 +102,7 @@ Reenviar un email
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
 |Marcar como leído||-|
+|session||session|
 
 ### Descargar adjuntos
   
@@ -105,6 +113,7 @@ Descarga los archivos adjuntos
 |Ruta para descargar adjuntos||C:\User\Desktop|
 |Marcar como leído||-|
 |Asignar a variable||Variable|
+|session||session|
 
 ### Marcar como no leido
   
@@ -113,6 +122,7 @@ Marcar un email como no leido
 | --- | --- | --- |
 |ID del email||345|
 |Asignar a variable||Variable|
+|session||session|
 
 ### Listar carpetas del correo
   
@@ -120,6 +130,7 @@ Lista todas las carpetas del correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Asignar a variable||Variable|
+|session||session|
 
 ### Mover email
   
@@ -129,6 +140,7 @@ Mover un email de una carpeta a otra
 |ID del email||345|
 |ID de carpeta||345|
 |Asignar a variable||Variable|
+|session||session|
 
 ### Crear carpeta
   
@@ -138,3 +150,104 @@ Crea una nueva carpeta en el correo electrónico.
 |ID carpeta padre||Inbox or 345...|
 |Nombre de la nueva carpeta||new_folder|
 |Asignar a variable||Variable|
+|session||session|
+
+### Obtener grupos
+  
+Obtener lista de Grupos
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener grupo
+  
+Obtener Grupo por ID
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Grupo||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener sitio
+  
+Obtener el sitio del Grupo
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Grupo||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener listas
+  
+Obtener las listas del Sitio
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Grupo||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Crear Lista
+  
+Crear una nueva lista
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Datos de lista||{'displayName': 'example_name'}|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener items de lista
+  
+Obtener los items de una lista
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Nombre de Lista||name|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener Item
+  
+Obtener un item de una lista
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Nombre de Lista||name|
+|ID del Item||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Crear Item
+  
+Crear un item dentro de una lista
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Nombre de Lista||name|
+|Datos del Item||{'title': 'data'}|
+|Asignar a variable||Variable|
+|session||session|
+
+### Borrar Item
+  
+Borrar un item de una lista
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Nombre de Lista||name|
+|ID del Item||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Actalizar Item
+  
+Actualizar datos de un item
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Nombre de Lista||name|
+|ID del Item||ID|
+|Datos del Item||{'title': 'data'}|
+|Asignar a variable||Variable|
+|session||session|
