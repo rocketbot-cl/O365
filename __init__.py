@@ -28,16 +28,18 @@ base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
+from copy import deepcopy
 from enum import Enum
+import trace
 from O365 import Account
-
+import traceback
 from bs4 import BeautifulSoup
 import os
 
 module = GetParams("module")
 
 global mod_o365_session
-global OutlookWellKnowFolderNames 
+global OutlookWellKnowFolderNames
 
 OutlookWellKnowFolderNames= {
         'Inbox': 'Inbox',
@@ -51,7 +53,7 @@ OutlookWellKnowFolderNames= {
 
 session = GetParams("session")
 if not session:
-    session = 'default'
+    session = ''
 
 try:
     if not mod_o365_session : #type:ignore
@@ -64,11 +66,16 @@ if module == "connect":
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
 
+    if session == '':
+        filename = "o365_token.txt"
+    else:
+        filename = "o365_token_{s}.txt".format(s=session)
+    
     try:
         credentials = (client_id, client_secret)
-        mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = "o365_token_{s}.txt".format(s=session))
+        mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
         if not mod_o365_session[session].is_authenticated:
-            mod_o365_session[session].authenticate(scopes=['basic', 'message_all', 'sharepoint'])
+            mod_o365_session[session].authenticate(scopes=['basic', 'message_all', 'sharepoint', 'si'])
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -338,44 +345,33 @@ if module == "getFolders":
     from O365 import utils
     import json
     
-    def get_folders_new(mailbox, limit=None, *, query=None, order_by=None, batch=None):
-
-        NEXT_LINK_KEYWORD = '@odata.nextLink'
-        
-        if mailbox.root:
-            url = mailbox.build_url(mailbox._endpoints.get('root_folders'))
-        else:
-            url = mailbox.build_url(
-                mailbox._endpoints.get('child_folders').format(id=mailbox.folder_id))
-
-        if limit is None or limit > mailbox.protocol.max_top_value:
-            batch = mailbox.protocol.max_top_value
-
-        params = {'$top': batch if batch else limit}
-
-        if order_by:
-            params['$orderby'] = order_by
-
-        if query:
-            if isinstance(query, str):
-                params['$filter'] = query
-            else:
-                params.update(query.as_params())
-
-        response = mailbox.con.get(url, params=params)
-        if not response:
-            return []
-
-        data = response.json()
-       
-        return data['value']
-    
     folders = GetParams('res')
+    
     try:
-        list_folders = get_folders_new(mod_o365_session[session].mailbox())
-        print(list_folders)
         
-        SetVar(folders, list_folders)
+        data, list_folders = mod_o365_session[session].mailbox().get_folders()
+        final_list = deepcopy(data['value'])
+        
+        while True:
+            try:
+                list_folders_aux = []
+                for folder in list_folders:
+                    if isinstance(folder, list):
+                        folder = folder[0]
+                    child_data, list_child = folder.get_folders()
+                    if child_data['value'] == []:
+                        continue
+                    final_list.append(child_data['value'])
+                    list_folders_aux.append(list_child)
+                list_folders = list_folders_aux
+                print(list_folders)
+                if list_folders == []:
+                    break
+            except:
+                print(traceback.format_exc())
+                break
+        
+        SetVar(folders, final_list)
     
     except Exception as e:
         SetVar(folders, False)
@@ -404,15 +400,17 @@ if module == "newFolder":
         raise e
 
 """-----------------------------------------------------------------------------------------------------------------------------------------------------"""
-global _endpoints
 
-_endpoints = {
+global mod_o365_endpoints
+
+mod_o365_endpoints = {
     'get_user_groups': '/users/{user_id}/memberOf',
     'get_group_by_id': '/groups/{group_id}',
     'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
     'list_groups': '/groups',
     'get_group_site': '/groups/{group_id}/sites/{site_name}',
-    'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists'
+    'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
+    'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/items/'
     }
 
 def list_groups(gs):
@@ -422,8 +420,8 @@ def list_groups(gs):
     
     """
 
-    url = gs.build_url(_endpoints.get('list_groups'))
-
+    url = gs.build_url(mod_o365_endpoints.get('list_groups'))
+    print(url)
     response = gs.con.get(url)
 
     if not response:
@@ -452,7 +450,7 @@ def get_group_by_id(gs, group_id = None):
 
     if group_id:
         # get channels by the team id
-        url = gs.build_url(_endpoints.get('get_group_by_id').format(group_id=group_id))
+        url = gs.build_url(mod_o365_endpoints.get('get_group_by_id').format(group_id=group_id))
 
     response = gs.con.get(url)
 
@@ -474,8 +472,7 @@ def get_group_site(gs, group_id = None, group_site = None):
 
     if group_id:
         # get channels by the team id
-        url = gs.build_url(_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
-        print(url)
+        url = gs.build_url(mod_o365_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
 
     response = gs.con.get(url)
 
@@ -486,7 +483,7 @@ def get_group_site(gs, group_id = None, group_site = None):
 
     return data
 
-def get_group_site(gs, group_id = None, group_site = None):
+def get_site_lists(gs, group_id = None, group_site = None):
     """ Returns Microsoft O365/AD group with given id
     :param group_id: group id of group
     :rtype: Group
@@ -497,8 +494,7 @@ def get_group_site(gs, group_id = None, group_site = None):
 
     if group_id:
         # get channels by the team id
-        url = gs.build_url(_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
-        print(url)
+        url = gs.build_url(mod_o365_endpoints.get('get_site_lists').format(group_id=group_id, site_name=group_site))
 
     response = gs.con.get(url)
 
@@ -509,14 +505,38 @@ def get_group_site(gs, group_id = None, group_site = None):
 
     return data
 
-import traceback
+def get_list(gs, group_id = None, group_site = None, list_id= None):
+    """ Returns Microsoft O365/AD group with given id
+    :param group_id: group id of group
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+
+    if not list_id:
+        raise RuntimeError('Provide the group_id')
+    
+    if group_id and list_id:
+        # get channels by the team id
+        url = gs.build_url(mod_o365_endpoints.get('get_list').format(group_id=group_id, site_name=group_site, list_id=list_id))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+
+    return data
+
 
 if module == "listGroups":
 
     res = GetParams("res")
 
     try:
-        groups_list = list_groups(account.groups())
+        groups_list = list_groups(mod_o365_session[session].groups())
 
         SetVar(res, groups_list) 
 
@@ -527,12 +547,12 @@ if module == "listGroups":
 
 if module == "group":
 
-    id_ = GetParams("groupId")
+    group_ = GetParams("groupId")
     res = GetParams("res")
 
     try:
 
-        group = get_group_by_id(account.groups(), id_)
+        group = get_group_by_id(mod_o365_session[session].groups(), group_)
 
         SetVar(res, group)
 
@@ -543,16 +563,147 @@ if module == "group":
 
 if module == "site":
 
-    id_ = GetParams("groupId")
+    group_ = GetParams("groupId")
     res = GetParams("res")
 
     try:
-
-        site = get_group_site(account.groups(), id_, get_group_by_id(account.groups(), id_)['displayName'])
+        
+        site = get_group_site(mod_o365_session[session].groups(), 
+                              group_, 
+                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName']
+                              )
 
         SetVar(res, site)
 
     except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "siteLists":
+
+    group_ = GetParams("groupId")
+    res = GetParams("res")
+
+    try:
+          
+        sp_lists = get_site_lists(mod_o365_session[session].groups(), 
+                              group_, 
+                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName']
+                              )
+
+        SetVar(res, sp_lists)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "listItems":
+    
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    res = GetParams("res")
+
+    try:
+        
+        sp_list = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_items()
+        
+        items = []
+        for item in sp_list:
+            # I modified the return statement of the 'get_item_by_id' method to bring the whole data linked to the item
+            data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(item.object_id)
+            items.append(data)
+        
+        
+        
+        SetVar(res, items)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "getItem":
+    
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemId = GetParams("itemId") 
+    res = GetParams("res")
+    
+    try:
+        
+        data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId) 
+
+        SetVar(res, data)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "createItem":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemInfo = GetParams("newData")
+    res = GetParams("res")
+
+    try:
+
+        new_item = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).create_list_item(eval(itemInfo))
+
+        SetVar(res, True)
+        
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "deleteItem":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemId = GetParams("itemId")
+    res = GetParams("res")
+
+    try:
+
+        del_item = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).delete_list_item(itemId)
+
+        SetVar(res, del_item)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "updateItem":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemId = GetParams("itemId")
+    itemInfo = GetParams("newData")
+    res = GetParams("res")
+
+    try:
+
+        data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId)
+        item_.update_fields(eval(itemInfo))
+        updated_item = item_.save_updates()
+        
+        SetVar(res, updated_item)
+
+    except Exception as e:
+        SetVar(res, False)
         print(traceback.format_exc())
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
