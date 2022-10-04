@@ -11,6 +11,7 @@ Connect to Outlook for O365.
   
 __Download__ and __install__ the content in 'modules' folder in Rocketbot path  
 
+
 ## How to use this module
 
 Before using this module, you need to register your app in the Azure App Registrations portal.
