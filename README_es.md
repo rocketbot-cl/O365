@@ -25,7 +25,7 @@ Antes de usar este modulo, es necesario registrar tu aplicación en el portal de
 7. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
 8. En la consola de Rocketbot se generara una url (Ejemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline ), copiarla y pegarla en su navegador.
 9. Aceptar el otorgamiento de permisos y devolvera una pantalla sin contenido. Copiar la URL (Ejemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) y pegarla en la consola de Rocketbot debajo de "Paste the authenticated url here:".
-10. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt
+10. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
 
 
 ## Overview
@@ -62,7 +62,37 @@ Lista todas las carpetas del correo
 Mover un email de una carpeta a otra
 
 11. Crear carpeta  
-Crea una nueva carpeta en el correo electrónico.  
+Crea una nueva carpeta en el correo electrónico.
+
+12. Obtener grupos  
+Obtener lista de Grupos
+
+13. Obtener grupo  
+Obtener Grupo por ID
+
+14. Obtener sitio  
+Obtener el sitio del Grupo
+
+15. Obtener listas  
+Obtener las listas del Sitio
+
+16. Crear Lista  
+Crear una nueva lista
+
+17. Obtener items de lista  
+Obtener los items de una lista
+
+18. Obtener Item  
+Obtener un item de una lista
+
+19. Crear Item  
+Crear un item dentro de una lista
+
+20. Borrar Item  
+Borrar un item de una lista
+
+21. Actalizar Item  
+Actualizar datos de un item  
 
 
 
@@ -78,6 +108,9 @@ Crea una nueva carpeta en el correo electrónico.
 ### Dependencies
 - [**bs4**](https://pypi.org/project/bs4/)
 ### License
+  
+![MIT](https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265)  
+[MIT](http://opensource.org/licenses/mit-license.ph)
   
 ![MIT](https://camo.githubusercontent.com/107590fac8cbd65071396bb4d04040f76cde5bde/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6d69742d626c75652e7376673f7374796c653d666c61742d737175617265)  
 [MIT](http://opensource.org/licenses/mit-license.ph)

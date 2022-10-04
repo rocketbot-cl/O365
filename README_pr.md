@@ -25,7 +25,7 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 7. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
 8. No console do Rocketbot será gerado um URL (Exemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline), copie e cole no seu navegador.
 9. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL (Exemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) e cole-o no console do Rocketbot abaixo de "Paste the authenticated url here:".
-10. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt
+10. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.
 
 
 ## Overview
@@ -62,7 +62,37 @@ Lista de pastas de e-mail
 Mover um email de uma pasta para outra
 
 11. Criar pasta  
-Cria uma nova pasta no e-mail  
+Cria uma nova pasta no e-mail
+
+12. Obter Grupos  
+Obter lista de Grupos
+
+13. Obter Grupos  
+Obter Grupo por ID
+
+14. Obter site  
+Obter o site do Grupo
+
+15. Obter listas  
+Obter as listas do Site
+
+16. Criar List  
+Criar uma nova lista
+
+17. Obter itens da lista  
+Obter itens de uma lista
+
+18. Obter Item  
+Obtenha um item de uma lista
+
+19. Criar Item  
+Criar um item dentro de uma lista
+
+20. Criar Item  
+Eliminar um item de uma lista
+
+21. Actualizar Item  
+Actualizar dados do item  
 
 
 

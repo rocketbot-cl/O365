@@ -26,7 +26,7 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 7. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
 8. No console do Rocketbot será gerado um URL (Exemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline), copie e cole no seu navegador.
 9. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL (Exemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) e cole-o no console do Rocketbot abaixo de "Paste the authenticated url here:".
-10. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt
+10. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.
 
 ## Descrição do comando
 
@@ -38,6 +38,7 @@ Conectar-se à instância do aplicativo O365
 |client_id||client_id|
 |client_secret||client_secret|
 |tenant_id||tenant_id|
+|session||session|
 
 ### Listar todos os e-mails
   
@@ -48,6 +49,7 @@ Listar todos os e-mails, você pode especificar um filtro
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
 |Atribuir à variável||Variable|
+|session||session|
 
 ### Ler e-mail para identificação
   
@@ -59,6 +61,7 @@ Ler e-mail para identificação
 |Baixar anexos||-|
 |Marcar como lido||-|
 |Atribuir à variável||Variable|
+|session||session|
 
 ### Enviar Email
   
@@ -71,6 +74,7 @@ Envia un email
 |Mensagem||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
+|session||session|
 
 ### Responder Email
   
@@ -82,6 +86,7 @@ Responder um email
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
 |Marcar como lido||-|
+|session||session|
 
 ### Encaminhar e-mail
   
@@ -95,6 +100,7 @@ Responder um email
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
 |Marcar como lido||-|
+|session||session|
 
 ### Baixar anexos
   
@@ -105,6 +111,7 @@ Baixe os arquivos anexados
 |Caminho para download do anexo||C:\User\Desktop|
 |Marcar como lido||-|
 |Atribuir à variável||Variable|
+|session||session|
 
 ### Marcarcomo não lido
   
@@ -113,6 +120,7 @@ Marcar um e-mail como não lido
 | --- | --- | --- |
 |Identificação do email||345|
 |Atribuir à variável||Variable|
+|session||session|
 
 ### Lista de pastas de e-mail
   
@@ -120,6 +128,7 @@ Lista de pastas de e-mail
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Atribuir à variável||Variable|
+|session||session|
 
 ### Mover e-mail
   
@@ -129,6 +138,7 @@ Mover um email de uma pasta para outra
 |Identificação do email||345|
 |Identificação da pasta||345|
 |Atribuir à variável||Variable|
+|session||session|
 
 ### Criar pasta
   
@@ -138,3 +148,104 @@ Cria uma nova pasta no e-mail
 |ID pasta Pai||Inbox or 345...|
 |Nome da nova pasta||new_folder|
 |Atribuir à variável||Variable|
+|session||session|
+
+### Obter Grupos
+  
+Obter lista de Grupos
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter Grupos
+  
+Obter Grupo por ID
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do grupo||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter site
+  
+Obter o site do Grupo
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do grupo||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter listas
+  
+Obter as listas do Site
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do grupo||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Criar List
+  
+Criar uma nova lista
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Dados da lista||{'displayName': 'example_name'}|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter itens da lista
+  
+Obter itens de uma lista
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Nome da lista||name|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter Item
+  
+Obtenha um item de uma lista
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Nome da lista||name|
+|ID do Item||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Criar Item
+  
+Criar um item dentro de uma lista
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Nome da lista||name|
+|Dados do Item||{'title': 'data'}|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Criar Item
+  
+Eliminar um item de uma lista
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Nome da lista||name|
+|ID do Item||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Actualizar Item
+  
+Actualizar dados do item
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Nome da lista||name|
+|ID do Item||ID|
+|Dados do Item||{'title': 'data'}|
+|Atribuir à variável||Variable|
+|session||session|
