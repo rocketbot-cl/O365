@@ -4,7 +4,7 @@
 
 # O365
   
-Connect to Outlook for O365.  
+Conectar con Outlook mediante O365.  
 
 ## Como instalar este módulo
   
@@ -34,64 +34,67 @@ Antes de usar este modulo, es necesario registrar tu aplicación en el portal de
 1. Conectar a O365  
 Conectar a una insancia de la aplicación de O365
 
-2. Lista todos los email  
-Lista todos los email, se puede especificar un filtro
+2. Listar todos los emails  
+Listar todos los emails, se puede especificar un filtro
 
-3. Leer email por ID  
+3. Listar emails no leidos  
+Listar emails no leidos
+
+4. Leer email por ID  
 Leer email por ID
 
-4. Enviar Email  
+5. Enviar Email  
 Envia un email
 
-5. Responder Email  
+6. Responder Email  
 Responder un email
 
-6. Reenviar Email  
+7. Reenviar Email  
 Reenviar un email
 
-7. Descargar adjuntos  
+8. Descargar adjuntos  
 Descarga los archivos adjuntos
 
-8. Marcar como no leido  
+9. Marcar como no leido  
 Marcar un email como no leido
 
-9. Listar carpetas del correo  
+10. Listar carpetas del correo  
 Lista todas las carpetas del correo
 
-10. Mover email  
+11. Mover email  
 Mover un email de una carpeta a otra
 
-11. Crear carpeta  
+12. Crear carpeta  
 Crea una nueva carpeta en el correo electrónico.
 
-12. Obtener grupos  
+13. Obtener grupos  
 Obtener lista de Grupos
 
-13. Obtener grupo  
+14. Obtener grupo  
 Obtener Grupo por ID
 
-14. Obtener sitio  
+15. Obtener sitio  
 Obtener el sitio del Grupo
 
-15. Obtener listas  
+16. Obtener listas  
 Obtener las listas del Sitio
 
-16. Crear Lista  
+17. Crear Lista  
 Crear una nueva lista
 
-17. Obtener items de lista  
+18. Obtener items de lista  
 Obtener los items de una lista
 
-18. Obtener Item  
+19. Obtener Item  
 Obtener un item de una lista
 
-19. Crear Item  
+20. Crear Item  
 Crear un item dentro de una lista
 
-20. Borrar Item  
+21. Borrar Item  
 Borrar un item de una lista
 
-21. Actalizar Item  
+22. Actalizar Item  
 Actualizar datos de un item  
 
 
