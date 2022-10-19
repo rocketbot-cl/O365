@@ -9,7 +9,7 @@ Conecte-se ao Outlook usando o O365.
 ![banner](imgs/Banner_O365.png)
 ## Como instalar este módulo
   
-__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot  
+__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot.
 
 ## Como usar este módulo
 
