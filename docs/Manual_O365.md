@@ -4,7 +4,7 @@
 
 # O365
   
-Connect to Outlook for O365.  
+Connect to Outlook using O365.  
   
 ![banner](imgs/Banner_O365.png)
 ## How to install this module
