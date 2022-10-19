@@ -90,6 +90,26 @@
             },
             "id": "session",
             "css": "col-md-6"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": {
+              "es": "-",
+              "en": "-",
+              "pr": "-"
+            },
+            "title": {
+              "es": "Conectarse a Sharepoint",
+              "en": "Connect to Sharepoint",
+              "pr": "Conectar ao Sharepoint"
+            },
+            "help": {
+              "es": "Por defecto la aplicación se copnecta a Outlook, tildar para agregar scopes de Sharepoint",
+              "en": "By default the application connects to Outlook, check to add Sharepoint scopes.",
+              "pr": "Por defeito, a aplicação liga-se ao Outlook, verifique para adicionar âmbitos de Sharepoint."
+            },
+            "id": "sharepoint",
+            "css": "col-md-6"
           }
         ]
       },

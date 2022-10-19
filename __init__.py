@@ -65,17 +65,24 @@ if module == "connect":
     client_id = GetParams("client_id")
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
+    sharepoint_ = GetParams('sharepoint')
 
     if session == '':
         filename = "o365_token.txt"
     else:
         filename = "o365_token_{s}.txt".format(s=session)
     
+    scopes_ = ['basic', 'message_all']
+    
+    if sharepoint_:
+        if eval(sharepoint_):
+            scopes_.append('sharepoint')
+    
     try:
         credentials = (client_id, client_secret)
         mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
         if not mod_o365_session[session].is_authenticated:
-            mod_o365_session[session].authenticate(scopes=['basic', 'message_all', 'sharepoint', 'si'])
+            mod_o365_session[session].authenticate(scopes=scopes_)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
