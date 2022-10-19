@@ -230,6 +230,36 @@ if module == "getAllEmails":
         PrintException()
         raise e
 
+if module == "getUnreadEmails":
+    folder = GetParams("folder")
+    res = GetParams("res")
+    limit = GetParams("limit")
+    
+    if OutlookWellKnowFolderNames.get(folder) == None:
+        pass
+    else:
+        folder = OutlookWellKnowFolderNames.get(folder)
+    
+    if folder == "" or folder == None:
+        folder = "Inbox"
+    
+    if limit and limit != "":
+        limit = int(limit)
+    else:
+        limit = None
+    
+    try:
+        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
+                                                             folder_id=folder).get_messages(limit=limit, query='isRead eq false')
+        list_object_id = []
+        for message in list_messages:
+            list_object_id.append(message.object_id)
+        SetVar(res, list_object_id)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
 if module == "readEmail":
     att_folder = GetParams("att_folder")
     download_att = GetParams("down")
@@ -349,7 +379,7 @@ if module == "moveEmail":
 
 if module == "getFolders":
     
-    from O365 import utils
+    from O365 import utilsqq
     import json
     
     folders = GetParams('res')
