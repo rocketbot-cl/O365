@@ -266,20 +266,47 @@ if module == "readEmail":
     res = GetParams("res")
     id_ = GetParams("id_")
     read = GetParams("markasread")
-        
+    
+    from mailparser import mailparser
+    import base64
+    
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-        files = []
+
+        att_q = int(message._Message__attachments.__str__().split(': ')[1])
         
-        for att in message.attachments:
-            files.append(att.__str__())
-            if download_att:
+        if message._Message__has_attachments == True:
+            files = []
+            for att in message.attachments:
+                files.append(att.name)
+            if (len(files) == att_q) and download_att:
+                print('API')
                 if eval(download_att) == True:
                     att.save(att_folder)
+                else:
+                    pass
+            else:
+                print('Parser')
+                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+                files = []
+                for att in parsed_mail.attachments:
+                    name = att['filename']
+                    name = name.replace("\r","").replace("\n","")
+                    files.append(name)
+                    
+                    if download_att:
+                        if eval(download_att) == True:
+                            if not os.path.isdir(att_folder):
+                                raise Exception('The path does not exist.')
+                            
+                            cont = base64.b64decode(att['payload'])
+                            with open(os.path.join(att_folder, name), 'wb') as file_:
+                                file_.write(cont)
+                                file_.close()
         
         # This is for the case of an email with no body
         body = BeautifulSoup(message.body, "html.parser").body
@@ -318,16 +345,41 @@ if module == "downAtt":
     id_ = GetParams("id_")
     read = GetParams("markasread")
     
+    from mailparser import mailparser
+    import base64
+    
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-        files = []
-        for att in message.attachments:
-            files.append(att)
-            att.save(att_folder)
+
+        att_q = int(message._Message__attachments.__str__().split(': ')[1])
+        
+        if message._Message__has_attachments == True:
+            files = []
+            for att in message.attachments:
+                files.append(att.name)
+            if len(files) == att_q:
+                print("API")
+                att.save(att_folder)
+            else:
+                print('Parser')
+                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+                files = []
+                for att in parsed_mail.attachments:
+                    name = att['filename']
+                    name = name.replace("\r","").replace("\n","")
+                    files.append(name)
+                    
+                    if not os.path.isdir(att_folder):
+                        raise Exception('The path does not exist.')
+                    
+                    cont = base64.b64decode(att['payload'])
+                    with open(os.path.join(att_folder, name), 'wb') as file_:
+                        file_.write(cont)
+                        file_.close()
         
         if read:
             if eval(read) == True:
