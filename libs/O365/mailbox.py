@@ -161,7 +161,7 @@ class Folder(ApiComponent):
                 return None
 
             message = response.json()
-
+            
             return self.message_constructor(parent=self,
                                             download_attachments=download_attachments,
                                             **{self._cloud_data_key: message})

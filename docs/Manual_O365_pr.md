@@ -4,12 +4,12 @@
 
 # O365
   
-Connect to Outlook for O365.  
+Conecte-se ao Outlook usando o O365.  
   
 ![banner](imgs/Banner_O365.png)
 ## Como instalar este módulo
   
-__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot  
+__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot.
 
 ## Como usar este módulo
 
@@ -39,6 +39,7 @@ Conectar-se à instância do aplicativo O365
 |client_secret||client_secret|
 |tenant_id||tenant_id|
 |session||session|
+|Conectar ao Sharepoint||-|
 
 ### Listar todos os e-mails
   
@@ -46,6 +47,16 @@ Listar todos os e-mails, você pode especificar um filtro
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Filter||subject eq 'compras'|
+|ID Pasta||Inbox|
+|Número de e-mails para listar||25|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Listar e-mails não lidos
+  
+Listar e-mails não lidos
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
 |Atribuir à variável||Variable|

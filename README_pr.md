@@ -4,11 +4,11 @@
 
 # O365
   
-Connect to Outlook for O365.  
+Conecte-se ao Outlook usando o O365.  
 
 ## Como instalar este módulo
   
-__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot  
+__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot.
 
 ## Como usar este módulo
 
@@ -37,61 +37,64 @@ Conectar-se à instância do aplicativo O365
 2. Listar todos os e-mails  
 Listar todos os e-mails, você pode especificar um filtro
 
-3. Ler e-mail para identificação  
+3. Listar e-mails não lidos  
+Listar e-mails não lidos
+
+4. Ler e-mail para identificação  
 Ler e-mail para identificação
 
-4. Enviar Email  
+5. Enviar Email  
 Envia un email
 
-5. Responder Email  
+6. Responder Email  
 Responder um email
 
-6. Encaminhar e-mail  
+7. Encaminhar e-mail  
 Responder um email
 
-7. Baixar anexos  
+8. Baixar anexos  
 Baixe os arquivos anexados
 
-8. Marcarcomo não lido  
+9. Marcarcomo não lido  
 Marcar um e-mail como não lido
 
-9. Lista de pastas de e-mail  
+10. Lista de pastas de e-mail  
 Lista de pastas de e-mail
 
-10. Mover e-mail  
+11. Mover e-mail  
 Mover um email de uma pasta para outra
 
-11. Criar pasta  
+12. Criar pasta  
 Cria uma nova pasta no e-mail
 
-12. Obter Grupos  
+13. Obter Grupos  
 Obter lista de Grupos
 
-13. Obter Grupos  
+14. Obter Grupos  
 Obter Grupo por ID
 
-14. Obter site  
+15. Obter site  
 Obter o site do Grupo
 
-15. Obter listas  
+16. Obter listas  
 Obter as listas do Site
 
-16. Criar List  
+17. Criar List  
 Criar uma nova lista
 
-17. Obter itens da lista  
+18. Obter itens da lista  
 Obter itens de uma lista
 
-18. Obter Item  
+19. Obter Item  
 Obtenha um item de uma lista
 
-19. Criar Item  
+20. Criar Item  
 Criar um item dentro de uma lista
 
-20. Criar Item  
+21. Criar Item  
 Eliminar um item de uma lista
 
-21. Actualizar Item  
+22. Actualizar Item  
 Actualizar dados do item  
 
 

@@ -65,17 +65,24 @@ if module == "connect":
     client_id = GetParams("client_id")
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
+    sharepoint_ = GetParams('sharepoint')
 
     if session == '':
         filename = "o365_token.txt"
     else:
         filename = "o365_token_{s}.txt".format(s=session)
     
+    scopes_ = ['basic', 'message_all']
+    
+    if sharepoint_:
+        if eval(sharepoint_):
+            scopes_.append('sharepoint')
+    
     try:
         credentials = (client_id, client_secret)
         mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
         if not mod_o365_session[session].is_authenticated:
-            mod_o365_session[session].authenticate(scopes=['basic', 'message_all', 'sharepoint', 'si'])
+            mod_o365_session[session].authenticate(scopes=scopes_)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -223,26 +230,83 @@ if module == "getAllEmails":
         PrintException()
         raise e
 
+if module == "getUnreadEmails":
+    folder = GetParams("folder")
+    res = GetParams("res")
+    limit = GetParams("limit")
+    
+    if OutlookWellKnowFolderNames.get(folder) == None:
+        pass
+    else:
+        folder = OutlookWellKnowFolderNames.get(folder)
+    
+    if folder == "" or folder == None:
+        folder = "Inbox"
+    
+    if limit and limit != "":
+        limit = int(limit)
+    else:
+        limit = None
+    
+    try:
+        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
+                                                             folder_id=folder).get_messages(limit=limit, query='isRead eq false')
+        list_object_id = []
+        for message in list_messages:
+            list_object_id.append(message.object_id)
+        SetVar(res, list_object_id)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
 if module == "readEmail":
     att_folder = GetParams("att_folder")
     download_att = GetParams("down")
     res = GetParams("res")
     id_ = GetParams("id_")
     read = GetParams("markasread")
-        
+    
+    from mailparser import mailparser
+    import base64
+    
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-        files = []
+
+        att_q = int(message._Message__attachments.__str__().split(': ')[1])
         
-        for att in message.attachments:
-            files.append(att.__str__())
-            if download_att:
+        if message._Message__has_attachments == True:
+            files = []
+            for att in message.attachments:
+                files.append(att.name)
+            if (len(files) == att_q) and download_att:
+                print('API')
                 if eval(download_att) == True:
                     att.save(att_folder)
+                else:
+                    pass
+            else:
+                print('Parser')
+                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+                files = []
+                for att in parsed_mail.attachments:
+                    name = att['filename']
+                    name = name.replace("\r","").replace("\n","")
+                    files.append(name)
+                    
+                    if download_att:
+                        if eval(download_att) == True:
+                            if not os.path.isdir(att_folder):
+                                raise Exception('The path does not exist.')
+                            
+                            cont = base64.b64decode(att['payload'])
+                            with open(os.path.join(att_folder, name), 'wb') as file_:
+                                file_.write(cont)
+                                file_.close()
         
         # This is for the case of an email with no body
         body = BeautifulSoup(message.body, "html.parser").body
@@ -281,16 +345,41 @@ if module == "downAtt":
     id_ = GetParams("id_")
     read = GetParams("markasread")
     
+    from mailparser import mailparser
+    import base64
+    
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-        files = []
-        for att in message.attachments:
-            files.append(att)
-            att.save(att_folder)
+
+        att_q = int(message._Message__attachments.__str__().split(': ')[1])
+        
+        if message._Message__has_attachments == True:
+            files = []
+            for att in message.attachments:
+                files.append(att.name)
+            if len(files) == att_q:
+                print("API")
+                att.save(att_folder)
+            else:
+                print('Parser')
+                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+                files = []
+                for att in parsed_mail.attachments:
+                    name = att['filename']
+                    name = name.replace("\r","").replace("\n","")
+                    files.append(name)
+                    
+                    if not os.path.isdir(att_folder):
+                        raise Exception('The path does not exist.')
+                    
+                    cont = base64.b64decode(att['payload'])
+                    with open(os.path.join(att_folder, name), 'wb') as file_:
+                        file_.write(cont)
+                        file_.close()
         
         if read:
             if eval(read) == True:
@@ -342,7 +431,7 @@ if module == "moveEmail":
 
 if module == "getFolders":
     
-    from O365 import utils
+    from O365 import utilsqq
     import json
     
     folders = GetParams('res')

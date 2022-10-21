@@ -4,13 +4,12 @@
 
 # O365
   
-Connect to Outlook for O365.  
+Connect to Outlook using O365.  
   
 ![banner](imgs/Banner_O365.png)
 ## How to install this module
   
-__Download__ and __install__ the content in 'modules' folder in Rocketbot path  
-
+__Download__ and __install__ the content in 'modules' folder in Rocketbot path.
 
 ## How to use this module
 
@@ -29,7 +28,6 @@ Before using this module, you need to register your app in the Azure App Registr
 9. Accept the permissions granting and it will return a screen without content. Copy the URL (Example: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) and paste it into Rocketbot console below "Paste the authenticated url here:".
 10. Press "enter" and if the operation was successful you will see in the console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." and a file will have been created with your credentials, in the root folder of Rocketbot, called o365_token.txt or o365_token_{session}.txt.
 
-
 ## Description of the commands
 
 ### Connect to O365
@@ -41,6 +39,7 @@ Connect to O365 application instance
 |client_secret||client_secret|
 |tenant_id||tenant_id|
 |session||session|
+|Connect to Sharepoint||-|
 
 ### List all emails
   
@@ -48,6 +47,16 @@ List all email, you can specify a filter
 |Parameters|Description|example|
 | --- | --- | --- |
 |Filter||subject eq 'compras'|
+|Folder ID||Inbox|
+|Number of emails to list||25|
+|Asign to variable||Variable|
+|session||session|
+
+### List unread emails
+  
+List unread emails
+|Parameters|Description|example|
+| --- | --- | --- |
 |Folder ID||Inbox|
 |Number of emails to list||25|
 |Asign to variable||Variable|

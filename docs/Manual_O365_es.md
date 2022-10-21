@@ -4,7 +4,7 @@
 
 # O365
   
-Connect to Outlook for O365.  
+Conectar con Outlook mediante O365.  
   
 ![banner](imgs/Banner_O365.png)
 ## Como instalar este módulo
@@ -30,8 +30,6 @@ Antes de usar este modulo, es necesario registrar tu aplicación en el portal de
 
 ## Descripción de los comandos
 
-## Descripción de los comandos
-
 ### Conectar a O365
   
 Conectar a una insancia de la aplicación de O365
@@ -41,13 +39,24 @@ Conectar a una insancia de la aplicación de O365
 |client_secret||client_secret|
 |tenant_id||tenant_id|
 |session||session|
+|Conectarse a Sharepoint||-|
 
-### Lista todos los email
+### Listar todos los emails
   
-Lista todos los email, se puede especificar un filtro
+Listar todos los emails, se puede especificar un filtro
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Filtro||subject eq 'compras'|
+|ID Carpeta||Inbox|
+|Cantidad de emails a listar||25|
+|Asignar a variable||Variable|
+|session||session|
+
+### Listar emails no leidos
+  
+Listar emails no leidos
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
 |Asignar a variable||Variable|
