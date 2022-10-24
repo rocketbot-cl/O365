@@ -101,7 +101,6 @@ if module == "sendEmail":
         if not to_:
             raise Exception("'To' field must not be empty.")
         list_to = to_.split(",")
-        list_to = to_.split(",")
         message.to.add(list_to)
         if cc:
             list_cc = cc.split(",")
@@ -124,6 +123,7 @@ if module == "sendEmail":
 
 if module == "replyEmail":
     id_ = GetParams("id_")
+    cc = GetParams("cc")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
@@ -135,6 +135,9 @@ if module == "replyEmail":
     try:
         message = mod_o365_session[session].mailbox().get_message(id_)
         reply = message.reply()
+        if cc:
+            list_cc = cc.split(",")
+            reply.cc.add(list_cc)
         reply.body = body
         
         if attached_file:
@@ -266,6 +269,7 @@ if module == "readEmail":
     res = GetParams("res")
     id_ = GetParams("id_")
     read = GetParams("markasread")
+    not_parsed = GetParams("not_parsed")
     
     from mailparser import mailparser
     import base64
@@ -313,12 +317,15 @@ if module == "readEmail":
                                 file_.close()
         
         # This is for the case of an email with no body
-        body = BeautifulSoup(message.body, "html.parser").body
-        if body == None:
+        html_body = BeautifulSoup(message.body, "html.parser").body
+        if html_body == None:
             pass
         else:
-            body = body.get_text()
-        
+            if not not_parsed or eval(not_parsed) == False:
+                body = html_body.get_text()
+            else:
+                body = html_body
+                    
         message_all = {
             # Recipient object
             'sender': message.sender.address,

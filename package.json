@@ -429,6 +429,26 @@
             "css": "col-md-6"
           },
           {
+            "type": "checkbox",
+            "placeholder": {
+              "es": "",
+              "en": "",
+              "pr": ""
+            },
+            "title": {
+              "es": "Cuerpo de email sin parsear",
+              "en": "Email raw body",
+              "pr": "Corpo do e-mail não analisado"
+            },
+            "description": {
+              "es": "Si se marca esta casillaa, devolvera el cuerpo del email sin parsear.",
+              "en": "If this box is marked, will bring the raw version of email body.",
+              "pr": "Si se marca esta casilla, retornará o corpo do e-mail sem analisar."
+            },
+            "id": "not_parsed",
+            "css": "col-md-12"
+          },
+          {
             "type": "input",
             "placeholder": "Variable",
             "title": {
@@ -653,6 +673,22 @@
               "pr": "Identificação do email"
             },
             "id": "id_",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "to1@mail.com, to3@mail.com",
+            "title": {
+              "es": "Cc:",
+              "en": "Cc:",
+              "pr": "Cc:"
+            },
+            "help": {
+              "es": "Para varios destinatarios separar por coma",
+              "en": "For multiple recipients, comma separated",
+              "pr": "Para vários destinatários separados por vírgula"
+            },
+            "id": "cc",
             "css": "col-md-6"
           },
           {
