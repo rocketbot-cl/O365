@@ -4,12 +4,12 @@
 
 # O365
   
-Connect to Outlook using O365.  
+Connect to Outlook through O365.  
   
 ![banner](imgs/Banner_O365.png)
 ## How to install this module
   
-__Download__ and __install__ the content in 'modules' folder in Rocketbot path.
+__Download__ and __install__ the content in 'modules' folder in Rocketbot path  
 
 ## How to use this module
 
@@ -54,7 +54,7 @@ List all email, you can specify a filter
 
 ### List unread emails
   
-List unread emails
+List all unread emails from your mailbox
 |Parameters|Description|example|
 | --- | --- | --- |
 |Folder ID||Inbox|
@@ -64,19 +64,20 @@ List unread emails
 
 ### Read email for ID
   
-Read email for ID
+Read an email usign its ID
 |Parameters|Description|example|
 | --- | --- | --- |
 |Email ID||345|
 |Path for download attachment||C:\User\Desktop|
 |Download attachments||-|
 |Mark as read||-|
+|Email HTML body|If this box is marked, will bring the HTML version of email body.||
 |Asign to variable||Variable|
 |session||session|
 
 ### Send Email
   
-Send email
+Send an email
 |Parameters|Description|example|
 | --- | --- | --- |
 |To||to@mail.com, to2@mail.com|
@@ -89,10 +90,11 @@ Send email
 
 ### Reply Email
   
-Reply an email
+Reply an email using its ID
 |Parameters|Description|example|
 | --- | --- | --- |
 |Email ID||345|
+|Cc||to1@mail.com, to3@mail.com|
 |Body||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
 |Folder (Multiple files)||C:\User\Desktop\Files|
@@ -101,13 +103,13 @@ Reply an email
 
 ### Forward Email
   
-Forward an email
+Forward an email using its ID
 |Parameters|Description|example|
 | --- | --- | --- |
 |Email ID||345|
 |To||to@mail.com, to2@mail.com|
 |Cc||to1@mail.com, to3@mail.com|
-|Body||Esto es una prueba|
+|Body||This is a test.|
 |Attached File||C:\User\Desktop\test.txt|
 |Folder (Multiple files)||C:\User\Desktop\Files|
 |Mark as read||-|
@@ -115,7 +117,7 @@ Forward an email
 
 ### Download attachments
   
-Download attached files
+Download attached files from an email
 |Parameters|Description|example|
 | --- | --- | --- |
 |Email ID||345|
@@ -163,7 +165,7 @@ Creates a new folder in the email
 
 ### Get groups
   
-Get list of Groups
+Get the list of Groups that the account is part of
 |Parameters|Description|example|
 | --- | --- | --- |
 |Asign to variable||Variable|
@@ -171,7 +173,7 @@ Get list of Groups
 
 ### Get group
   
-Get Group by ID
+Get Group by its ID
 |Parameters|Description|example|
 | --- | --- | --- |
 |Group ID||ID|
@@ -180,7 +182,7 @@ Get Group by ID
 
 ### Get site
   
-Get site of the Group
+Get the site of the Group
 |Parameters|Description|example|
 | --- | --- | --- |
 |Group ID||ID|
@@ -189,7 +191,7 @@ Get site of the Group
 
 ### Get site lists
   
-Get lists of the Site
+Get the lists of the Site
 |Parameters|Description|example|
 | --- | --- | --- |
 |Group ID||ID|
@@ -208,7 +210,7 @@ Create a new list
 
 ### Get list Items
   
-Get the items of a list
+Get the items of a List using its name
 |Parameters|Description|example|
 | --- | --- | --- |
 |Site ID||ID|
@@ -218,7 +220,7 @@ Get the items of a list
 
 ### Get Item
   
-Get an item from a list
+Get an Item, using its ID, from a List
 |Parameters|Description|example|
 | --- | --- | --- |
 |Site ID||ID|
@@ -229,7 +231,7 @@ Get an item from a list
 
 ### Create Item
   
-Create an item in a list
+Create an Item in a List
 |Parameters|Description|example|
 | --- | --- | --- |
 |Site ID||ID|
@@ -240,7 +242,7 @@ Create an item in a list
 
 ### Delete Item
   
-Delete an item from a list
+Delete an Item, using its ID, from a List
 |Parameters|Description|example|
 | --- | --- | --- |
 |Site ID||ID|
@@ -251,7 +253,7 @@ Delete an item from a list
 
 ### Update Item
   
-Update an item data
+Update an Item data using its ID
 |Parameters|Description|example|
 | --- | --- | --- |
 |Site ID||ID|

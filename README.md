@@ -4,11 +4,11 @@
 
 # O365
   
-Connect to Outlook using O365.  
+Connect to Outlook through O365.  
 
 ## How to install this module
   
-__Download__ and __install__ the content in 'modules' folder in Rocketbot path.
+__Download__ and __install__ the content in 'modules' folder in Rocketbot path  
 
 ## How to use this module
 
@@ -38,22 +38,22 @@ Connect to O365 application instance
 List all email, you can specify a filter
 
 3. List unread emails  
-List unread emails
+List all unread emails from your mailbox
 
 4. Read email for ID  
-Read email for ID
+Read an email usign its ID
 
 5. Send Email  
-Send email
+Send an email
 
 6. Reply Email  
-Reply an email
+Reply an email using its ID
 
 7. Forward Email  
-Forward an email
+Forward an email using its ID
 
 8. Download attachments  
-Download attached files
+Download attached files from an email
 
 9. Mark as unread  
 Mark an email as unread
@@ -68,34 +68,34 @@ Move an email from one folder to another
 Creates a new folder in the email
 
 13. Get groups  
-Get list of Groups
+Get the list of Groups that the account is part of
 
 14. Get group  
-Get Group by ID
+Get Group by its ID
 
 15. Get site  
-Get site of the Group
+Get the site of the Group
 
 16. Get site lists  
-Get lists of the Site
+Get the lists of the Site
 
 17. Create List  
 Create a new list
 
 18. Get list Items  
-Get the items of a list
+Get the items of a List using its name
 
 19. Get Item  
-Get an item from a list
+Get an Item, using its ID, from a List
 
 20. Create Item  
-Create an item in a list
+Create an Item in a List
 
 21. Delete Item  
-Delete an item from a list
+Delete an Item, using its ID, from a List
 
 22. Update Item  
-Update an item data  
+Update an Item data using its ID  
 
 
 

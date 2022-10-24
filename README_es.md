@@ -38,22 +38,22 @@ Conectar a una insancia de la aplicación de O365
 Listar todos los emails, se puede especificar un filtro
 
 3. Listar emails no leidos  
-Listar emails no leidos
+Listar todos los emails no leidos de tu casilla de correo
 
 4. Leer email por ID  
-Leer email por ID
+Leer un email utilizando su ID
 
 5. Enviar Email  
 Envia un email
 
 6. Responder Email  
-Responder un email
+Responder un email utilizando su ID
 
 7. Reenviar Email  
-Reenviar un email
+Reenviar un email utilizando su ID
 
 8. Descargar adjuntos  
-Descarga los archivos adjuntos
+Descarga los archivos adjuntos de un correo
 
 9. Marcar como no leido  
 Marcar un email como no leido
@@ -68,10 +68,10 @@ Mover un email de una carpeta a otra
 Crea una nueva carpeta en el correo electrónico.
 
 13. Obtener grupos  
-Obtener lista de Grupos
+Obtener lista de Grupos a los que pertenece la cuenta
 
 14. Obtener grupo  
-Obtener Grupo por ID
+Obtener Grupo por su ID
 
 15. Obtener sitio  
 Obtener el sitio del Grupo
@@ -83,19 +83,19 @@ Obtener las listas del Sitio
 Crear una nueva lista
 
 18. Obtener items de lista  
-Obtener los items de una lista
+Obtener los items de una Lista utilizando su nombre
 
 19. Obtener Item  
-Obtener un item de una lista
+Obtener un Item, utilizando su ID, de una Lista
 
 20. Crear Item  
-Crear un item dentro de una lista
+Crear un Item dentro de una Lista
 
 21. Borrar Item  
-Borrar un item de una lista
+Borrar un Item, usando su ID, de una Lista
 
 22. Actalizar Item  
-Actualizar datos de un item  
+Actualizar datos de un Item usando si ID  
 
 
 

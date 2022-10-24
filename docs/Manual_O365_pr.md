@@ -54,7 +54,7 @@ Listar todos os e-mails, você pode especificar um filtro
 
 ### Listar e-mails não lidos
   
-Listar e-mails não lidos
+Liste todos os e-mails não lidos da sua caixa de correio
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID Pasta||Inbox|
@@ -64,13 +64,14 @@ Listar e-mails não lidos
 
 ### Ler e-mail para identificação
   
-Ler e-mail para identificação
+Ler um e-mail usando seu ID
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Identificação do email||345|
 |Caminho para download do anexo||C:\User\Desktop|
 |Baixar anexos||-|
 |Marcar como lido||-|
+|Corpo do e-mail HTML|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão HTML.||
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -89,23 +90,10 @@ Envia un email
 
 ### Responder Email
   
-Responder um email
+Responder um email usando seu ID
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Identificação do email||345|
-|Mensagem||Esto es una prueba|
-|Attached File||C:\User\Desktop\test.txt|
-|Pasta (vários arquivos)||C:\User\Desktop\Files|
-|Marcar como lido||-|
-|session||session|
-
-### Encaminhar e-mail
-  
-Responder um email
-|Parâmetros|Descrição|exemplo|
-| --- | --- | --- |
-|Identificação do email||345|
-|Para||to@mail.com, to2@mail.com|
 |Cc||to1@mail.com, to3@mail.com|
 |Mensagem||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
@@ -113,9 +101,23 @@ Responder um email
 |Marcar como lido||-|
 |session||session|
 
+### Reenviar um e-mail
+  
+Reenviar um e-mail usando seu ID
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|Identificação do email||345|
+|Para||to@mail.com, to2@mail.com|
+|Cc||to1@mail.com, to3@mail.com|
+|Mensagem||This is a test.|
+|Attached File||C:\User\Desktop\test.txt|
+|Pasta (vários arquivos)||C:\User\Desktop\Files|
+|Marcar como lido||-|
+|session||session|
+
 ### Baixar anexos
   
-Baixe os arquivos anexados
+Baixar anexos de e-mail
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Identificação do email||345|
@@ -163,7 +165,7 @@ Cria uma nova pasta no e-mail
 
 ### Obter Grupos
   
-Obter lista de Grupos
+Obter lista de Grupos aos quais a conta pertence
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Atribuir à variável||Variable|
@@ -208,7 +210,7 @@ Criar uma nova lista
 
 ### Obter itens da lista
   
-Obter itens de uma lista
+Obter os itens de uma Lista usando seu nome
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
@@ -218,7 +220,7 @@ Obter itens de uma lista
 
 ### Obter Item
   
-Obtenha um item de uma lista
+Obtenha um Item, usando seu ID, de uma lista
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
@@ -229,7 +231,7 @@ Obtenha um item de uma lista
 
 ### Criar Item
   
-Criar um item dentro de uma lista
+Criar um Item dentro de uma Lista
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
@@ -240,7 +242,7 @@ Criar um item dentro de uma lista
 
 ### Criar Item
   
-Eliminar um item de uma lista
+Eliminar um Item, usando seu ID, de uma Lista
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
@@ -251,7 +253,7 @@ Eliminar um item de uma lista
 
 ### Actualizar Item
   
-Actualizar dados do item
+Actualizar dados do Item usando seu ID
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|

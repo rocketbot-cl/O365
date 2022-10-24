@@ -1,6 +1,6 @@
 {
   "author": "Nicolas Liendro - Juan Siro",
-  "description": "Connect to Outlook for O365.",
+  "description": "Connect to Outlook through O365.",
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
   "version": "0.4",
   "license": "MIT",
@@ -246,19 +246,19 @@
     {
       "en": {
         "title": "List unread emails",
-        "description": "List unread emails",
+        "description": "List all unread emails from your mailbox",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Listar emails no leidos",
-        "description": "Listar emails no leidos",
+        "description": "Listar todos los emails no leidos de tu casilla de correo",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Listar e-mails não lidos",
-        "description": "Listar e-mails não lidos",
+        "description": "Liste todos os e-mails não lidos da sua caixa de correio",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -347,19 +347,19 @@
     {
       "en": {
         "title": "Read email for ID",
-        "description": "Read email for ID",
+        "description": "Read an email usign its ID",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Leer email por ID",
-        "description": "Leer email por ID",
+        "description": "Leer un email utilizando su ID",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Ler e-mail para identificação",
-        "description": "Ler e-mail para identificação",
+        "description": "Ler um e-mail usando seu ID",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -436,14 +436,14 @@
               "pr": ""
             },
             "title": {
-              "es": "Cuerpo de email sin parsear",
-              "en": "Email raw body",
-              "pr": "Corpo do e-mail não analisado"
+              "es": "Cuerpo de email en HTML",
+              "en": "Email HTML body",
+              "pr": "Corpo do e-mail HTML"
             },
             "description": {
-              "es": "Si se marca esta casillaa, devolvera el cuerpo del email sin parsear.",
-              "en": "If this box is marked, will bring the raw version of email body.",
-              "pr": "Si se marca esta casilla, retornará o corpo do e-mail sem analisar."
+              "es": "Si se marca esta casilla, devolvera el cuerpo del email en versión HTML.",
+              "en": "If this box is marked, will bring the HTML version of email body.",
+              "pr": "Se esta caixa estiver marcada, retornará o corpo do e-mail na versão HTML."
             },
             "id": "not_parsed",
             "css": "col-md-12"
@@ -498,7 +498,7 @@
     {
       "en": {
         "title": "Send Email",
-        "description": "Send email",
+        "description": "Send an email",
         "title_options": "Select Option",
         "options": null
       },
@@ -645,19 +645,19 @@
     {
       "en": {
         "title": "Reply Email",
-        "description": "Reply an email",
+        "description": "Reply an email using its ID",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Responder Email",
-        "description": "Responder un email",
+        "description": "Responder un email utilizando su ID",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Responder Email",
-        "description": "Responder um email",
+        "description": "Responder um email usando seu ID",
         "title_options": "Seleccione una opción",
         "options": null
       },
@@ -796,19 +796,19 @@
     {
       "en": {
         "title": "Forward Email",
-        "description": "Forward an email",
+        "description": "Forward an email using its ID",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Reenviar Email",
-        "description": "Reenviar un email",
+        "description": "Reenviar un email utilizando su ID",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
-        "title": "Encaminhar e-mail",
-        "description": "Responder um email",
+        "title": "Reenviar um e-mail",
+        "description": "Reenviar um e-mail usando seu ID",
         "title_options": "Reenviar um e-mail",
         "options": null
       },
@@ -860,7 +860,7 @@
           },
           {
             "type": "textarea",
-            "placeholder": "Esto es una prueba",
+            "placeholder": "This is a test.",
             "title": {
               "es": "Mensaje:",
               "en": "Body:",
@@ -963,19 +963,19 @@
     {
       "en": {
         "title": "Download attachments",
-        "description": "Download attached files",
+        "description": "Download attached files from an email",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Descargar adjuntos",
-        "description": "Descarga los archivos adjuntos",
+        "description": "Descarga los archivos adjuntos de un correo",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Baixar anexos",
-        "description": "Baixe os arquivos anexados",
+        "description": "Baixar anexos de e-mail",
         "title_options": "Selecione uma opção",
         "options": null
       },
@@ -1415,19 +1415,19 @@
     {
       "en": {
         "title": "Get groups",
-        "description": "Get list of Groups",
+        "description": "Get the list of Groups that the account is part of",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Obtener grupos",
-        "description": "Obtener lista de Grupos",
+        "description": "Obtener lista de Grupos a los que pertenece la cuenta",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Obter Grupos",
-        "description": "Obter lista de Grupos",
+        "description": "Obter lista de Grupos aos quais a conta pertence",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -1484,13 +1484,13 @@
     {
       "en": {
         "title": "Get group",
-        "description": "Get Group by ID",
+        "description": "Get Group by its ID",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Obtener grupo",
-        "description": "Obtener Grupo por ID",
+        "description": "Obtener Grupo por su ID",
         "title_options": "Seleccione una opción",
         "options": null
       },
@@ -1564,7 +1564,7 @@
     {
       "en": {
         "title": "Get site",
-        "description": "Get site of the Group",
+        "description": "Get the site of the Group",
         "title_options": "Select Option",
         "options": null
       },
@@ -1644,7 +1644,7 @@
     {
       "en": {
         "title": "Get site lists",
-        "description": "Get lists of the Site",
+        "description": "Get the lists of the Site",
         "title_options": "Select Option",
         "options": null
       },
@@ -1815,19 +1815,19 @@
     {
       "en": {
         "title": "Get list Items",
-        "description": "Get the items of a list",
+        "description": "Get the items of a List using its name",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Obtener items de lista",
-        "description": "Obtener los items de una lista",
+        "description": "Obtener los items de una Lista utilizando su nombre",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Obter itens da lista",
-        "description": "Obter itens de uma lista",
+        "description": "Obter os itens de uma Lista usando seu nome",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -1906,19 +1906,19 @@
     {
       "en": {
         "title": "Get Item",
-        "description": "Get an item from a list",
+        "description": "Get an Item, using its ID, from a List",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Obtener Item",
-        "description": "Obtener un item de una lista",
+        "description": "Obtener un Item, utilizando su ID, de una Lista",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Obter Item",
-        "description": "Obtenha um item de uma lista",
+        "description": "Obtenha um Item, usando seu ID, de uma lista",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -2008,19 +2008,19 @@
     {
       "en": {
         "title": "Create Item",
-        "description": "Create an item in a list",
+        "description": "Create an Item in a List",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Crear Item",
-        "description": "Crear un item dentro de una lista",
+        "description": "Crear un Item dentro de una Lista",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Criar Item",
-        "description": "Criar um item dentro de uma lista",
+        "description": "Criar um Item dentro de uma Lista",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -2110,19 +2110,19 @@
     {
       "en": {
         "title": "Delete Item",
-        "description": "Delete an item from a list",
+        "description": "Delete an Item, using its ID, from a List",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Borrar Item",
-        "description": "Borrar un item de una lista",
+        "description": "Borrar un Item, usando su ID, de una Lista",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Criar Item",
-        "description": "Eliminar um item de uma lista",
+        "description": "Eliminar um Item, usando seu ID, de uma Lista",
         "title_options": "Selecionar opção",
         "options": null
       },
@@ -2212,19 +2212,19 @@
     {
       "en": {
         "title": "Update Item",
-        "description": "Update an item data",
+        "description": "Update an Item data using its ID",
         "title_options": "Select Option",
         "options": null
       },
       "es": {
         "title": "Actalizar Item",
-        "description": "Actualizar datos de un item",
+        "description": "Actualizar datos de un Item usando si ID",
         "title_options": "Seleccione una opción",
         "options": null
       },
       "pr": {
         "title": "Actualizar Item",
-        "description": "Actualizar dados do item",
+        "description": "Actualizar dados do Item usando seu ID",
         "title_options": "Selecionar opção",
         "options": null
       },
