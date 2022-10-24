@@ -276,20 +276,24 @@ if module == "readEmail":
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-
+        # Get number of attachments using API
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
         
         if message._Message__has_attachments == True:
             files = []
+            files_down = []
+            # Get actual recognized attachments and compare the quantitiy with the theorical one
             for att in message.attachments:
                 files.append(att.name)
+                files_down.append(att)
             if (len(files) == att_q) and download_att:
                 print('API')
+                # If all the conditions are fulfilled then it download the attachments usind the API
                 if eval(download_att) == True:
-                    att.save(att_folder)
-                else:
-                    pass
+                    for att_down in files_down:
+                        att_down.save(att_folder)
             else:
+                # If the condition is not fulfilled, then it goes through the alternative method using the Mail Parser library
                 print('Parser')
                 parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
                 files = []
