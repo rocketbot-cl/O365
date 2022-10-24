@@ -360,14 +360,19 @@ if module == "downAtt":
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
 
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
-        
+                     
         if message._Message__has_attachments == True:
             files = []
+            files_down = []
+            # Get actual recognized attachments and compare the quantitiy with the theorical one
             for att in message.attachments:
                 files.append(att.name)
-            if len(files) == att_q:
-                print("API")
-                att.save(att_folder)
+                files_down.append(att)
+            if (len(files) == att_q):
+                print('API')
+                # If the conditios is fulfilled then it download the attachments usind the API
+                for att_down in files_down:
+                    att_down.save(att_folder)
             else:
                 print('Parser')
                 parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
