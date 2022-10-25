@@ -318,6 +318,26 @@ if module == "readEmail":
         
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
+        
+        links = {}
+        for a in html_body.find_all("a"):
+            # First checks the text of the a tag    
+            if a.get_text():
+                key = a.get_text()
+            # If None, then checks if the a tag has 'title'
+            elif a.get("title"):
+                key = a["title"]
+            # If also None, the it gives a generic key
+            else:
+                key = 'URL'
+            
+            # Finally it checks if the key already exists and adds a '(n°)' at the end
+            x = int()
+            while key in links.keys():
+                x += 1
+                key = key + '(' + str(x) + ')'    
+            links[key]= a["href"]
+            
         if html_body == None:
             pass
         else:
@@ -336,6 +356,7 @@ if module == "readEmail":
             'sent_time': message.sent.strftime('%d-%m-%Y %H:%M'),
             'received': message.received.strftime('%d-%m-%Y %H:%M'),
             'body': body,
+            'links': links,
             'files': files
         }
         
