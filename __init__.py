@@ -321,12 +321,12 @@ if module == "readEmail":
         
         links = {}
         for a in html_body.find_all("a"):
-            # First checks if the a tag has 'title'
-            if a.get("title"):
-                key = a["title"]
-            # If None, then gets the text of the a tag    
-            elif a.get_text():
+            # First checks the text of the a tag    
+            if a.get_text():
                 key = a.get_text()
+            # If None, then checks if the a tag has 'title'
+            elif a.get("title"):
+                key = a["title"]
             # If also None, the it gives a generic key
             else:
                 key = 'URL'
