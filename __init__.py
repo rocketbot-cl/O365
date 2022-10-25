@@ -101,7 +101,6 @@ if module == "sendEmail":
         if not to_:
             raise Exception("'To' field must not be empty.")
         list_to = to_.split(",")
-        list_to = to_.split(",")
         message.to.add(list_to)
         if cc:
             list_cc = cc.split(",")
@@ -124,6 +123,7 @@ if module == "sendEmail":
 
 if module == "replyEmail":
     id_ = GetParams("id_")
+    cc = GetParams("cc")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
@@ -135,6 +135,9 @@ if module == "replyEmail":
     try:
         message = mod_o365_session[session].mailbox().get_message(id_)
         reply = message.reply()
+        if cc:
+            list_cc = cc.split(",")
+            reply.cc.add(list_cc)
         reply.body = body
         
         if attached_file:
@@ -266,6 +269,7 @@ if module == "readEmail":
     res = GetParams("res")
     id_ = GetParams("id_")
     read = GetParams("markasread")
+    not_parsed = GetParams("not_parsed")
     
     from mailparser import mailparser
     import base64
@@ -276,20 +280,24 @@ if module == "readEmail":
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-
+        # Get number of attachments using API
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
         
         if message._Message__has_attachments == True:
             files = []
+            files_down = []
+            # Get actual recognized attachments and compare the quantitiy with the theorical one
             for att in message.attachments:
                 files.append(att.name)
+                files_down.append(att)
             if (len(files) == att_q) and download_att:
                 print('API')
+                # If all the conditions are fulfilled then it download the attachments usind the API
                 if eval(download_att) == True:
-                    att.save(att_folder)
-                else:
-                    pass
+                    for att_down in files_down:
+                        att_down.save(att_folder)
             else:
+                # If the condition is not fulfilled, then it goes through the alternative method using the Mail Parser library
                 print('Parser')
                 parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
                 files = []
@@ -309,12 +317,15 @@ if module == "readEmail":
                                 file_.close()
         
         # This is for the case of an email with no body
-        body = BeautifulSoup(message.body, "html.parser").body
-        if body == None:
+        html_body = BeautifulSoup(message.body, "html.parser").body
+        if html_body == None:
             pass
         else:
-            body = body.get_text()
-        
+            if not not_parsed or eval(not_parsed) == False:
+                body = html_body.get_text()
+            else:
+                body = html_body
+                    
         message_all = {
             # Recipient object
             'sender': message.sender.address,
@@ -356,14 +367,19 @@ if module == "downAtt":
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
 
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
-        
+                     
         if message._Message__has_attachments == True:
             files = []
+            files_down = []
+            # Get actual recognized attachments and compare the quantitiy with the theorical one
             for att in message.attachments:
                 files.append(att.name)
-            if len(files) == att_q:
-                print("API")
-                att.save(att_folder)
+                files_down.append(att)
+            if (len(files) == att_q):
+                print('API')
+                # If the conditios is fulfilled then it download the attachments usind the API
+                for att_down in files_down:
+                    att_down.save(att_folder)
             else:
                 print('Parser')
                 parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())

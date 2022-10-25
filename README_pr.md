@@ -17,7 +17,7 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 1. Entre no portal do Azure (Registro de Aplicativos: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade ).
 2. Selecione "Novo registro".
 3. Em "Tipos de conta compatíveis" suportados, escolha:
-    uma. "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = comum
+    a. "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = common
     b. "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam ID de locatário específico do aplicativo.
 4. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
 5. Copie o ID do aplicativo (cliente). Você vai precisar desse valor.
@@ -38,22 +38,22 @@ Conectar-se à instância do aplicativo O365
 Listar todos os e-mails, você pode especificar um filtro
 
 3. Listar e-mails não lidos  
-Listar e-mails não lidos
+Liste todos os e-mails não lidos da sua caixa de correio
 
 4. Ler e-mail para identificação  
-Ler e-mail para identificação
+Ler um e-mail usando seu ID
 
 5. Enviar Email  
 Envia un email
 
 6. Responder Email  
-Responder um email
+Responder um email usando seu ID
 
-7. Encaminhar e-mail  
-Responder um email
+7. Reenviar um e-mail  
+Reenviar um e-mail usando seu ID
 
 8. Baixar anexos  
-Baixe os arquivos anexados
+Baixar anexos de e-mail
 
 9. Marcarcomo não lido  
 Marcar um e-mail como não lido
@@ -68,7 +68,7 @@ Mover um email de uma pasta para outra
 Cria uma nova pasta no e-mail
 
 13. Obter Grupos  
-Obter lista de Grupos
+Obter lista de Grupos aos quais a conta pertence
 
 14. Obter Grupos  
 Obter Grupo por ID
@@ -83,19 +83,19 @@ Obter as listas do Site
 Criar uma nova lista
 
 18. Obter itens da lista  
-Obter itens de uma lista
+Obter os itens de uma Lista usando seu nome
 
 19. Obter Item  
-Obtenha um item de uma lista
+Obtenha um Item, usando seu ID, de uma lista
 
 20. Criar Item  
-Criar um item dentro de uma lista
+Criar um Item dentro de uma Lista
 
 21. Criar Item  
-Eliminar um item de uma lista
+Eliminar um Item, usando seu ID, de uma Lista
 
 22. Actualizar Item  
-Actualizar dados do item  
+Actualizar dados do Item usando seu ID  
 
 
 

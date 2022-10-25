@@ -54,7 +54,7 @@ Listar todos los emails, se puede especificar un filtro
 
 ### Listar emails no leidos
   
-Listar emails no leidos
+Listar todos los emails no leidos de tu casilla de correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID Carpeta||Inbox|
@@ -64,13 +64,14 @@ Listar emails no leidos
 
 ### Leer email por ID
   
-Leer email por ID
+Leer un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
 |Ruta para descargar adjuntos||C:\User\Desktop|
 |Descargar adjuntos||-|
 |Marcar como leído||-|
+|Cuerpo de email en HTML|Si se marca esta casilla, devolvera el cuerpo del email en versión HTML.||
 |Asignar a variable||Variable|
 |session||session|
 
@@ -89,10 +90,11 @@ Envia un email
 
 ### Responder Email
   
-Responder un email
+Responder un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
+|Cc||to1@mail.com, to3@mail.com|
 |Mensaje||Esto es una prueba|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
@@ -101,13 +103,13 @@ Responder un email
 
 ### Reenviar Email
   
-Reenviar un email
+Reenviar un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
 |Para||to@mail.com, to2@mail.com|
 |Cc||to1@mail.com, to3@mail.com|
-|Mensaje||Esto es una prueba|
+|Mensaje||This is a test.|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
 |Marcar como leído||-|
@@ -115,7 +117,7 @@ Reenviar un email
 
 ### Descargar adjuntos
   
-Descarga los archivos adjuntos
+Descarga los archivos adjuntos de un correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
@@ -163,7 +165,7 @@ Crea una nueva carpeta en el correo electrónico.
 
 ### Obtener grupos
   
-Obtener lista de Grupos
+Obtener lista de Grupos a los que pertenece la cuenta
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Asignar a variable||Variable|
@@ -171,7 +173,7 @@ Obtener lista de Grupos
 
 ### Obtener grupo
   
-Obtener Grupo por ID
+Obtener Grupo por su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Grupo||ID|
@@ -208,7 +210,7 @@ Crear una nueva lista
 
 ### Obtener items de lista
   
-Obtener los items de una lista
+Obtener los items de una Lista utilizando su nombre
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Sitio||ID|
@@ -218,7 +220,7 @@ Obtener los items de una lista
 
 ### Obtener Item
   
-Obtener un item de una lista
+Obtener un Item, utilizando su ID, de una Lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Sitio||ID|
@@ -229,7 +231,7 @@ Obtener un item de una lista
 
 ### Crear Item
   
-Crear un item dentro de una lista
+Crear un Item dentro de una Lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Sitio||ID|
@@ -240,7 +242,7 @@ Crear un item dentro de una lista
 
 ### Borrar Item
   
-Borrar un item de una lista
+Borrar un Item, usando su ID, de una Lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Sitio||ID|
@@ -251,7 +253,7 @@ Borrar un item de una lista
 
 ### Actalizar Item
   
-Actualizar datos de un item
+Actualizar datos de un Item usando si ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Sitio||ID|
