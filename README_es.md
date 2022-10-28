@@ -6,6 +6,8 @@
   
 Conectar con Outlook mediante O365.  
 
+*Read this in other languages: [English](README.md), [Portugues](README_pr.md), [Español](README_es.md).*
+
 ## Como instalar este módulo
   
 __Descarga__ e __instala__ el contenido en la carpeta 'modules' en la ruta de Rocketbot.  
@@ -14,18 +16,20 @@ __Descarga__ e __instala__ el contenido en la carpeta 'modules' en la ruta de Ro
 
 Antes de usar este modulo, es necesario registrar tu aplicación en el portal de Azure App Registrations. 
 
-1. Inicie sesión en Azure Portal (Registración de aplicaciones: https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade ).
-2. Seleccione "Nuevo registro".
-3. En “Tipos de cuenta compatibles” soportados elija:
+1. Inicie sesión en Azure Portal y busque el servicio Azure Active Directory.
+2. Alli, en el menu en el lateral izquierdo, ingrese a "Registración de Aplicaiones".
+3. Seleccione "Nuevo registro".
+4. En “Tipos de cuenta compatibles” soportados elija:
     a. "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = common
     b. "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar ID Inquilino especifica de la aplicación.
-4. Establezca la uri de redirección (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient y haga click en "Registrar".
-5. Copie el ID de la aplicación (cliente). Necesitará este valor.
-6. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente. Establezca la caducidad (preferiblemente 24 meses). Copie el VALOR del secreto de cliente creado (NO el ID de Secreto). El mismo se ocultará al cabo de unos minutos.
-7. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
-8. En la consola de Rocketbot se generara una url (Ejemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline ), copiarla y pegarla en su navegador.
-9. Aceptar el otorgamiento de permisos y devolvera una pantalla sin contenido. Copiar la URL (Ejemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) y pegarla en la consola de Rocketbot debajo de "Paste the authenticated url here:".
-10. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
+5. Establezca la uri de redirección (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient y haga click en "Registrar".
+6. Copie el ID de la aplicación (cliente). Necesitará este valor.
+7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente. Establezca la caducidad (preferiblemente 24 meses). Copie el VALOR del secreto de cliente creado (NO el ID de Secreto). El mismo se ocultará al cabo de unos minutos.
+8. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
+9. En Rocketbot Studio, insertar el comando "Conectar a O365", ingresar los datos solicitados (ID de cliente, valor del secreto y tenant) y ejecutar el comando.
+10. En la consola de Rocketbot se generara una url (Ejemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline ), copiarla y pegarla en su navegador.
+11. Aceptar el otorgamiento de permisos y devolvera una pantalla sin contenido. Copiar la URL (Ejemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) y pegarla en la consola de Rocketbot debajo de "Paste the authenticated url here:".
+12. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
 
 
 ## Overview
