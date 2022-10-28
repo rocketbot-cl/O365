@@ -283,8 +283,8 @@ if module == "readEmail":
         # Get number of attachments using API
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
         
+        files = []
         if message._Message__has_attachments == True:
-            files = []
             files_down = []
             # Get actual recognized attachments and compare the quantitiy with the theorical one
             for att in message.attachments:
@@ -320,27 +320,24 @@ if module == "readEmail":
         html_body = BeautifulSoup(message.body, "html.parser").body
         
         links = {}
-        for a in html_body.find_all("a"):
-            # First checks the text of the a tag    
-            if a.get_text():
-                key = a.get_text()
-            # If None, then checks if the a tag has 'title'
-            elif a.get("title"):
-                key = a["title"]
-            # If also None, the it gives a generic key
-            else:
-                key = 'URL'
-            
-            # Finally it checks if the key already exists and adds a '(n°)' at the end
-            x = int()
-            while key in links.keys():
-                x += 1
-                key = key + '(' + str(x) + ')'    
-            links[key]= a["href"]
-            
-        if html_body == None:
-            pass
-        else:
+        if html_body:
+            for a in html_body.find_all("a"):
+                # First checks the text of the a tag    
+                if a.get_text():
+                    key = a.get_text()
+                # If None, then checks if the a tag has 'title'
+                elif a.get("title"):
+                    key = a["title"]
+                # If also None, the it gives a generic key
+                else:
+                    key = 'URL'
+                # Finally it checks if the key already exists and adds a '(n°)' at the end
+                x = int()
+                while key in links.keys():
+                    x += 1
+                    key = key + '(' + str(x) + ')'    
+                links[key]= a["href"]
+                
             if not not_parsed or eval(not_parsed) == False:
                 body = html_body.get_text()
             else:
@@ -467,9 +464,6 @@ if module == "moveEmail":
         raise e
 
 if module == "getFolders":
-    
-    from O365 import utilsqq
-    import json
     
     folders = GetParams('res')
     
