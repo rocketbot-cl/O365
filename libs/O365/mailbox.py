@@ -134,7 +134,8 @@ class Folder(ApiComponent):
             return Pagination(parent=self, data=folders, constructor=self_class,
                               next_link=next_link, limit=limit)
         else:
-            return folders
+            # Modificted to return the whole data of the folders and the forlder objects itself
+            return data, folders
 
     def get_message(self, object_id=None, query=None, *, download_attachments=False):
         """ Get one message from the query result.
@@ -160,7 +161,7 @@ class Folder(ApiComponent):
                 return None
 
             message = response.json()
-
+            
             return self.message_constructor(parent=self,
                                             download_attachments=download_attachments,
                                             **{self._cloud_data_key: message})

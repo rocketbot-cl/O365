@@ -28,16 +28,18 @@ base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
+from copy import deepcopy
 from enum import Enum
+import trace
 from O365 import Account
-
+import traceback
 from bs4 import BeautifulSoup
 import os
 
 module = GetParams("module")
-global credentials
-global account
-global OutlookWellKnowFolderNames 
+
+global mod_o365_session
+global OutlookWellKnowFolderNames
 
 OutlookWellKnowFolderNames= {
         'Inbox': 'Inbox',
@@ -49,17 +51,38 @@ OutlookWellKnowFolderNames= {
         'Archive': 'Archive'
     }
 
+session = GetParams("session")
+if not session:
+    session = ''
 
+try:
+    if not mod_o365_session : #type:ignore
+        mod_o365_session = {}
+except NameError:
+    mod_o365_session = {}
 
 if module == "connect":
     client_id = GetParams("client_id")
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
+    sharepoint_ = GetParams('sharepoint')
+
+    if session == '':
+        filename = "o365_token.txt"
+    else:
+        filename = "o365_token_{s}.txt".format(s=session)
+    
+    scopes_ = ['basic', 'message_all']
+    
+    if sharepoint_:
+        if eval(sharepoint_):
+            scopes_.append('sharepoint')
+    
     try:
         credentials = (client_id, client_secret)
-        account = Account(credentials, tenant_id = tenant)
-        if not account.is_authenticated:
-            account.authenticate(scopes=['basic', 'message_all', 'sharepoint'])
+        mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
+        if not mod_o365_session[session].is_authenticated:
+            mod_o365_session[session].authenticate(scopes=scopes_)
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
@@ -72,11 +95,11 @@ if module == "sendEmail":
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
+    
     try:
-        message = account.new_message()
+        message = mod_o365_session[session].new_message()
         if not to_:
             raise Exception("'To' field must not be empty.")
-        list_to = to_.split(",")
         list_to = to_.split(",")
         message.to.add(list_to)
         if cc:
@@ -100,6 +123,7 @@ if module == "sendEmail":
 
 if module == "replyEmail":
     id_ = GetParams("id_")
+    cc = GetParams("cc")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
@@ -109,8 +133,11 @@ if module == "replyEmail":
         raise Exception("Missing Email ID...")
     
     try:
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
         reply = message.reply()
+        if cc:
+            list_cc = cc.split(",")
+            reply.cc.add(list_cc)
         reply.body = body
         
         if attached_file:
@@ -145,7 +172,7 @@ if module == "forwardEmail":
         raise Exception("Missing Email ID...")
     
     try:
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
         forward = message.forward()
         if not to_:
             raise Exception("'To' field must not be empty.")
@@ -195,7 +222,7 @@ if module == "getAllEmails":
         limit = None
     
     try:
-        list_messages = account.mailbox().folder_constructor(parent=account.mailbox(), name=folder,
+        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
                                                              folder_id=folder).get_messages(limit=limit, query=filter)
         list_object_id = []
         for message in list_messages:
@@ -206,27 +233,116 @@ if module == "getAllEmails":
         PrintException()
         raise e
 
+if module == "getUnreadEmails":
+    folder = GetParams("folder")
+    res = GetParams("res")
+    limit = GetParams("limit")
+    
+    if OutlookWellKnowFolderNames.get(folder) == None:
+        pass
+    else:
+        folder = OutlookWellKnowFolderNames.get(folder)
+    
+    if folder == "" or folder == None:
+        folder = "Inbox"
+    
+    if limit and limit != "":
+        limit = int(limit)
+    else:
+        limit = None
+    
+    try:
+        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
+                                                             folder_id=folder).get_messages(limit=limit, query='isRead eq false')
+        list_object_id = []
+        for message in list_messages:
+            list_object_id.append(message.object_id)
+        SetVar(res, list_object_id)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
 if module == "readEmail":
-      
     att_folder = GetParams("att_folder")
     download_att = GetParams("down")
     res = GetParams("res")
     id_ = GetParams("id_")
     read = GetParams("markasread")
+    not_parsed = GetParams("not_parsed")
+    
+    from mailparser import mailparser
+    import base64
     
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
-        message = account.mailbox().get_message(id_, download_attachments=True)
+        message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
+        # Get number of attachments using API
+        att_q = int(message._Message__attachments.__str__().split(': ')[1])
+        
         files = []
-        for att in message.attachments:
-            files.append(att)
-            if download_att:
+        if message._Message__has_attachments == True:
+            files_down = []
+            # Get actual recognized attachments and compare the quantitiy with the theorical one
+            for att in message.attachments:
+                files.append(att.name)
+                files_down.append(att)
+            if (len(files) == att_q) and download_att:
+                print('API')
+                # If all the conditions are fulfilled then it download the attachments usind the API
                 if eval(download_att) == True:
-                    att.save(att_folder)
-        print(message.attachments)
+                    for att_down in files_down:
+                        att_down.save(att_folder)
+            else:
+                # If the condition is not fulfilled, then it goes through the alternative method using the Mail Parser library
+                print('Parser')
+                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+                files = []
+                for att in parsed_mail.attachments:
+                    name = att['filename']
+                    name = name.replace("\r","").replace("\n","")
+                    files.append(name)
+                    
+                    if download_att:
+                        if eval(download_att) == True:
+                            if not os.path.isdir(att_folder):
+                                raise Exception('The path does not exist.')
+                            
+                            cont = base64.b64decode(att['payload'])
+                            with open(os.path.join(att_folder, name), 'wb') as file_:
+                                file_.write(cont)
+                                file_.close()
+        
+        # This is for the case of an email with no body
+        html_body = BeautifulSoup(message.body, "html.parser").body
+        
+        links = {}
+        if html_body:
+            for a in html_body.find_all("a"):
+                # First checks the text of the a tag    
+                if a.get_text():
+                    key = a.get_text()
+                # If None, then checks if the a tag has 'title'
+                elif a.get("title"):
+                    key = a["title"]
+                # If also None, the it gives a generic key
+                else:
+                    key = 'URL'
+                # Finally it checks if the key already exists and adds a '(n°)' at the end
+                x = int()
+                while key in links.keys():
+                    x += 1
+                    key = key + '(' + str(x) + ')'    
+                links[key]= a["href"]
+                
+            if not not_parsed or eval(not_parsed) == False:
+                body = html_body.get_text()
+            else:
+                body = html_body
+                    
         message_all = {
             # Recipient object
             'sender': message.sender.address,
@@ -236,7 +352,8 @@ if module == "readEmail":
             # Parses elements datetime.datetime into string
             'sent_time': message.sent.strftime('%d-%m-%Y %H:%M'),
             'received': message.received.strftime('%d-%m-%Y %H:%M'),
-            'body': BeautifulSoup(message.body, "html.parser").body.get_text(),
+            'body': body,
+            'links': links,
             'files': files
         }
         
@@ -257,17 +374,46 @@ if module == "downAtt":
     id_ = GetParams("id_")
     read = GetParams("markasread")
     
+    from mailparser import mailparser
+    import base64
+    
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
         # It creates a message object and makes available attachments to be downloaded
-        message = account.mailbox().get_message(id_, download_attachments=True)
-        files = []
-        for att in message.attachments:
-            files.append(att)
-            att.save(att_folder)
-        print(message.attachments)
+        message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
+
+        att_q = int(message._Message__attachments.__str__().split(': ')[1])
+                     
+        if message._Message__has_attachments == True:
+            files = []
+            files_down = []
+            # Get actual recognized attachments and compare the quantitiy with the theorical one
+            for att in message.attachments:
+                files.append(att.name)
+                files_down.append(att)
+            if (len(files) == att_q):
+                print('API')
+                # If the conditios is fulfilled then it download the attachments usind the API
+                for att_down in files_down:
+                    att_down.save(att_folder)
+            else:
+                print('Parser')
+                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+                files = []
+                for att in parsed_mail.attachments:
+                    name = att['filename']
+                    name = name.replace("\r","").replace("\n","")
+                    files.append(name)
+                    
+                    if not os.path.isdir(att_folder):
+                        raise Exception('The path does not exist.')
+                    
+                    cont = base64.b64decode(att['payload'])
+                    with open(os.path.join(att_folder, name), 'wb') as file_:
+                        file_.write(cont)
+                        file_.close()
         
         if read:
             if eval(read) == True:
@@ -289,7 +435,7 @@ if module == "markUnread":
     
     try:
         # It creates a message object and makes available attachments to be downloaded
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
    
         unread = message.mark_as_unread()
         
@@ -308,7 +454,7 @@ if module == "moveEmail":
         folderId = "Inbox"
     
     try:
-        message = account.mailbox().get_message(id_)
+        message = mod_o365_session[session].mailbox().get_message(id_)
         move = message.move(folderId)
         
         SetVar(res, move)
@@ -319,47 +465,33 @@ if module == "moveEmail":
 
 if module == "getFolders":
     
-    from O365 import utils
-    import json
-    
-    def get_folders_new(mailbox, limit=None, *, query=None, order_by=None, batch=None):
-
-        NEXT_LINK_KEYWORD = '@odata.nextLink'
-        
-        if mailbox.root:
-            url = mailbox.build_url(mailbox._endpoints.get('root_folders'))
-        else:
-            url = mailbox.build_url(
-                mailbox._endpoints.get('child_folders').format(id=mailbox.folder_id))
-
-        if limit is None or limit > mailbox.protocol.max_top_value:
-            batch = mailbox.protocol.max_top_value
-
-        params = {'$top': batch if batch else limit}
-
-        if order_by:
-            params['$orderby'] = order_by
-
-        if query:
-            if isinstance(query, str):
-                params['$filter'] = query
-            else:
-                params.update(query.as_params())
-
-        response = mailbox.con.get(url, params=params)
-        if not response:
-            return []
-
-        data = response.json()
-       
-        return data['value']
-    
     folders = GetParams('res')
+    
     try:
-        list_folders = get_folders_new(account.mailbox())
-        print(list_folders)
         
-        SetVar(folders, list_folders)
+        data, list_folders = mod_o365_session[session].mailbox().get_folders()
+        final_list = deepcopy(data['value'])
+        
+        while True:
+            try:
+                list_folders_aux = []
+                for folder in list_folders:
+                    if isinstance(folder, list):
+                        folder = folder[0]
+                    child_data, list_child = folder.get_folders()
+                    if child_data['value'] == []:
+                        continue
+                    final_list.append(child_data['value'])
+                    list_folders_aux.append(list_child)
+                list_folders = list_folders_aux
+                print(list_folders)
+                if list_folders == []:
+                    break
+            except:
+                print(traceback.format_exc())
+                break
+        
+        SetVar(folders, final_list)
     
     except Exception as e:
         SetVar(folders, False)
@@ -374,9 +506,9 @@ if module == "newFolder":
     
     try:
         try:
-            parent = account.mailbox().get_folder(folder_id = parent)
+            parent = mod_o365_session[session].mailbox().get_folder(folder_id = parent)
         except:
-            parent = account.mailbox()
+            parent = mod_o365_session[session].mailbox()
         
         parent.create_child_folder(new_folder)
         SetVar(res, True)
@@ -386,4 +518,332 @@ if module == "newFolder":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+"""-----------------------------------------------------------------------------------------------------------------------------------------------------"""
+
+global mod_o365_endpoints
+
+mod_o365_endpoints = {
+    'get_user_groups': '/users/{user_id}/memberOf',
+    'get_group_by_id': '/groups/{group_id}',
+    'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
+    'list_groups': '/groups',
+    'get_group_site': '/groups/{group_id}/sites/{site_name}',
+    'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
+    'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/items/'
+    }
+
+def list_groups(gs):
+    """ Returns list of groups orderer alphabetically by name
     
+    :rtype: list[{Group Name: name, Group Id: ID}]
+    
+    """
+
+    url = gs.build_url(mod_o365_endpoints.get('list_groups'))
+    print(url)
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+
+    groups = []
+    for g in data['value']:
+        group = {}  
+        group['displayName'] = g['displayName']
+        group['id'] = g['id']
+        groups.append(group)
+        groups.sort(key = lambda g: g['displayName'])
+
+    return groups
+
+def get_group_by_id(gs, group_id = None):
+    """ Returns Microsoft O365/AD group with given id
+    :param group_id: group id of group
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+
+    if group_id:
+        # get channels by the team id
+        url = gs.build_url(mod_o365_endpoints.get('get_group_by_id').format(group_id=group_id))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+
+    return data
+
+def get_group_site(gs, group_id = None, group_site = None):
+    """ Returns Microsoft O365/AD group with given id
+    :param group_id: group id of group
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+
+    if group_id:
+        # get channels by the team id
+        url = gs.build_url(mod_o365_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+
+    return data
+
+def get_site_lists(gs, group_id = None, group_site = None):
+    """ Returns Microsoft O365/AD group with given id
+    :param group_id: group id of group
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+
+    if group_id:
+        # get channels by the team id
+        url = gs.build_url(mod_o365_endpoints.get('get_site_lists').format(group_id=group_id, site_name=group_site))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+
+    return data
+
+def get_list(gs, group_id = None, group_site = None, list_id= None):
+    """ Returns Microsoft O365/AD group with given id
+    :param group_id: group id of group
+    :rtype: Group
+    """
+
+    if not group_id:
+        raise RuntimeError('Provide the group_id')
+
+    if not list_id:
+        raise RuntimeError('Provide the group_id')
+    
+    if group_id and list_id:
+        # get channels by the team id
+        url = gs.build_url(mod_o365_endpoints.get('get_list').format(group_id=group_id, site_name=group_site, list_id=list_id))
+
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+
+    return data
+
+
+if module == "listGroups":
+
+    res = GetParams("res")
+
+    try:
+        groups_list = list_groups(mod_o365_session[session].groups())
+
+        SetVar(res, groups_list) 
+
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "group":
+
+    group_ = GetParams("groupId")
+    res = GetParams("res")
+
+    try:
+
+        group = get_group_by_id(mod_o365_session[session].groups(), group_)
+
+        SetVar(res, group)
+
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "site":
+
+    group_ = GetParams("groupId")
+    res = GetParams("res")
+
+    try:
+        
+        site = get_group_site(mod_o365_session[session].groups(), 
+                              group_, 
+                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName']
+                              )
+
+        SetVar(res, site)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "siteLists":
+
+    group_ = GetParams("groupId")
+    res = GetParams("res")
+
+    try:
+          
+        sp_lists = get_site_lists(mod_o365_session[session].groups(), 
+                              group_, 
+                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName']
+                              )
+
+        SetVar(res, sp_lists)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "createList":
+    
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listInfo = GetParams("listInfo")
+    res = GetParams("res")
+
+    try:
+        
+        new_list = mod_o365_session[session].sharepoint().get_site(site_).create_list(eval(listInfo))
+        
+        SetVar(res, new_list)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "listItems":
+    
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    res = GetParams("res")
+
+    try:
+        
+        sp_list = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_items()
+        
+        items = []
+        for item in sp_list:
+            # I modified the return statement of the 'get_item_by_id' method to bring the whole data linked to the item
+            data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(item.object_id)
+            items.append(data)
+        
+        
+        
+        SetVar(res, items)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "getItem":
+    
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemId = GetParams("itemId") 
+    res = GetParams("res")
+    
+    try:
+        
+        data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId) 
+
+        SetVar(res, data)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "createItem":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemInfo = GetParams("newData")
+    res = GetParams("res")
+
+    try:
+
+        new_item = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).create_list_item(eval(itemInfo))
+
+        SetVar(res, True)
+        
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "deleteItem":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemId = GetParams("itemId")
+    res = GetParams("res")
+
+    try:
+
+        del_item = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).delete_list_item(itemId)
+
+        SetVar(res, del_item)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
+if module == "updateItem":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    listName = GetParams("listName")
+    itemId = GetParams("itemId")
+    itemInfo = GetParams("newData")
+    res = GetParams("res")
+
+    try:
+
+        data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId)
+        item_.update_fields(eval(itemInfo))
+        updated_item = item_.save_updates()
+        
+        SetVar(res, updated_item)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
