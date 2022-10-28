@@ -36,7 +36,7 @@ Greater than or equal to (__ge__)
 
 ## Como usar este modulo
 
-Antes de usar este modulo, es necesario registrar tu aplicación en el portal de Azure App Registrations. 
+Antes de usar este módulo, es necesario registrar tu aplicación en el portal de Azure App Registrations. 
 
 1. Inicie sesión en Azure Portal y busque el servicio Azure Active Directory.
 2. En el menu en el lateral izquierdo, ingrese a "Registros de Aplicaciones".
@@ -51,13 +51,13 @@ Antes de usar este modulo, es necesario registrar tu aplicación en el portal de
 9. En Rocketbot Studio, insertar el comando "Conectar a O365", ingresar los datos solicitados (ID de cliente, valor del secreto y tenant) y ejecutar el comando.
 10. En la consola de Rocketbot se generara una url, copiarla y pegarla en su navegador.
     - **Ejemplo:** <sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline</sub>
-11. Aceptar el otorgamiento de permisos y devolvera una pantalla sin contenido. Copiar la URL y pegarla el la consola de Rocketbot debajo de **"Paste the authenticated url here:"**.
+11. Aceptar el otorgamiento de permisos y devolverá una pantalla sin contenido. Copiar la URL y pegarla el la consola de Rocketbot debajo de **"Paste the authenticated url here:"**.
     - **Ejemplo:** <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M</sub> 
-12. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raiz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
+12. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raíz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
 
 ## Como filtrar correos
 
-Para realizar filtro de correos debera utilizar los siguientes Operadores y Funciones. 
+Para realizar filtro de correos deberá utilizar los siguientes Operadores y Funciones. 
 
 1. __Equality operators__	
     - Igual (__eq__)
@@ -142,9 +142,9 @@ Las principales propiedades que pueden utilizarse para realizar filtros son:
         "flagStatus": ""
     }
 
-Las mismas surgen del json de la respuesta a la consulta realizada a la API. Para revisar las propiedades de correos especificos puede ingresar a https://developer.microsoft.com/en-us/graph/graph-explorer ingresando con su cuenta de AZURE y realizar la consulta https://graph.microsoft.com/v1.0/me/messages/<ID_correo>.
+Las mismas surgen del json de la respuesta a la consulta realizada a la API. Para revisar las propiedades de correos específicos puede ingresar a https://developer.microsoft.com/en-us/graph/graph-explorer ingresando con su cuenta de AZURE y realizar la consulta https://graph.microsoft.com/v1.0/me/messages/<ID_correo>.
 
-Es importante tener presente que solo deben utilizarse comillas simples (') cuando se indique el valor a filtrar, salvo para el caso de valores booleanos (__true__ / __false__). A continuación se muestran ejemplos practicos de como realizar filtros:
+Es importante tener presente que solo deben utilizarse comillas simples (') cuando se indique el valor a filtrar, salvo para el caso de valores booleanos (__true__ / __false__). A continuación se muestran ejemplos prácticos de cómo realizar filtros:
 
 - Correos no leidos = __isRead eq false__
 - Correos leidos = __isRead eq true__
@@ -158,7 +158,7 @@ Es importante tener presente que solo deben utilizarse comillas simples (') cuan
 - El correo tiene adjuntos = __HasAttachments eq true__
 ## Como identificar correos (ID)
 
-Los correos se encuantran identificados con un ID unico y dinamico. Esta ultima cualidad hace que si un correo cambia algunas de sus propiedades el ID se vera afectado, el caso mas claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no sera el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se debera ejecutar el comando Listar Emails sobre la carpeta "Procesdados" y obtener el nuevo ID.
+Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
 
 ---
 
