@@ -466,19 +466,17 @@ if module == "getFolders":
     
     def get_all_folders(data, list_folders, final_list = []):
         
-        if not data['value'] in final_list:
-            final_list.append(data['value'])
+        for d in data['value']:
+            if not d in final_list:
+                final_list.append(d)
             
         for folder in list_folders:
-            print(folder)
-            # if isinstance(folder, list):
-            #     folder = folder[0]
             
             child_data, list_child = folder.get_folders()
             if child_data['value'] == []:
                 continue
-            
-            final_list.append(child_data['value'])
+            # If list add each element of the list to the main list insted of adding the whole list as one element
+            final_list.extend(child_data['value'])
             get_all_folders(child_data, list_child, final_list)
         
         return final_list
