@@ -28,7 +28,7 @@ base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
-from copy import deepcopy
+
 from enum import Enum
 import trace
 from O365 import Account
@@ -280,41 +280,35 @@ if module == "readEmail":
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
-        # Get number of attachments using API
-        att_q = int(message._Message__attachments.__str__().split(': ')[1])
         
         files = []
-        if message._Message__has_attachments == True:
-            files_down = []
-            # Get actual recognized attachments and compare the quantitiy with the theorical one
-            for att in message.attachments:
-                files.append(att.name)
-                files_down.append(att)
-            if (len(files) == att_q) and download_att:
-                print('API')
-                # If all the conditions are fulfilled then it download the attachments usind the API
-                if eval(download_att) == True:
-                    for att_down in files_down:
-                        att_down.save(att_folder)
-            else:
-                # If the condition is not fulfilled, then it goes through the alternative method using the Mail Parser library
-                print('Parser')
-                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
-                files = []
-                for att in parsed_mail.attachments:
-                    name = att['filename']
-                    name = name.replace("\r","").replace("\n","")
-                    files.append(name)
-                    
-                    if download_att:
-                        if eval(download_att) == True:
-                            if not os.path.isdir(att_folder):
-                                raise Exception('The path does not exist.')
-                            
-                            cont = base64.b64decode(att['payload'])
-                            with open(os.path.join(att_folder, name), 'wb') as file_:
-                                file_.write(cont)
-                                file_.close()
+        # API: Used to download attachments of the read email
+        for att in message.attachments:
+            files.append(att.name)
+            if eval(download_att) == True:
+                if not os.path.isdir(att_folder):
+                        raise Exception('The path does not exist.')
+                att.save(location=att_folder)
+                # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
+                filename, file_extension = os.path.splitext(att.name)
+                if file_extension == '.eml':
+                    print(os.path.join(att_folder, att.name))
+                    message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
+            
+        # Parser: Used to download attachments within an email attached ('.eml') to the read email
+        parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+        for att in parsed_mail.attachments:
+            name = att['filename']
+            name = name.replace("\r","").replace("\n","")
+            
+            if download_att:
+                if eval(download_att) == True:                    
+                    if not name in files:
+                        files.append(name)
+                        cont = base64.b64decode(att['payload'])
+                        with open(os.path.join(att_folder, name), 'wb') as file_:
+                            file_.write(cont)
+                            file_.close()
         
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
@@ -341,7 +335,7 @@ if module == "readEmail":
             if not not_parsed or eval(not_parsed) == False:
                 body = html_body.get_text()
             else:
-                body = html_body
+                body = str(html_body)
                     
         message_all = {
             # Recipient object
@@ -380,40 +374,41 @@ if module == "downAtt":
     if not id_:
         raise Exception("Missing Email ID...")
     
+    if not os.path.isdir(att_folder):
+        raise Exception('The path does not exist.')
+    
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
 
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
-                     
-        if message._Message__has_attachments == True:
-            files = []
-            files_down = []
-            # Get actual recognized attachments and compare the quantitiy with the theorical one
-            for att in message.attachments:
-                files.append(att.name)
-                files_down.append(att)
-            if (len(files) == att_q):
-                print('API')
-                # If the conditios is fulfilled then it download the attachments usind the API
-                for att_down in files_down:
-                    att_down.save(att_folder)
-            else:
-                print('Parser')
-                parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
-                files = []
-                for att in parsed_mail.attachments:
-                    name = att['filename']
-                    name = name.replace("\r","").replace("\n","")
-                    files.append(name)
-                    
-                    if not os.path.isdir(att_folder):
-                        raise Exception('The path does not exist.')
-                    
-                    cont = base64.b64decode(att['payload'])
-                    with open(os.path.join(att_folder, name), 'wb') as file_:
-                        file_.write(cont)
-                        file_.close()
+
+        files = []
+        # API: Used to download attachments of the read email
+        for att in message.attachments:
+            files.append(att.name)
+            att.save(location=att_folder)
+            # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
+            filename, file_extension = os.path.splitext(att.name)
+            if file_extension == '.eml':
+                print(os.path.join(att_folder, att.name))
+                message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
+            
+        # Parser: Used to download attachments within an email attached ('.eml') to the read email
+        parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+        for att in parsed_mail.attachments:
+            name = att['filename']
+            name = name.replace("\r","").replace("\n","")
+     
+            if not name in files:
+                files.append(name)
+                cont = base64.b64decode(att['payload'])
+                with open(os.path.join(att_folder, name), 'wb') as file_:
+                    file_.write(cont)
+                    file_.close()
+        
+        # This is for the case of an email with no body
+        html_body = BeautifulSoup(message.body, "html.parser").body
         
         if read:
             if eval(read) == True:
@@ -467,29 +462,53 @@ if module == "getFolders":
     
     folders = GetParams('res')
     
+    global get_all_folders
+    
+    def get_all_folders(data, list_folders, final_list = []):
+        
+        if not data['value'] in final_list:
+            final_list.append(data['value'])
+            
+        for folder in list_folders:
+            print(folder)
+            # if isinstance(folder, list):
+            #     folder = folder[0]
+            
+            child_data, list_child = folder.get_folders()
+            if child_data['value'] == []:
+                continue
+            
+            final_list.append(child_data['value'])
+            get_all_folders(child_data, list_child, final_list)
+        
+        return final_list
+    
     try:
         
         data, list_folders = mod_o365_session[session].mailbox().get_folders()
-        final_list = deepcopy(data['value'])
+        final_list = get_all_folders(data, list_folders)
         
-        while True:
-            try:
-                list_folders_aux = []
-                for folder in list_folders:
-                    if isinstance(folder, list):
-                        folder = folder[0]
-                    child_data, list_child = folder.get_folders()
-                    if child_data['value'] == []:
-                        continue
-                    final_list.append(child_data['value'])
-                    list_folders_aux.append(list_child)
-                list_folders = list_folders_aux
-                print(list_folders)
-                if list_folders == []:
-                    break
-            except:
-                print(traceback.format_exc())
-                break
+        # data, list_folders = mod_o365_session[session].mailbox().get_folders()
+        # while True:
+        #     try:
+                
+                
+        #         # list_folders_aux = []
+        #         # for folder in list_folders:
+        #         #     if isinstance(folder, list):
+        #         #         folder = folder[0]
+        #         #     child_data, list_child = folder.get_folders()
+        #         #     if child_data['value'] == []:
+        #         #         continue
+        #         #     final_list.append(child_data['value'])
+        #         #     list_folders_aux.append(list_child)
+        #         # list_folders = list_folders_aux
+        #         # print(list_folders)
+        #         # if list_folders == []:
+        #         #     break
+        #     except:
+        #         print(traceback.format_exc())
+        #         break
         
         SetVar(folders, final_list)
     
