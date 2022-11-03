@@ -267,6 +267,22 @@
         "inputs": [
           {
             "type": "input",
+            "placeholder": "subject eq 'compras'",
+            "title": {
+              "es": "Filtro:",
+              "en": "Filter:",
+              "pr": "Filter:"
+            },
+            "help": {
+              "es": "Dejar vacío para traerlos todos",
+              "en": "Leave it empty to get all",
+              "pr": "Deixe-o vazio para obter todos"
+            },
+            "id": "filter",
+            "css": "col-md-12"
+          },
+          {
+            "type": "input",
             "placeholder": "Inbox",
             "title": {
               "es": "ID Carpeta",

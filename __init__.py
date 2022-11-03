@@ -237,6 +237,7 @@ if module == "getUnreadEmails":
     folder = GetParams("folder")
     res = GetParams("res")
     limit = GetParams("limit")
+    filter = GetParams("filter")
     
     if OutlookWellKnowFolderNames.get(folder) == None:
         pass
@@ -251,9 +252,14 @@ if module == "getUnreadEmails":
     else:
         limit = None
     
+    if filter:
+        filter = 'isRead eq false and ' + filter
+    else:
+        filter = 'isRead eq false'
+    
     try:
         list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
-                                                             folder_id=folder).get_messages(limit=limit, query='isRead eq false')
+                                                             folder_id=folder).get_messages(limit=limit, query=filter)
         list_object_id = []
         for message in list_messages:
             list_object_id.append(message.object_id)
