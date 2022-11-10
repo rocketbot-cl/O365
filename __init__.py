@@ -76,7 +76,7 @@ if module == "connect":
     
     if sharepoint_:
         if eval(sharepoint_):
-            scopes_.append('sharepoint')
+            scopes_.append('sharepoint_dl')         
     
     try:
         credentials = (client_id, client_secret)
@@ -322,21 +322,23 @@ if module == "readEmail":
         links = {}
         if html_body:
             for a in html_body.find_all("a"):
+                print(a)
                 # First checks the text of the a tag    
                 if a.get_text():
                     key = a.get_text()
                 # If None, then checks if the a tag has 'title'
                 elif a.get("title"):
-                    key = a["title"]
+                    key = a.get("title")
                 # If also None, the it gives a generic key
                 else:
                     key = 'URL'
                 # Finally it checks if the key already exists and adds a '(n°)' at the end
                 x = int()
+                key_2 = key
                 while key in links.keys():
                     x += 1
-                    key = key + '(' + str(x) + ')'    
-                links[key]= a["href"]
+                    key = key_2 + '(' + str(x) + ')'    
+                links[key]= a.get("href", '')
                 
             if not not_parsed or eval(not_parsed) == False:
                 body = html_body.get_text()
@@ -658,7 +660,7 @@ def get_list(gs, group_id = None, group_site = None, list_id= None):
         raise RuntimeError('Provide the group_id')
 
     if not list_id:
-        raise RuntimeError('Provide the group_id')
+        raise RuntimeError('Provide the list_id')
     
     if group_id and list_id:
         # get channels by the team id
