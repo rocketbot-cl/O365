@@ -76,7 +76,7 @@ if module == "connect":
     
     if sharepoint_:
         if eval(sharepoint_):
-            scopes_.append('sharepoint')
+            scopes_.append('sharepoint_dl')         
     
     try:
         credentials = (client_id, client_secret)
@@ -237,6 +237,7 @@ if module == "getUnreadEmails":
     folder = GetParams("folder")
     res = GetParams("res")
     limit = GetParams("limit")
+    filter = GetParams("filter")
     
     if OutlookWellKnowFolderNames.get(folder) == None:
         pass
@@ -251,9 +252,14 @@ if module == "getUnreadEmails":
     else:
         limit = None
     
+    if filter:
+        filter = 'isRead eq false and ' + filter
+    else:
+        filter = 'isRead eq false'
+    
     try:
         list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
-                                                             folder_id=folder).get_messages(limit=limit, query='isRead eq false')
+                                                             folder_id=folder).get_messages(limit=limit, query=filter)
         list_object_id = []
         for message in list_messages:
             list_object_id.append(message.object_id)
@@ -321,21 +327,24 @@ if module == "readEmail":
                     key = a.get_text()
                 # If None, then checks if the a tag has 'title'
                 elif a.get("title"):
-                    key = a["title"]
+                    key = a.get("title")
                 # If also None, the it gives a generic key
                 else:
                     key = 'URL'
                 # Finally it checks if the key already exists and adds a '(n°)' at the end
                 x = int()
+                key_2 = key
                 while key in links.keys():
                     x += 1
-                    key = key + '(' + str(x) + ')'    
-                links[key]= a["href"]
+                    key = key_2 + '(' + str(x) + ')'    
+                links[key]= a.get("href", '')
                 
             if not not_parsed or eval(not_parsed) == False:
                 body = html_body.get_text()
             else:
                 body = str(html_body)
+        else:
+            body = message.body
                     
         message_all = {
             # Recipient object
@@ -652,7 +661,7 @@ def get_list(gs, group_id = None, group_site = None, list_id= None):
         raise RuntimeError('Provide the group_id')
 
     if not list_id:
-        raise RuntimeError('Provide the group_id')
+        raise RuntimeError('Provide the list_id')
     
     if group_id and list_id:
         # get channels by the team id
