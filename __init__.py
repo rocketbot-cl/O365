@@ -298,7 +298,6 @@ if module == "readEmail":
                 # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
                 filename, file_extension = os.path.splitext(att.name)
                 if file_extension == '.eml':
-                    print(os.path.join(att_folder, att.name))
                     message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
             
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
@@ -400,7 +399,6 @@ if module == "downAtt":
             # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
             filename, file_extension = os.path.splitext(att.name)
             if file_extension == '.eml':
-                print(os.path.join(att_folder, att.name))
                 message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
             
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
