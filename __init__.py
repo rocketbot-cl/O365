@@ -72,6 +72,8 @@ if module == "connect":
     else:
         filename = "o365_token_{s}.txt".format(s=session)
     
+    filename = os.path.join(base_path, filename)
+    
     scopes_ = ['basic', 'message_all']
     
     if sharepoint_:
@@ -95,6 +97,13 @@ if module == "sendEmail":
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
+    from email.mime.image import MIMEImage
+    from email.utils import make_msgid
+    import base64
+    import re
+    def get_regex_group(regex, string):
+        matches = re.finditer(regex, string, re.MULTILINE)
+        return [[group for group in match.groups()] for match in matches]
     
     try:
         message = mod_o365_session[session].new_message()
@@ -106,7 +115,27 @@ if module == "sendEmail":
             list_cc = cc.split(",")
             message.cc.add(list_cc)
         message.subject = subject
-        message.body = body
+        
+        if not "src" in body:
+            message.body = body
+        else:
+            index = 0
+            for match in get_regex_group(r"src=\"(.*)\"", body):
+                path = match[0]
+                
+                if path.startswith(("http", "https")):
+                    continue
+                else:
+                    image_cid = make_msgid()
+                    body = body.replace(path, "cid:" + image_cid[1:-1])
+
+                    message.attachments.add(path)
+                    message.attachments[index].is_inline = True
+                    message.attachments[index].content_id = image_cid[1:-1]
+                index += 1
+                
+            message.body = body
+
         if attached_file:
             message.attachments.add(attached_file)
         if attached_folder:
@@ -115,6 +144,7 @@ if module == "sendEmail":
                 f = os.path.join(attached_folder, f)
                 filenames.append(f)
             message.attachments.add(filenames)
+        #message.send()
         message.send()
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -138,7 +168,26 @@ if module == "replyEmail":
         if cc:
             list_cc = cc.split(",")
             reply.cc.add(list_cc)
-        reply.body = body
+            
+        if not "src" in body:
+            reply.body = body
+        else:
+            index = 0
+            for match in get_regex_group(r"src=\"(.*)\"", body):
+                path = match[0]
+                
+                if path.startswith(("http", "https")):
+                    continue
+                else:
+                    image_cid = make_msgid()
+                    body = body.replace(path, "cid:" + image_cid[1:-1])
+
+                    reply.attachments.add(path)
+                    reply.attachments[index].is_inline = True
+                    reply.attachments[index].content_id = image_cid[1:-1]
+                index += 1
+                
+            reply.body = body
         
         if attached_file:
             reply.attachments.add(attached_file)
@@ -181,7 +230,26 @@ if module == "forwardEmail":
         if cc:
             list_cc = cc.split(",")
             forward.cc.add(list_cc)
-        forward.body = body
+            
+        if not "src" in body:
+            forward.body = body
+        else:
+            index = 0
+            for match in get_regex_group(r"src=\"(.*)\"", body):
+                path = match[0]
+                
+                if path.startswith(("http", "https")):
+                    continue
+                else:
+                    image_cid = make_msgid()
+                    body = body.replace(path, "cid:" + image_cid[1:-1])
+
+                    forward.attachments.add(path)
+                    forward.attachments[index].is_inline = True
+                    forward.attachments[index].content_id = image_cid[1:-1]
+                index += 1
+                
+            forward.body = body
         
         if attached_file:
             forward.attachments.add(attached_file)
@@ -321,6 +389,7 @@ if module == "readEmail":
         links = {}
         if html_body:
             for a in html_body.find_all("a"):
+                print(a)
                 # First checks the text of the a tag    
                 if a.get_text():
                     key = a.get_text()
@@ -340,11 +409,15 @@ if module == "readEmail":
                 
             if not not_parsed or eval(not_parsed) == False:
                 body = html_body.get_text()
+                if not body:
+                    body = message.body
             else:
-                body = str(html_body)
+
+                body = str(html_body) 
         else:
             body = message.body
-                    
+            
+
         message_all = {
             # Recipient object
             'sender': message.sender.address,
