@@ -72,6 +72,8 @@ if module == "connect":
     else:
         filename = "o365_token_{s}.txt".format(s=session)
     
+    filename = os.path.join(base_path, filename)
+    
     scopes_ = ['basic', 'message_all']
     
     if sharepoint_:
