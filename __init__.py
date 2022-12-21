@@ -61,6 +61,15 @@ try:
 except NameError:
     mod_o365_session = {}
 
+from email.utils import make_msgid
+import traceback
+import base64
+import re  
+global get_regex_group
+def get_regex_group(regex, string):
+    matches = re.finditer(regex, string, re.MULTILINE)
+    return [[group for group in match.groups()] for match in matches]
+
 if module == "connect":
     client_id = GetParams("client_id")
     client_secret = GetParams("client_secret")
@@ -93,17 +102,11 @@ if module == "connect":
 if module == "sendEmail":
     to_ = GetParams("to_")
     cc = GetParams("cc")
+    bcc = GetParams("bcc")
     subject = GetParams("subject")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
-    from email.mime.image import MIMEImage
-    from email.utils import make_msgid
-    import base64
-    import re
-    def get_regex_group(regex, string):
-        matches = re.finditer(regex, string, re.MULTILINE)
-        return [[group for group in match.groups()] for match in matches]
     
     try:
         message = mod_o365_session[session].new_message()
@@ -114,7 +117,13 @@ if module == "sendEmail":
         if cc:
             list_cc = cc.split(",")
             message.cc.add(list_cc)
+        if bcc:
+            list_bcc = bcc.split(",")
+            message.bcc.add(list_bcc)
         message.subject = subject
+        
+        if not body:
+            body = ""
         
         if not "src" in body:
             message.body = body
@@ -144,7 +153,7 @@ if module == "sendEmail":
                 f = os.path.join(attached_folder, f)
                 filenames.append(f)
             message.attachments.add(filenames)
-        #message.send()
+            
         message.send()
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -154,10 +163,14 @@ if module == "sendEmail":
 if module == "replyEmail":
     id_ = GetParams("id_")
     cc = GetParams("cc")
+    bcc = GetParams("bcc")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
+    
+    if not body:
+        body = ""
     
     if not id_:
         raise Exception("Missing Email ID...")
@@ -168,9 +181,12 @@ if module == "replyEmail":
         if cc:
             list_cc = cc.split(",")
             reply.cc.add(list_cc)
-            
+        if bcc:
+            list_bcc = bcc.split(",")
+            reply.bcc.add(list_bcc)
+                
         if not "src" in body:
-            reply.body = body
+            reply.body = body + "\n"
         else:
             index = 0
             for match in get_regex_group(r"src=\"(.*)\"", body):
@@ -186,8 +202,8 @@ if module == "replyEmail":
                     reply.attachments[index].is_inline = True
                     reply.attachments[index].content_id = image_cid[1:-1]
                 index += 1
-                
-            reply.body = body
+                          
+            reply.body = body + "\n"
         
         if attached_file:
             reply.attachments.add(attached_file)
@@ -211,11 +227,15 @@ if module == "replyEmail":
 if module == "forwardEmail":
     to_ = GetParams("to_")
     cc = GetParams("cc")
+    bcc = GetParams("bcc")
     id_ = GetParams("id_")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
+    
+    if not body:
+        body = ""
     
     if not id_:
         raise Exception("Missing Email ID...")
@@ -230,9 +250,12 @@ if module == "forwardEmail":
         if cc:
             list_cc = cc.split(",")
             forward.cc.add(list_cc)
+        if bcc:
+            list_bcc = bcc.split(",")
+            forward.bcc.add(list_bcc)
             
         if not "src" in body:
-            forward.body = body
+            forward.body = body + "\n" 
         else:
             index = 0
             for match in get_regex_group(r"src=\"(.*)\"", body):
@@ -243,14 +266,13 @@ if module == "forwardEmail":
                 else:
                     image_cid = make_msgid()
                     body = body.replace(path, "cid:" + image_cid[1:-1])
-
                     forward.attachments.add(path)
                     forward.attachments[index].is_inline = True
                     forward.attachments[index].content_id = image_cid[1:-1]
                 index += 1
-                
-            forward.body = body
         
+            forward.body = body + "\n"
+
         if attached_file:
             forward.attachments.add(attached_file)
         if attached_folder:

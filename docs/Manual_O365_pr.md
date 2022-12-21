@@ -61,6 +61,7 @@ Listar todos os e-mails, você pode especificar um filtro
 Liste todos os e-mails não lidos da sua caixa de correio
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
+|Filter||subject eq 'compras'|
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
 |Atribuir à variável||Variable|
@@ -84,8 +85,9 @@ Ler um e-mail usando seu ID
 Envia un email
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
-|Para||to@mail.com, to2@mail.com|
-|Cc||to1@mail.com, to3@mail.com|
+|Para||to@mail.com, to1@mail.com|
+|Cc||to2@mail.com, to3@mail.com|
+|Bcc||to4@mail.com, to5@mail.com|
 |Assunto||Nuevo mail|
 |Mensagem||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
@@ -98,7 +100,8 @@ Responder um email usando seu ID
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Identificação do email||345|
-|Cc||to1@mail.com, to3@mail.com|
+|Cc||to2@mail.com, to3@mail.com|
+|Bcc||to4@mail.com, to5@mail.com|
 |Mensagem||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
@@ -111,8 +114,9 @@ Reenviar um e-mail usando seu ID
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Identificação do email||345|
-|Para||to@mail.com, to2@mail.com|
-|Cc||to1@mail.com, to3@mail.com|
+|Para||to@mail.com, to1@mail.com|
+|Cc||to2@mail.com, to3@mail.com|
+|Bcc||to4@mail.com, to5@mail.com|
 |Mensagem||This is a test.|
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
