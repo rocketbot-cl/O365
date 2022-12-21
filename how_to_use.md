@@ -1,17 +1,38 @@
+## How to use this module
+
+Before using this module, you need to register your app in the Azure App Registrations portal.
+
+1. Sign in to the Azure portal and search for the Azure Active Directory service.
+2. On the left side menu, get into "App Registrations".
+3. Select "New record".
+4. Under “Compatible account types” supported choose:
+    - "Accounts in any organizational directory (any Azure AD directory: multi-tenant) and personal Microsoft accounts (such as Skype or Xbox)" for this case use Tenant ID = **common**.
+    - "Only accounts from this organizational directory (only this account: single tenant) for this case use application-specific **Tenant ID**.
+5. Set the redirect uri (Web) as: https://login.microsoftonline.com/common/oauth2/nativeclient and click "Register".
+6. Copy the application (client) ID. You will need this value.
+7. Under "Certificates and secrets", generate a new client secret. Set the expiration (preferably 24 months). Copy the **VALUE** of the created client secret (**__NOT the Secret ID__**). It will hide after a few minutes.
+8. Under "API permissions", click "Add a permission", select "Microsoft Graph", then "Delegated permissions", find and select "Mail.ReadWrite" and "User.Read", and finally " Add permissions".
+9.  In Rocketbot Studio, insert the "Connect to O365" command, enter the requested data (client ID, secret value, and tenant), and run the command.
+10. In the Rocketbot console a url will be generated, copy and paste it into your browser.
+    - **Example:** <sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline</sub>
+11. Accept the permissions granting and it will return a screen without content. Copy the URL and Paste it into Rocketbot console below **"Paste the authenticated url here:"**.
+    - **Example:** <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M</sub>
+12. Press "enter" and if the operation was successful you will see in the console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." and a file will have been created with your credentials, in the root folder of Rocketbot, called o365_token.txt or o365_token_{session}.txt.
 
 
+__Equality operators__	
+Equals (__eq__)
+Not equals (__ne__)
+Logical negation (__not__)
+In (__in__)
+Has (__has__)
+__Relational operators__
+Less than (__lt__)
+Greater than (__gt__)
+Less than or equal to (__le__)
+Greater than or equal to (__ge__)
 
-
-# O365
-  
-Conectar con Outlook mediante O365.  
-
-*Read this in other languages: [English](Manual_O365.md), [Portugues](Manual_O365_pr.md), [Español](Manual_O365_es.md).*
-
-![banner](imgs/Banner_O365.png)
-## Como instalar este módulo
-  
-__Descarga__ e __instala__ el contenido en la carpeta 'modules' en la ruta de Rocketbot.  
+---
 
 ## Como usar este modulo
 
@@ -139,241 +160,25 @@ Es importante tener presente que solo deben utilizarse comillas simples (') cuan
 
 Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
 
-## Descripción de los comandos
+---
 
-### Conectar a O365
-  
-Conectar a una insancia de la aplicación de O365
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|client_id||client_id|
-|client_secret||client_secret|
-|tenant_id||tenant_id|
-|session||session|
-|Conectarse a Sharepoint||-|
+## Como usar este módulo
 
-### Listar todos los emails
-  
-Listar todos los emails, se puede especificar un filtro
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|Filtro||subject eq 'compras'|
-|ID Carpeta||Inbox|
-|Cantidad de emails a listar||25|
-|Asignar a variable||Variable|
-|session||session|
+Antes de usar este módulo, você precisa registrar seu aplicativo no portal de Registros de Aplicativo do Azure.
 
-### Listar emails no leidos
-  
-Listar todos los emails no leidos de tu casilla de correo
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|Filtro||subject eq 'compras'|
-|ID Carpeta||Inbox|
-|Cantidad de emails a listar||25|
-|Asignar a variable||Variable|
-|session||session|
-
-### Leer email por ID
-  
-Leer un email utilizando su ID
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del email||345|
-|Ruta para descargar adjuntos||C:\User\Desktop|
-|Descargar adjuntos||-|
-|Marcar como leído||-|
-|Cuerpo de email en HTML|Si se marca esta casilla, devolvera el cuerpo del email en versión HTML.||
-|Asignar a variable||Variable|
-|session||session|
-
-### Enviar Email
-  
-Envia un email
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|Para||to@mail.com, to1@mail.com|
-|Cc||to2@mail.com, to3@mail.com|
-|Bcc||to4@mail.com, to5@mail.com|
-|Asunto||Nuevo mail|
-|Mensaje||Esto es una prueba|
-|Archivo Adjunto||C:\User\Desktop\test.txt|
-|Carpeta (Varios archivos)||C:\User\Desktop\Files|
-|session||session|
-
-### Responder Email
-  
-Responder un email utilizando su ID
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del email||345|
-|Cc||to2@mail.com, to3@mail.com|
-|Bcc||to4@mail.com, to5@mail.com|
-|Mensaje||Esto es una prueba|
-|Archivo Adjunto||C:\User\Desktop\test.txt|
-|Carpeta (Varios archivos)||C:\User\Desktop\Files|
-|Marcar como leído||-|
-|session||session|
-
-### Reenviar Email
-  
-Reenviar un email utilizando su ID
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del email||345|
-|Para||to@mail.com, to1@mail.com|
-|Cc||to2@mail.com, to3@mail.com|
-|Bcc||to4@mail.com, to5@mail.com|
-|Mensaje||This is a test.|
-|Archivo Adjunto||C:\User\Desktop\test.txt|
-|Carpeta (Varios archivos)||C:\User\Desktop\Files|
-|Marcar como leído||-|
-|session||session|
-
-### Descargar adjuntos
-  
-Descarga los archivos adjuntos de un correo
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del email||345|
-|Ruta para descargar adjuntos||C:\User\Desktop|
-|Marcar como leído||-|
-|Asignar a variable||Variable|
-|session||session|
-
-### Marcar como no leido
-  
-Marcar un email como no leido
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del email||345|
-|Asignar a variable||Variable|
-|session||session|
-
-### Listar carpetas del correo
-  
-Lista todas las carpetas del correo
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|Asignar a variable||Variable|
-|session||session|
-
-### Mover email
-  
-Mover un email de una carpeta a otra
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del email||345|
-|ID de carpeta||345|
-|Asignar a variable||Variable|
-|session||session|
-
-### Crear carpeta
-  
-Crea una nueva carpeta en el correo electrónico.
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID carpeta padre||Inbox or 345...|
-|Nombre de la nueva carpeta||new_folder|
-|Asignar a variable||Variable|
-|session||session|
-
-### Obtener grupos
-  
-Obtener lista de Grupos a los que pertenece la cuenta
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|Asignar a variable||Variable|
-|session||session|
-
-### Obtener grupo
-  
-Obtener Grupo por su ID
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Grupo||ID|
-|Asignar a variable||Variable|
-|session||session|
-
-### Obtener sitio
-  
-Obtener el sitio del Grupo
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Grupo||ID|
-|Asignar a variable||Variable|
-|session||session|
-
-### Obtener listas
-  
-Obtener las listas del Sitio
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Grupo||ID|
-|Asignar a variable||Variable|
-|session||session|
-
-### Crear Lista
-  
-Crear una nueva lista
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Sitio||ID|
-|Datos de lista||{'displayName': 'example_name'}|
-|Asignar a variable||Variable|
-|session||session|
-
-### Obtener items de lista
-  
-Obtener los items de una Lista utilizando su nombre
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Sitio||ID|
-|Nombre de Lista||name|
-|Asignar a variable||Variable|
-|session||session|
-
-### Obtener Item
-  
-Obtener un Item, utilizando su ID, de una Lista
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Sitio||ID|
-|Nombre de Lista||name|
-|ID del Item||ID|
-|Asignar a variable||Variable|
-|session||session|
-
-### Crear Item
-  
-Crear un Item dentro de una Lista
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Sitio||ID|
-|Nombre de Lista||name|
-|Datos del Item||{'title': 'data'}|
-|Asignar a variable||Variable|
-|session||session|
-
-### Borrar Item
-  
-Borrar un Item, usando su ID, de una Lista
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Sitio||ID|
-|Nombre de Lista||name|
-|ID del Item||ID|
-|Asignar a variable||Variable|
-|session||session|
-
-### Actalizar Item
-  
-Actualizar datos de un Item usando si ID
-|Parámetros|Descripción|ejemplo|
-| --- | --- | --- |
-|ID del Sitio||ID|
-|Nombre de Lista||name|
-|ID del Item||ID|
-|Datos del Item||{'title': 'data'}|
-|Asignar a variable||Variable|
-|session||session|
+1. Entre no portal do Azure e procure o serviço Azure Active Directory.
+2. No menu do lado esquerdo, entre em "Registros de aplicativos".
+3. Selecione "Novo registro".
+4. Em "Tipos de conta compatíveis" suportados, escolha:
+    - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
+    - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
+5. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
+6. Copie o ID do aplicativo (cliente). Você vai precisar desse valor.
+7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.
+8. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
+9. No Rocketbot Studio, insira o comando "Connect to O365", insira os dados solicitados (ID do cliente, valor secreto e locatário) e execute o comando.
+10. No console do Rocketbot será gerado um URL, copie e cole no seu navegador.
+    - **Exemplo:** <sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline
+11. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL e cole-o no console do Rocketbot abaixo de **"Paste the authenticated url here:"**.
+    - Exemplo: <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M
+12. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.

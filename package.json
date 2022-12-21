@@ -10,7 +10,8 @@
   "mac": true,
   "docker": true,
   "dependencies": {
-    "bs4": "4.9.3"
+    "bs4": "4.9.3",
+    "O365": "2.0.20"
   },
   "name": "O365",
   "title": {
