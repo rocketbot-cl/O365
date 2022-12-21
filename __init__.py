@@ -434,10 +434,12 @@ if module == "readEmail":
                 if not body:
                     body = message.body
             else:
+
                 body = str(html_body) 
         else:
             body = message.body
             
+
         message_all = {
             # Recipient object
             'sender': message.sender.address,
