@@ -1,7 +1,3 @@
-
-
-
-
 # O365
   
 Connect to Outlook through O365.  

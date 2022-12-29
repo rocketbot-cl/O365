@@ -101,8 +101,8 @@ if module == "connect":
 
 if module == "sendEmail":
     to_ = GetParams("to_")
-    cc = GetParams("cc")
-    bcc = GetParams("bcc")
+    cc_ = GetParams("cc")
+    bcc_ = GetParams("bcc")
     subject = GetParams("subject")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
@@ -112,13 +112,13 @@ if module == "sendEmail":
         message = mod_o365_session[session].new_message()
         if not to_:
             raise Exception("'To' field must not be empty.")
-        list_to = to_.split(",")
+        list_to = [to.strip() for to in to_.split(",")]
         message.to.add(list_to)
-        if cc:
-            list_cc = cc.split(",")
+        if cc_:
+            list_cc = [cc.strip() for cc in cc_.split(",")]
             message.cc.add(list_cc)
-        if bcc:
-            list_bcc = bcc.split(",")
+        if bcc_:
+            list_bcc = [bcc.strip() for bcc in bcc_.split(",")]
             message.bcc.add(list_bcc)
         message.subject = subject
         
@@ -162,8 +162,8 @@ if module == "sendEmail":
 
 if module == "replyEmail":
     id_ = GetParams("id_")
-    cc = GetParams("cc")
-    bcc = GetParams("bcc")
+    cc_ = GetParams("cc")
+    bcc_ = GetParams("bcc")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
@@ -178,13 +178,13 @@ if module == "replyEmail":
     try:
         message = mod_o365_session[session].mailbox().get_message(id_)
         reply = message.reply()
-        if cc:
-            list_cc = cc.split(",")
+        if cc_:
+            list_cc = [cc.strip() for cc in cc_.split(",")]
             reply.cc.add(list_cc)
-        if bcc:
-            list_bcc = bcc.split(",")
+        if bcc_:
+            list_bcc = [bcc.strip() for bcc in bcc_.split(",")]
             reply.bcc.add(list_bcc)
-                
+                    
         if not "src" in body:
             reply.body = body + "\n"
         else:
@@ -226,8 +226,8 @@ if module == "replyEmail":
 
 if module == "forwardEmail":
     to_ = GetParams("to_")
-    cc = GetParams("cc")
-    bcc = GetParams("bcc")
+    cc_ = GetParams("cc")
+    bcc_ = GetParams("bcc")
     id_ = GetParams("id_")
     body = GetParams("body")
     attached_file = GetParams("attached_file")
@@ -247,11 +247,11 @@ if module == "forwardEmail":
             raise Exception("'To' field must not be empty.")
         list_to = to_.split(",")
         forward.to.add(list_to)
-        if cc:
-            list_cc = cc.split(",")
+        if cc_:
+            list_cc = [cc.strip() for cc in cc_.split(",")]
             forward.cc.add(list_cc)
-        if bcc:
-            list_bcc = bcc.split(",")
+        if bcc_:
+            list_bcc = [bcc.strip() for bcc in bcc_.split(",")]
             forward.bcc.add(list_bcc)
             
         if not "src" in body:
