@@ -2,15 +2,16 @@
   "author": "Nicolas Liendro - Juan Siro",
   "description": "Connect to Outlook through O365.",
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "1.5.1",
+  "version": "1.5.6",
   "license": "MIT",
-  "homepage": "http://rockertbot.cl",
+  "homepage": "http://rockertbot.com",
   "linux": true,
   "windows": true,
   "mac": true,
   "docker": true,
   "dependencies": {
-    "bs4": "4.9.3"
+    "bs4": "4.9.3",
+    "O365": "2.0.20"
   },
   "name": "O365",
   "title": {
@@ -267,6 +268,22 @@
         "inputs": [
           {
             "type": "input",
+            "placeholder": "subject eq 'compras'",
+            "title": {
+              "es": "Filtro:",
+              "en": "Filter:",
+              "pr": "Filter:"
+            },
+            "help": {
+              "es": "Dejar vacío para traerlos todos",
+              "en": "Leave it empty to get all",
+              "pr": "Deixe-o vazio para obter todos"
+            },
+            "id": "filter",
+            "css": "col-md-12"
+          },
+          {
+            "type": "input",
             "placeholder": "Inbox",
             "title": {
               "es": "ID Carpeta",
@@ -519,7 +536,7 @@
         "inputs": [
           {
             "type": "input",
-            "placeholder": "to@mail.com, to2@mail.com",
+            "placeholder": "to@mail.com, to1@mail.com",
             "title": {
               "es": "Para:",
               "en": "To:",
@@ -535,7 +552,7 @@
           },
           {
             "type": "input",
-            "placeholder": "to1@mail.com, to3@mail.com",
+            "placeholder": "to2@mail.com, to3@mail.com",
             "title": {
               "es": "Cc:",
               "en": "Cc:",
@@ -547,7 +564,23 @@
               "pr": "Para vários destinatários separados por vírgula"
             },
             "id": "cc",
-            "css": "col-md-12"
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "to4@mail.com, to5@mail.com",
+            "title": {
+              "es": "Bcc:",
+              "en": "Bcc:",
+              "pr": "Bcc:"
+            },
+            "help": {
+              "es": "Para varios destinatarios separar por coma",
+              "en": "For multiple recipients, comma separated",
+              "pr": "Para vários destinatários separados por vírgula"
+            },
+            "id": "bcc",
+            "css": "col-md-6"
           },
           {
             "type": "input",
@@ -673,11 +706,11 @@
               "pr": "Identificação do email"
             },
             "id": "id_",
-            "css": "col-md-6"
+            "css": "col-md-12"
           },
           {
             "type": "input",
-            "placeholder": "to1@mail.com, to3@mail.com",
+            "placeholder": "to2@mail.com, to3@mail.com",
             "title": {
               "es": "Cc:",
               "en": "Cc:",
@@ -689,6 +722,22 @@
               "pr": "Para vários destinatários separados por vírgula"
             },
             "id": "cc",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "to4@mail.com, to5@mail.com",
+            "title": {
+              "es": "Bcc:",
+              "en": "Bcc:",
+              "pr": "Bcc:"
+            },
+            "help": {
+              "es": "Para varios destinatarios separar por coma",
+              "en": "For multiple recipients, comma separated",
+              "pr": "Para vários destinatários separados por vírgula"
+            },
+            "id": "bcc",
             "css": "col-md-6"
           },
           {
@@ -824,11 +873,11 @@
               "pr": "Identificação do email"
             },
             "id": "id_",
-            "css": "col-md-6"
+            "css": "col-md-12"
           },
           {
             "type": "input",
-            "placeholder": "to@mail.com, to2@mail.com",
+            "placeholder": "to@mail.com, to1@mail.com",
             "title": {
               "es": "Para:",
               "en": "To:",
@@ -840,11 +889,11 @@
               "pr": "Para vários destinatários separados por vírgula"
             },
             "id": "to_",
-            "css": "col-md-12"
+            "css": "col-md-6"
           },
           {
             "type": "input",
-            "placeholder": "to1@mail.com, to3@mail.com",
+            "placeholder": "to2@mail.com, to3@mail.com",
             "title": {
               "es": "Cc:",
               "en": "Cc:",
@@ -856,7 +905,23 @@
               "pr": "Para vários destinatários separados por vírgula"
             },
             "id": "cc",
-            "css": "col-md-12"
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "to4@mail.com, to5@mail.com",
+            "title": {
+              "es": "Bcc:",
+              "en": "Bcc:",
+              "pr": "Bcc:"
+            },
+            "help": {
+              "es": "Para varios destinatarios separar por coma",
+              "en": "For multiple recipients, comma separated",
+              "pr": "Para vários destinatários separados por vírgula"
+            },
+            "id": "bcc",
+            "css": "col-md-6"
           },
           {
             "type": "textarea",

@@ -1,7 +1,3 @@
-
-
-
-
 # O365
   
 Conectar con Outlook mediante O365.  
@@ -168,6 +164,7 @@ Listar todos los emails, se puede especificar un filtro
 Listar todos los emails no leidos de tu casilla de correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
+|Filtro||subject eq 'compras'|
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
 |Asignar a variable||Variable|
@@ -191,8 +188,9 @@ Leer un email utilizando su ID
 Envia un email
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
-|Para||to@mail.com, to2@mail.com|
-|Cc||to1@mail.com, to3@mail.com|
+|Para||to@mail.com, to1@mail.com|
+|Cc||to2@mail.com, to3@mail.com|
+|Bcc||to4@mail.com, to5@mail.com|
 |Asunto||Nuevo mail|
 |Mensaje||Esto es una prueba|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
@@ -205,7 +203,8 @@ Responder un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
-|Cc||to1@mail.com, to3@mail.com|
+|Cc||to2@mail.com, to3@mail.com|
+|Bcc||to4@mail.com, to5@mail.com|
 |Mensaje||Esto es una prueba|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
@@ -218,8 +217,9 @@ Reenviar un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
-|Para||to@mail.com, to2@mail.com|
-|Cc||to1@mail.com, to3@mail.com|
+|Para||to@mail.com, to1@mail.com|
+|Cc||to2@mail.com, to3@mail.com|
+|Bcc||to4@mail.com, to5@mail.com|
 |Mensaje||This is a test.|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
