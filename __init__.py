@@ -373,6 +373,12 @@ if module == "readEmail":
     if not id_:
         raise Exception("Missing Email ID...")
     
+    if download_att:
+        download_att = eval(download_att)
+    
+    if not_parsed:
+        not_parsed = eval(not_parsed)
+    
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
@@ -381,7 +387,7 @@ if module == "readEmail":
         # API: Used to download attachments of the read email
         for att in message.attachments:
             files.append(att.name)
-            if eval(download_att) == True:
+            if download_att == True:
                 if not os.path.isdir(att_folder):
                         raise Exception('The path does not exist.')
                 att.save(location=att_folder)
@@ -396,14 +402,13 @@ if module == "readEmail":
             name = att['filename']
             name = name.replace("\r","").replace("\n","")
             
-            if download_att:
-                if eval(download_att) == True:                    
-                    if not name in files:
-                        files.append(name)
-                        cont = base64.b64decode(att['payload'])
-                        with open(os.path.join(att_folder, name), 'wb') as file_:
-                            file_.write(cont)
-                            file_.close()
+            if download_att == True:                    
+                if not name in files:
+                    files.append(name)
+                    cont = base64.b64decode(att['payload'])
+                    with open(os.path.join(att_folder, name), 'wb') as file_:
+                        file_.write(cont)
+                        file_.close()
         
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
@@ -411,7 +416,6 @@ if module == "readEmail":
         links = {}
         if html_body:
             for a in html_body.find_all("a"):
-                print(a)
                 # First checks the text of the a tag    
                 if a.get_text():
                     key = a.get_text()
@@ -429,7 +433,7 @@ if module == "readEmail":
                     key = key_2 + '(' + str(x) + ')'    
                 links[key]= a.get("href", '')
                 
-            if not not_parsed or eval(not_parsed) == False:
+            if not not_parsed or not_parsed == False:
                 body = html_body.get_text()
                 if not body:
                     body = message.body
