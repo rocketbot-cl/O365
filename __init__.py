@@ -24,17 +24,18 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 
 """
 
+import sys
+import os
+
 base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
 
-from enum import Enum
-import trace
 from O365 import Account
+from O365.utils.attachment import BaseAttachment, UploadSessionRequest
 import traceback
 from bs4 import BeautifulSoup
-import os
 
 module = GetParams("module")
 
@@ -75,7 +76,8 @@ if module == "connect":
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
     sharepoint_ = GetParams('sharepoint')
-
+    res = GetParams("res")
+    
     if session == '':
         filename = "o365_token.txt"
     else:
@@ -85,16 +87,17 @@ if module == "connect":
     
     scopes_ = ['basic', 'message_all']
     
-    if sharepoint_:
-        if eval(sharepoint_):
-            scopes_.append('sharepoint_dl')         
+    if sharepoint_ and eval(sharepoint_) == True:
+        scopes_.append('sharepoint_dl')         
     
     try:
         credentials = (client_id, client_secret)
         mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
         if not mod_o365_session[session].is_authenticated:
             mod_o365_session[session].authenticate(scopes=scopes_)
+        SetVar(res, mod_o365_session[session].is_authenticated) 
     except Exception as e:
+        SetVar(res, mod_o365_session[session].is_authenticated)
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
@@ -144,14 +147,26 @@ if module == "sendEmail":
                 index += 1
                 
             message.body = body
-
+            
         if attached_file:
-            message.attachments.add(attached_file)
+            size = os.path.getsize(attached_file)
+            if size > 3000000: 
+                att = BaseAttachment(attachment=attached_file, parent=message)
+                UploadSessionRequest(message, att)
+                message.attachments.add(attached_file)
+            else:
+                message.attachments.add(attached_file)
         if attached_folder:
             filenames = []
             for f in os.listdir(attached_folder):
                 f = os.path.join(attached_folder, f)
                 filenames.append(f)
+                
+                size = os.path.getsize(f)
+                if size > 3000000:        
+                    att = BaseAttachment(attachment=f, parent=message)
+                    UploadSessionRequest(message, att)
+
             message.attachments.add(filenames)
             
         message.send()
@@ -206,18 +221,29 @@ if module == "replyEmail":
             reply.body = body + "\n"
         
         if attached_file:
-            reply.attachments.add(attached_file)
+            size = os.path.getsize(attached_file)
+            if size > 3000000: 
+                att = BaseAttachment(attachment=attached_file, parent=reply)
+                UploadSessionRequest(reply, att)
+                reply.attachments.add(attached_file)
+            else:
+                reply.attachments.add(attached_file)
         if attached_folder:
             filenames = []
             for f in os.listdir(attached_folder):
                 f = os.path.join(attached_folder, f)
                 filenames.append(f)
+                
+                size = os.path.getsize(f)
+                if size > 3000000:        
+                    att = BaseAttachment(attachment=f, parent=reply)
+                    UploadSessionRequest(reply, att)
+                
             reply.attachments.add(filenames)
         reply.send()
         
-        if read:
-            if eval(read) == True:
-                message.mark_as_read()
+        if read and (read == "true" or read):
+            message.mark_as_read()
         
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -274,18 +300,29 @@ if module == "forwardEmail":
             forward.body = body + "\n"
 
         if attached_file:
-            forward.attachments.add(attached_file)
+            size = os.path.getsize(attached_file)
+            if size > 3000000: 
+                att = BaseAttachment(attachment=attached_file, parent=forward)
+                UploadSessionRequest(forward, att)
+                forward.attachments.add(attached_file)
+            else:
+                forward.attachments.add(attached_file)
         if attached_folder:
             filenames = []
             for f in os.listdir(attached_folder):
                 f = os.path.join(attached_folder, f)
                 filenames.append(f)
+                
+                size = os.path.getsize(f)
+                if size > 3000000:        
+                    att = BaseAttachment(attachment=f, parent=forward)
+                    UploadSessionRequest(forward, att)
+                
             forward.attachments.add(filenames)
         forward.send()
         
-        if read:
-            if eval(read) == True:
-                message.mark_as_read()
+        if read and (read == "true" or read):
+            message.mark_as_read()
         
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -367,6 +404,7 @@ if module == "readEmail":
     read = GetParams("markasread")
     not_parsed = GetParams("not_parsed")
     
+    import email
     from mailparser import mailparser
     import base64
     
@@ -398,6 +436,7 @@ if module == "readEmail":
             
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
         parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
+
         for att in parsed_mail.attachments:
             name = att['filename']
             name = name.replace("\r","").replace("\n","")
@@ -458,9 +497,8 @@ if module == "readEmail":
             'files': files
         }
         
-        if read:
-            if eval(read) == True:
-                message.mark_as_read()
+        if read and (read == "true" or read):
+            message.mark_as_read()
         
         SetVar(res, message_all)
     except Exception as e:
@@ -516,9 +554,8 @@ if module == "downAtt":
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
         
-        if read:
-            if eval(read) == True:
-                message.mark_as_read()
+        if read and (read == "true" or read):
+            message.mark_as_read()
         
         SetVar(res, True)
     except Exception as e:
@@ -664,7 +701,7 @@ def list_groups(gs):
     """
 
     url = gs.build_url(mod_o365_endpoints.get('list_groups'))
-    print(url)
+
     response = gs.con.get(url)
 
     if not response:
@@ -936,7 +973,9 @@ if module == "deleteItem":
     res = GetParams("res")
 
     try:
-
+        
+        listName = listName.encode()
+        
         del_item = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).delete_list_item(itemId)
 
         SetVar(res, del_item)
