@@ -583,6 +583,31 @@ if module == "markUnread":
         PrintException()
         raise e
 
+if module == "downloadEML":
+    res = GetParams("res")
+    path = GetParams("path")
+    name = GetParams("filename")
+    id_ = GetParams("id_")
+    
+    if not id_:
+        raise Exception("Missing Email ID...")
+    if not path:
+        raise Exception("Must provide a saving path...")
+    if not name:
+        name = "Message"
+        
+    try:
+        # It creates a message object and makes available attachments to be downloaded
+        message = mod_o365_session[session].mailbox().get_message(id_)
+        path = os.path.join(path,name)
+        eml = message.save_as_eml(path)
+        
+        SetVar(res, eml)
+    except Exception as e:
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
 if module == "moveEmail":
     folderId = GetParams("folderId")
     id_ = GetParams("id_")
