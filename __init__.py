@@ -1,7 +1,7 @@
 # coding: utf-8
 """
-Base para desarrollo de modulos externos.
-Para obtener el modulo/Funcion que se esta llamando:
+Base para desarrollo de módulos externos.
+Para obtener el modulo/Función que se esta llamando:
      GetParams("module")
 
 Para obtener las variables enviadas desde formulario/comando Rocketbot:
@@ -14,11 +14,11 @@ Para modificar la variable de Rocketbot:
 Para obtener una variable de Rocketbot:
     var = GetVar(Variable_Rocketbot)
 
-Para obtener la Opcion seleccionada:
+Para obtener la Opción seleccionada:
     opcion = GetParams("option")
 
 
-Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
+Para instalar librerías se debe ingresar por terminal a la carpeta "libs"
     
    sudo pip install <package> -t .
 
@@ -34,6 +34,7 @@ if cur_path not in sys.path:
 
 from O365 import Account
 from O365.utils.attachment import BaseAttachment, UploadSessionRequest
+from O365.drive import Storage
 import traceback
 from bs4 import BeautifulSoup
 
@@ -84,11 +85,12 @@ if module == "connect":
         filename = "o365_token_{s}.txt".format(s=session)
     
     filename = os.path.join(base_path, filename)
-    
-    scopes_ = ['basic', 'message_all']
+    # offline_access scope is needed to get the refresh token. That token is used to get a new token automatically with every connection (leaving out the first one).  
+    scopes_ = ['offline_access', 'User.Read', 'Mail.ReadWrite', 'Mail.Send']
     
     if sharepoint_ and eval(sharepoint_) == True:
-        scopes_.append('sharepoint_dl')         
+        share_scopes = ['Group.Read.All', 'Sites.ReadWrite.All', 'Sites.Manage.All', 'Files.ReadWrite.All']
+        scopes_.extend(share_scopes)         
     
     try:
         credentials = (client_id, client_secret)
@@ -101,6 +103,8 @@ if module == "connect":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+
+# https://learn.microsoft.com/en-us/graph/api/resources/mail-api-overview?view=graph-rest-1.0
 
 if module == "sendEmail":
     to_ = GetParams("to_")
@@ -706,6 +710,8 @@ if module == "newFolder":
 
 """-----------------------------------------------------------------------------------------------------------------------------------------------------"""
 
+# https://learn.microsoft.com/en-us/graph/api/resources/sharepoint?view=graph-rest-1.0
+
 global mod_o365_endpoints
 
 mod_o365_endpoints = {
@@ -715,7 +721,7 @@ mod_o365_endpoints = {
     'list_groups': '/groups',
     'get_group_site': '/groups/{group_id}/sites/{site_name}',
     'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
-    'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/items/'
+    'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/columns'
     }
 
 def list_groups(gs):
@@ -810,10 +816,21 @@ def get_site_lists(gs, group_id = None, group_site = None):
 
     return data
 
-def get_list(gs, group_id = None, group_site = None, list_id= None):
-    """ Returns Microsoft O365/AD group with given id
-    :param group_id: group id of group
-    :rtype: Group
+def get_list_columns(gs, group_id = None, group_site = None, list_id= None):
+    """Returns a list with the editable columns that the given list has.
+
+    Args:
+        gs (Group Object): _description_
+        group_id (str, optional): _description_. Defaults to None.
+        group_site (str, optional): _description_. Defaults to None.
+        list_id (str, optional): _description_. Defaults to None.
+
+    Raises:
+        RuntimeError: _description_
+        RuntimeError: _description_
+
+    Returns:
+        _type_: _description_
     """
 
     if not group_id:
@@ -832,9 +849,57 @@ def get_list(gs, group_id = None, group_site = None, list_id= None):
         return None
 
     data = response.json()
+    data_ = []
+    # Iteratares over every column present and returns only the ones that are editable.
+    for column in data['value']:
+        if column['readOnly'] == False:
+            data_.append(column)
+    
+    return data_
+
+def get_libraries(s, site_id = None):
+    """Returns a list with all the drives within the passed site. 
+
+    Args:
+        s (Sharepoint Object): _description_
+        site_id (str, optional): _description_. Defaults to None.
+
+    Returns:
+        list: List of drives within the site
+    """
+    global Storage
+    
+    store = Storage(parent=s, main_resource='/sites/{id}'.format(id=site_id))
+    
+    url = store.build_url(store._endpoints.get('list_drives'))
+
+    response = store.con.get(url)
+
+    data = response.json()
 
     return data
 
+def get_documents(sd, site_id = None, drive_id = None):
+    """Returns a list with all the drives within the passed site. 
+
+    Args:
+        s (Sharepoint Object): _description_
+        site_id (str, optional): _description_. Defaults to None.
+
+    Returns:
+        list: List of drives within the site
+    """
+    global Storage
+    
+    store = Storage(parent=sd, main_resource='/sites/{id}'.format(id=site_id))
+    
+    url = store.build_url(store._endpoints.get('list_drives'))
+
+    response = store.con.get(url)
+
+    data = response.json()
+
+    return data
 
 if module == "listGroups":
 
@@ -906,15 +971,39 @@ if module == "siteLists":
         PrintException()
         raise e
 
+if module == "getListColumns":
+
+    group_ = GetParams("groupId")
+    list_id = GetParams("listId")
+    res = GetParams("res")
+
+    try:
+          
+        list = get_list(mod_o365_session[session].groups(), 
+                              group_, 
+                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName'],
+                              list_id
+                              )
+
+        SetVar(res, list)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+
 if module == "createList":
-    
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
     listInfo = GetParams("listInfo")
     res = GetParams("res")
 
     try:
         
-        new_list = mod_o365_session[session].sharepoint().get_site(site_).create_list(eval(listInfo))
+        if isinstance(eval(listInfo), dict): 
+            new_list = mod_o365_session[session].sharepoint().get_site(site_).create_list(eval(listInfo))   
+        else:
+            raise Exception ("Data must be dictionary type...")
         
         SetVar(res, new_list)
 
@@ -1031,6 +1120,142 @@ if module == "updateItem":
     except Exception as e:
         SetVar(res, False)
         print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "getDocumentLibraries":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    res = GetParams("res")
+
+    try:
+   
+        libraries = get_libraries(mod_o365_session[session].sharepoint(), site_)
+        
+        SetVar(res, libraries)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == "documentsList":
+
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    drive_ = GetParams("driveId")
+    res = GetParams("res")
+    
+    def get_drive_contents(drive):
+        """Recursively iterates through the content of a drive (at first) and checks if each item if a folder
+          or a file. If the case is the it is a Folder, it calls the function again to get its sub-folders 
+          and files and so on, until it gets every file within the drive.
+
+        Args:
+            drive (Drive Items Generator): Collection of drive items
+        """
+        global get_drive_contents
+        global folders, files
+        
+        for doc in drive:
+            file = {}
+            if doc.is_folder:
+                folder = doc.get_items()
+                folder_ = {'name': doc.name,
+                        'object_id': doc.object_id,
+                        'parent': doc.get_parent(),
+                        'parent_id': doc.get_parent().object_id,
+                }
+                folders.append(folder_)     
+                get_drive_contents(folder)
+                
+            if doc.is_file:
+                file = {'name': doc.name,
+                        'object_id': doc.object_id,
+                        'parent': doc.get_parent(),
+                        'parent_id': doc.get_parent().object_id,
+                }
+                files.append(file)     
+    
+    try:
+        drive = mod_o365_session[session].sharepoint().get_site(site_).get_document_library(drive_).get_items()
+        
+        folders = []
+        files = []
+        
+        get_drive_contents(drive)
+
+        contents = {'folders': folders, 'files': files}
+        
+        SetVar(res, contents)
+
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == 'upload_item':
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    drive_ = GetParams("driveId")
+    folder_id = GetParams("folderId")
+    path_ = GetParams("path")
+    res = GetParams("res")
+    
+    try:
+        folder_ = mod_o365_session[session].sharepoint().get_site(site_).get_document_library(drive_).get_item(folder_id)
+        
+        if folder_.is_folder and os.path.exists(path_):
+            response = folder_.upload_file(path_)
+        
+        SetVar(res, response)
+        
+    except Exception as e:
+        SetVar(res, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+    
+if module == 'modify_item':
+    site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    drive_ = GetParams("driveId")
+    item_ = GetParams("itemId")
+    update_ = GetParams("update")
+    data_ = GetParams("data") # dict: only name and description are allowed at the moment
+    move_ = GetParams("move")
+    target_folder = GetParams("target_id")
+    download_ = GetParams("download")
+    path_ = GetParams('path')
+    delete_ = GetParams("delete")
+    res = GetParams("res")
+    
+    try:
+        
+        item = mod_o365_session[session].sharepoint().get_site(site_).get_document_library(drive_).get_item(item_)
+        
+        if update_ and eval(update_) and isinstance(eval(data_), dict):
+            data_ = eval(data_)
+            item.update(name=data_.get('name', item.name), description=data_.get('name', item.description))
+        
+        if move_ and eval(move_):
+            target = mod_o365_session[session].sharepoint().get_site(site_).get_document_library(drive_).get_item(target_folder)
+            if target.is_folder:
+                item.move(target)
+        
+        if download_ and eval(download_) and os.path.exists(path_):
+            item.download(to_path = path_)            
+            
+        if delete_ and eval(delete_):
+            item.delete()
+        
+        SetVar(res, True)
+    except Exception as e:
+        SetVar(res, False)
+        traceback.print_exc()
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
