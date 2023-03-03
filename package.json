@@ -1906,6 +1906,97 @@
     },
     {
       "en": {
+        "title": "Get list columns",
+        "description": "Get the editable columns of a specific List of the Site",
+        "title_options": "Select Option",
+        "options": null
+      },
+      "es": {
+        "title": "Obtener columnas de lista",
+        "description": "Obtener las columnas editables de una Lista específica del Sitio",
+        "title_options": "Seleccione una opción",
+        "options": null
+      },
+      "pr": {
+        "title": "Obter colunas da lista",
+        "description": "Obtenha as colunas editáveis de uma Lista específica do Site",
+        "title_options": "Selecionar opção",
+        "options": null
+      },
+      "form": {
+        "css": "modal-lg",
+        "inputs": [
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID del Grupo",
+              "en": "Group ID",
+              "pr": "ID do grupo"
+            },
+            "id": "groupId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID de Lista",
+              "en": "List ID",
+              "pr": "ID da lista"
+            },
+            "id": "listId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "Variable",
+            "title": {
+              "es": "Asignar a variable:",
+              "en": "Asign to variable:",
+              "pr": "Atribuir à variável:"
+            },
+            "help": {
+              "es": "Nombre de variable sin {}",
+              "en": "Variable name whitout {}",
+              "pr": "Nome da variável sem {}"
+            },
+            "id": "res",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "session",
+            "title": {
+              "en": "session",
+              "es": "session",
+              "pr": "session"
+            },
+            "help": {
+              "es": "Identificador de sesión",
+              "en": "Session ID",
+              "pr": "ID da sessão"
+            },
+            "id": "session",
+            "css": "col-md-6"
+          }
+        ]
+      },
+      "video_youtube": "aMV6cXPMMSo",
+      "icon": "data:image/png;base64,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",
+      "module": "getListColumns",
+      "module_name": "O365",
+      "visible": true,
+      "options": false,
+      "father": "module",
+      "group": "scripts",
+      "linux": true,
+      "windows": true,
+      "mac": true,
+      "docker": true
+    },
+    {
+      "en": {
         "title": "Create List",
         "description": "Create a new list",
         "title_options": "Select Option",
@@ -2495,6 +2586,475 @@
       "video_youtube": "aMV6cXPMMSo",
       "icon": "data:image/png;base64,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",
       "module": "updateItem",
+      "module_name": "O365",
+      "visible": true,
+      "options": false,
+      "father": "module",
+      "group": "scripts",
+      "linux": true,
+      "windows": true,
+      "mac": true,
+      "docker": true
+    },
+    {
+      "en": {
+        "title": "Get document libraries",
+        "description": "Get a list of the Document Libraries within the Site",
+        "title_options": "Select Option",
+        "options": null
+      },
+      "es": {
+        "title": "Obtener bibliotecas de documentos",
+        "description": "Obtener una lista de las bibliotecas de documentos dentro del sitio",
+        "title_options": "Seleccione una opción",
+        "options": null
+      },
+      "pr": {
+        "title": "Obter bibliotecas de documentos",
+        "description": "Obtenha uma lista das Bibliotecas de Documentos dentro do Site",
+        "title_options": "Selecionar opção",
+        "options": null
+      },
+      "form": {
+        "css": "modal-lg",
+        "inputs": [
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID del Sitio",
+              "en": "Site ID",
+              "pr": "ID do Sítio"
+            },
+            "id": "siteId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "Variable",
+            "title": {
+              "es": "Asignar a variable:",
+              "en": "Asign to variable:",
+              "pr": "Atribuir à variável:"
+            },
+            "help": {
+              "es": "Nombre de variable sin {}",
+              "en": "Variable name whitout {}",
+              "pr": "Nome da variável sem {}"
+            },
+            "id": "res",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "session",
+            "title": {
+              "en": "session",
+              "es": "session",
+              "pr": "session"
+            },
+            "help": {
+              "es": "Identificador de sesión",
+              "en": "Session ID",
+              "pr": "ID da sessão"
+            },
+            "id": "session",
+            "css": "col-md-6"
+          }
+        ]
+      },
+      "video_youtube": "aMV6cXPMMSo",
+      "icon": "data:image/png;base64,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",
+      "module": "getDocumentLibraries",
+      "module_name": "O365",
+      "visible": true,
+      "options": false,
+      "father": "module",
+      "group": "scripts",
+      "linux": true,
+      "windows": true,
+      "mac": true,
+      "docker": true
+    },
+    {
+      "en": {
+        "title": "Get documents",
+        "description": "Get a list of the documents within a library",
+        "title_options": "Select Option",
+        "options": null
+      },
+      "es": {
+        "title": "Obtener documentos",
+        "description": "Obtenga una lista de los documentos dentro de una biblioteca",
+        "title_options": "Seleccione una opción",
+        "options": null
+      },
+      "pr": {
+        "title": "Obter documentos",
+        "description": "Obtenha uma lista dos documentos dentro de uma biblioteca",
+        "title_options": "Selecionar opção",
+        "options": null
+      },
+      "form": {
+        "css": "modal-lg",
+        "inputs": [
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID del Sitio",
+              "en": "Site ID",
+              "pr": "ID do Sítio"
+            },
+            "id": "siteId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID de la Biblioteca",
+              "en": "Library ID",
+              "pr": "ID do Biblioteca"
+            },
+            "id": "driveId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "Variable",
+            "title": {
+              "es": "Asignar a variable:",
+              "en": "Asign to variable:",
+              "pr": "Atribuir à variável:"
+            },
+            "help": {
+              "es": "Nombre de variable sin {}",
+              "en": "Variable name whitout {}",
+              "pr": "Nome da variável sem {}"
+            },
+            "id": "res",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "session",
+            "title": {
+              "en": "session",
+              "es": "session",
+              "pr": "session"
+            },
+            "help": {
+              "es": "Identificador de sesión",
+              "en": "Session ID",
+              "pr": "ID da sessão"
+            },
+            "id": "session",
+            "css": "col-md-6"
+          }
+        ]
+      },
+      "video_youtube": "aMV6cXPMMSo",
+      "icon": "data:image/png;base64,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",
+      "module": "documentsList",
+      "module_name": "O365",
+      "visible": true,
+      "options": false,
+      "father": "module",
+      "group": "scripts",
+      "linux": true,
+      "windows": true,
+      "mac": true,
+      "docker": true
+    },
+    {
+      "en": {
+        "title": "Upload document",
+        "description": "Upload a document to a Site library",
+        "title_options": "Select Option",
+        "options": null
+      },
+      "es": {
+        "title": "Subir documento",
+        "description": "Subir un documento a una biblioteca del sitio",
+        "title_options": "Seleccione una opción",
+        "options": null
+      },
+      "pr": {
+        "title": "Carregar documentos",
+        "description": "Carregar um documento para uma biblioteca do Site",
+        "title_options": "Selecionar opção",
+        "options": null
+      },
+      "form": {
+        "css": "modal-lg",
+        "inputs": [
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID del Sitio",
+              "en": "Site ID",
+              "pr": "ID do Sítio"
+            },
+            "id": "siteId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID de la Biblioteca",
+              "en": "Library ID",
+              "pr": "ID do Biblioteca"
+            },
+            "id": "driveId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID de la Carpeta",
+              "en": "Folder ID",
+              "pr": "ID da Pasta"
+            },
+            "id": "folderId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "file_select",
+            "placeholder": "",
+            "title": {
+              "es": "Ruta",
+              "en": "Path",
+              "pr": "Caminho"
+            },
+            "id": "path",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "Variable",
+            "title": {
+              "es": "Asignar a variable:",
+              "en": "Asign to variable:",
+              "pr": "Atribuir à variável:"
+            },
+            "help": {
+              "es": "Nombre de variable sin {}",
+              "en": "Variable name whitout {}",
+              "pr": "Nome da variável sem {}"
+            },
+            "id": "res",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "session",
+            "title": {
+              "en": "session",
+              "es": "session",
+              "pr": "session"
+            },
+            "help": {
+              "es": "Identificador de sesión",
+              "en": "Session ID",
+              "pr": "ID da sessão"
+            },
+            "id": "session",
+            "css": "col-md-6"
+          }
+        ]
+      },
+      "video_youtube": "aMV6cXPMMSo",
+      "icon": "data:image/png;base64,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",
+      "module": "upload_item",
+      "module_name": "O365",
+      "visible": true,
+      "options": false,
+      "father": "module",
+      "group": "scripts",
+      "linux": true,
+      "windows": true,
+      "mac": true,
+      "docker": true
+    },
+    {
+      "en": {
+        "title": "Download or modify document",
+        "description": "Upload a document to a Site library",
+        "title_options": "Select Option",
+        "options": null
+      },
+      "es": {
+        "title": "Descargar o modificar documento",
+        "description": "Subir un documento a una biblioteca del sitio",
+        "title_options": "Seleccione una opción",
+        "options": null
+      },
+      "pr": {
+        "title": "Baixe ou modifique o documento",
+        "description": "Carregar um documento para uma biblioteca do Site",
+        "title_options": "Selecionar opção",
+        "options": null
+      },
+      "form": {
+        "css": "modal-lg",
+        "inputs": [
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID del Sitio",
+              "en": "Site ID",
+              "pr": "ID do Sítio"
+            },
+            "id": "siteId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID de la Biblioteca",
+              "en": "Library ID",
+              "pr": "ID do Biblioteca"
+            },
+            "id": "driveId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID del Item",
+              "en": "Item ID",
+              "pr": "ID do Item"
+            },
+            "id": "itemId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "{'name': 'new_name.jpg', 'description':'new_description'}",
+            "title": {
+              "es": "Datos a modificar",
+              "en": "Data to modify",
+              "pr": "Dados para modificar"
+            },
+            "help":{
+              "es": "Nombre(.ext) y Descripción son las unicas opciones al momento.",
+              "en": "Name(.ext) and Description are the only options at the moment.",
+              "pr": "Nome(.ext) e Descrição são as únicas opções no momento."
+            },
+            "id": "data",
+            "css": "col-md-9"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": "",
+            "title": {
+              "es": "Actualizar datos de documento",
+              "en": "Update document data",
+              "pr": "Atualizar dados do documento"
+            },
+            "id": "update",
+            "css": "col-md-3"
+          },
+
+          {
+            "type": "input",
+            "placeholder": "ID",
+            "title": {
+              "es": "ID de la carpeta destino",
+              "en": "Target folder ID",
+              "pr": "ID da pasta de destino"
+            },
+            "id": "target_id",
+            "css": "col-md-9"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": "",
+            "title": {
+              "es": "Mover documento",
+              "en": "Move document",
+              "pr": "Mover documento"
+            },
+            "id": "move",
+            "css": "col-md-3"
+          },
+          {
+            "type": "folder_select",
+            "placeholder": "",
+            "title": {
+              "es": "Ruta",
+              "en": "Path",
+              "pr": "Caminho"
+            },
+            "id": "path",
+            "css": "col-md-9"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": "",
+            "title": {
+              "es": "Descargar documento",
+              "en": "Download document",
+              "pr": "Baixar documento"
+            },
+            "id": "download",
+            "css": "col-md-3"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": "",
+            "title": {
+              "es": "Borrar documento",
+              "en": "Delete document",
+              "pr": "Excluir documento"
+            },
+            "id": "delete",
+            "css": "col-md-9"
+          },
+          {
+            "type": "input",
+            "placeholder": "Variable",
+            "title": {
+              "es": "Asignar a variable:",
+              "en": "Asign to variable:",
+              "pr": "Atribuir à variável:"
+            },
+            "help": {
+              "es": "Nombre de variable sin {}",
+              "en": "Variable name whitout {}",
+              "pr": "Nome da variável sem {}"
+            },
+            "id": "res",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "session",
+            "title": {
+              "en": "session",
+              "es": "session",
+              "pr": "session"
+            },
+            "help": {
+              "es": "Identificador de sesión",
+              "en": "Session ID",
+              "pr": "ID da sessão"
+            },
+            "id": "session",
+            "css": "col-md-6"
+          }
+        ]
+      },
+      "video_youtube": "aMV6cXPMMSo",
+      "icon": "data:image/png;base64,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",
+      "module": "modify_item",
       "module_name": "O365",
       "visible": true,
       "options": false,

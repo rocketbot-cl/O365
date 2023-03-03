@@ -543,7 +543,7 @@ class Site(ApiComponent):
             return []
 
         data = response.json()
-
+        
         return self.list_constructor(parent=self, **{self._cloud_data_key: data})
 
     def create_list(self, list_data):
