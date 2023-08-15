@@ -8,6 +8,7 @@ Before using this module, you need to register your app in the Azure App Registr
 4. Under “Compatible account types” supported choose:
     - "Accounts in any organizational directory (any Azure AD directory: multi-tenant) and personal Microsoft accounts (such as Skype or Xbox)" for this case use Tenant ID = **common**.
     - "Only accounts from this organizational directory (only this account: single tenant) for this case use application-specific **Tenant ID**.
+    - "Personal Microsoft accounts only" for this case use use Tenant ID = **consumers**.
 5. Set the redirect uri (Web) as: https://login.microsoftonline.com/common/oauth2/nativeclient and click "Register".
 6. Copy the application (client) ID. You will need this value.
 7. Under "Certificates and secrets", generate a new client secret. Set the expiration (preferably 24 months). Copy the **VALUE** of the created client secret (**__NOT the Secret ID__**). It will hide after a few minutes.
@@ -18,19 +19,6 @@ Before using this module, you need to register your app in the Azure App Registr
 11. Accept the permissions granting and it will return a screen without content. Copy the URL and Paste it into Rocketbot console below **"Paste the authenticated url here:"**.
     - **Example:** <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M</sub>
 12. Press "enter" and if the operation was successful you will see in the console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." and a file will have been created with your credentials, in the root folder of Rocketbot, called o365_token.txt or o365_token_{session}.txt.
-
-
-__Equality operators__	
-Equals (__eq__)
-Not equals (__ne__)
-Logical negation (__not__)
-In (__in__)
-Has (__has__)
-__Relational operators__
-Less than (__lt__)
-Greater than (__gt__)
-Less than or equal to (__le__)
-Greater than or equal to (__ge__)
 
 ---
 
@@ -44,6 +32,7 @@ Antes de usar este módulo, es necesario registrar tu aplicación en el portal d
 4. En “Tipos de cuenta compatibles” soportados elija:
     - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
     - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación.
+    - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
 5. Establezca la uri de redirección (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient y haga click en "Registrar".
 6. Copie el ID de la aplicación (cliente). Necesitará este valor.
 7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente. Establezca la caducidad (preferiblemente 24 meses). Copie el **VALOR** del secreto de cliente creado (**__NO el ID de Secreto__**). El mismo se ocultará al cabo de unos minutos.
@@ -172,6 +161,7 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 4. Em "Tipos de conta compatíveis" suportados, escolha:
     - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
     - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
+    - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumers**.
 5. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
 6. Copie o ID do aplicativo (cliente). Você vai precisar desse valor.
 7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.

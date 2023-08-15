@@ -1,33 +1,45 @@
+
+
+
+
 # O365
   
-Conecte-se ao Outlook usando o O365.  
+Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint.  
 
-*Read this in other languages: [English](Manual_O365.md), [Portugues](Manual_O365_pr.md), [Español](Manual_O365_es.md).*
-
-![banner](imgs/Banner_O365.png)
+*Read this in other languages: [English](Manual_O365.md), [Português](Manual_O365.pr.md), [Español](Manual_O365.es.md)*
+  
+![banner](imgs/Banner_O365.png o jpg)
 ## Como instalar este módulo
   
-__Baixe__ e __instale__ o conteúdo na pasta 'modules' no caminho do Rocketbot.
+Para instalar o módulo no Rocketbot Studio, pode ser feito de duas formas:
+1. Manual: __Baixe__ o arquivo .zip e descompacte-o na pasta módulos. O nome da pasta deve ser o mesmo do módulo e dentro dela devem ter os seguintes arquivos e pastas: \__init__.py, package.json, docs, example e libs. Se você tiver o aplicativo aberto, atualize seu navegador para poder usar o novo módulo.
+2. Automático: Ao entrar no Rocketbot Studio na margem direita você encontrará a seção **Addons**, selecione **Install Mods**, procure o módulo desejado e aperte instalar.  
+
+
 
 ## Como usar este módulo
 
 Antes de usar este módulo, você precisa registrar seu aplicativo no portal de Registros de Aplicativo do Azure.
 
 1. Entre no portal do Azure e procure o serviço Azure Active Directory.
-2. Lá, no menu do lado esquerdo, digite "Registro do Aplicativo".
+2. No menu do lado esquerdo, entre em "Registros de aplicativos".
 3. Selecione "Novo registro".
 4. Em "Tipos de conta compatíveis" suportados, escolha:
-    a. "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = common
-    b. "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam ID de locatário específico do aplicativo.
+    - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
+    - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
+    - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumidores**.
 5. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
-6. Copie o ID do aplicativo (cliente). Você vai precisar desse valor.
-7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o VALUE do segredo do cliente criado (NÃO o ID do segredo). Ele vai esconder depois de alguns minutos.
+6. Copie o ID do aplicativo (cliente). 
+Você vai precisar desse valor.
+7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.
 8. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
 9. No Rocketbot Studio, insira o comando "Connect to O365", insira os dados solicitados (ID do cliente, valor secreto e locatário) e execute o comando.
-10. No console do Rocketbot será gerado um URL (Exemplo: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline), copie e cole no seu navegador.
-11. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL (Exemplo: https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M) e cole-o no console do Rocketbot abaixo de "Paste the authenticated url here:".
+10. No console do Rocketbot será gerado um URL, copie e cole no seu navegador.
+    - **Exemplo:** 
+<sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline
+11. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL e cole-o no console do Rocketbot abaixo de **"Paste the authenticated url here:"**.
+    - Exemplo: <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M
 12. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.
-
 ## Descrição do comando
 
 ### Conectar a O365
@@ -40,6 +52,7 @@ Conectar-se à instância do aplicativo O365
 |tenant_id||tenant_id|
 |session||session|
 |Conectar ao Sharepoint||-|
+|Atribuir à variável||Variable|
 
 ### Listar todos os e-mails
   
@@ -47,6 +60,7 @@ Listar todos os e-mails, você pode especificar um filtro
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Filter||subject eq 'compras'|
+|Ordenar por||importance desc|
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
 |Atribuir à variável||Variable|
@@ -58,6 +72,7 @@ Liste todos os e-mails não lidos da sua caixa de correio
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Filter||subject eq 'compras'|
+|Ordenar por||importance desc|
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
 |Atribuir à variável||Variable|
@@ -139,11 +154,24 @@ Marcar um e-mail como não lido
 |Atribuir à variável||Variable|
 |session||session|
 
+### Baixar .eml
+  
+Baixe um e-mail no formato .eml
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|Identificação do email||345|
+|Caminho da pasta||C:/Users/user/Documents/|
+|Nome do arquivo||Mail|
+|Atribuir à variável||Variable|
+|session||session|
+
 ### Lista de pastas de e-mail
   
 Lista de pastas de e-mail
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
+|Filter||displayName eq 'Processed'|
+|Pasta pai|||
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -199,6 +227,16 @@ Obter as listas do Site
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do grupo||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter colunas da lista
+  
+Obtenha as colunas editáveis de uma Lista específica do Site
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do grupo||ID|
+|ID da lista||ID|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -264,5 +302,54 @@ Actualizar dados do Item usando seu ID
 |Nome da lista||name|
 |ID do Item||ID|
 |Dados do Item||{'title': 'data'}|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter bibliotecas de documentos
+  
+Obtenha uma lista das Bibliotecas de Documentos dentro do Site
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Obter documentos
+  
+Obtenha uma lista dos documentos dentro de uma biblioteca
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|ID do Biblioteca||ID|
+|Atribuir à variável||Variable|
+|session||session|
+
+### Carregar documentos
+  
+Carregar um documento para uma biblioteca do Site
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|ID do Biblioteca||ID|
+|ID da Pasta||ID|
+|Caminho|||
+|Atribuir à variável||Variable|
+|session||session|
+
+### Baixe ou modifique o documento
+  
+Carregar um documento para uma biblioteca do Site
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|ID do Biblioteca||ID|
+|ID do Item||ID|
+|Dados para modificar||{'name': 'new_name.jpg', 'description':'new_description'}|
+|Atualizar dados do documento|||
+|ID da pasta de destino||ID|
+|Mover documento|||
+|Caminho|||
+|Baixar documento|||
+|Excluir documento|||
 |Atribuir à variável||Variable|
 |session||session|
