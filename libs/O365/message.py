@@ -1011,7 +1011,8 @@ class Message(ApiComponent, AttachableMixin, HandleRecipientsMixin):
 
             self.web_link = message.get(self._cc('webLink'), '')
         else:
-            self.__modified = self.protocol.timezone.localize(dt.datetime.now())
+            pass
+            # self.__modified = self.protocol.timezone.localize(dt.datetime.now())
 
         return True
 

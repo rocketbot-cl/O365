@@ -1,13 +1,21 @@
+
+
+
+
 # O365
   
-Conectar con Outlook mediante O365.  
+Conectate a tu cuenta de correo Outlook y a tu espacio de trabajo Sharepoint.  
 
-*Read this in other languages: [English](Manual_O365.md), [Portugues](Manual_O365_pr.md), [Español](Manual_O365_es.md).*
-
-![banner](imgs/Banner_O365.png)
+*Read this in other languages: [English](Manual_O365.md), [Português](Manual_O365.pr.md), [Español](Manual_O365.es.md)*
+  
+![banner](imgs/Banner_O365.jpg)
 ## Como instalar este módulo
   
-__Descarga__ e __instala__ el contenido en la carpeta 'modules' en la ruta de Rocketbot.  
+Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
+1. Manual: __Descargar__ el archivo .zip y descomprimirlo en la carpeta modules. El nombre de la carpeta debe ser el mismo al del módulo y dentro debe tener los siguientes archivos y carpetas: \__init__.py, package.json, docs, example y libs. Si tiene abierta la aplicación, refresca el navegador para poder utilizar el nuevo modulo.
+2. Automática: Al ingresar a Rocketbot Studio sobre el margen derecho encontrara la sección de **Addons**, seleccionar **Install Mods**, buscar el modulo deseado y presionar install.  
+
+
 
 ## Como usar este modulo
 
@@ -19,22 +27,26 @@ Antes de usar este módulo, es necesario registrar tu aplicación en el portal d
 4. En “Tipos de cuenta compatibles” soportados elija:
     - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
     - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación.
+    - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
 5. Establezca la uri de redirección (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient y haga click en "Registrar".
-6. Copie el ID de la aplicación (cliente). Necesitará este valor.
+6. Copie el ID de la 
+aplicación (cliente). Necesitará este valor.
 7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente. Establezca la caducidad (preferiblemente 24 meses). Copie el **VALOR** del secreto de cliente creado (**__NO el ID de Secreto__**). El mismo se ocultará al cabo de unos minutos.
 8. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
 9. En Rocketbot Studio, insertar el comando "Conectar a O365", ingresar los datos solicitados (ID de cliente, valor del secreto y tenant) y ejecutar el comando.
 10. En la consola de Rocketbot se generara una url, copiarla y pegarla en su navegador.
-    - **Ejemplo:** <sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline</sub>
+    - **Ejemplo:** 
+<sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline</sub>
 11. Aceptar el otorgamiento de permisos y devolverá una pantalla sin contenido. Copiar la URL y pegarla el la consola de Rocketbot debajo de **"Paste the authenticated url here:"**.
     - **Ejemplo:** <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M</sub> 
 12. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raíz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
 
 ## Como filtrar correos
 
+
 Para realizar filtro de correos deberá utilizar los siguientes Operadores y Funciones. 
 
-1. __Equality operators__	
+1. __Equality operators__       
     - Igual (__eq__)
     - Diferente (__ne__)
     - Negación (__not__)
@@ -48,7 +60,7 @@ Para realizar filtro de correos deberá utilizar los siguientes Operadores y Fun
 3. __Conditional operators__
     - Y (__and__)
     - O (__or__)
-4. __Functions__	
+4. __Functions__        
     - Comienza con (__startsWith__)
     - Termina con (__endsWith__)
     - Contiene (__contains__)
@@ -65,7 +77,8 @@ Las principales propiedades que pueden utilizarse para realizar filtros son:
     "isRead": true/false,
     "isDraft": true/false,
     "inferenceClassification": "",
-    "body": {
+    
+"body": {
         "contentType": "",
         "content": ""
     },
@@ -117,7 +130,8 @@ Las principales propiedades que pueden utilizarse para realizar filtros son:
         "flagStatus": ""
     }
 
-Las mismas surgen del json de la respuesta a la consulta realizada a la API. Para revisar las propiedades de correos específicos puede ingresar a https://developer.microsoft.com/en-us/graph/graph-explorer ingresando con su cuenta de AZURE y realizar la consulta https://graph.microsoft.com/v1.0/me/messages/<ID_correo>.
+Las mismas surgen del json de la respuesta a la consulta realizada a la 
+API. Para revisar las propiedades de correos específicos puede ingresar a https://developer.microsoft.com/en-us/graph/graph-explorer ingresando con su cuenta de AZURE y realizar la consulta https://graph.microsoft.com/v1.0/me/messages/<ID_correo>.
 
 Es importante tener presente que solo deben utilizarse comillas simples (') cuando se indique el valor a filtrar, salvo para el caso de valores booleanos (__true__ / __false__). A continuación se muestran ejemplos prácticos de cómo realizar filtros:
 
@@ -128,12 +142,14 @@ Es importante tener presente que solo deben utilizarse comillas simples (') cuan
 - El Asunto comienza con la palabra... = __startswith(Subject, ‘example’)__
 - La fecha de recepción esta entre... = __ReceivedDateTime ge <date> and ReceivedDateTime le <date>__
 - El cuerpo del correo contiene... = __contains(Body/Content, ‘example’)__
-- El remitente del correo es igual a... = __From/EmailAddress/Address eq ‘example@example.com’__
+- El remitente del correo es igual a... = 
+__From/EmailAddress/Address eq ‘example@example.com’__
 - El remitente del correo comienza con... = __Startswith(From/EmailAddress/Address, ‘example’)__
 - El correo tiene adjuntos = __HasAttachments eq true__
 ## Como identificar correos (ID)
 
 Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
+
 
 ## Descripción de los comandos
 
@@ -147,6 +163,7 @@ Conectar a una insancia de la aplicación de O365
 |tenant_id||tenant_id|
 |session||session|
 |Conectarse a Sharepoint||-|
+|Asignar a variable||Variable|
 
 ### Listar todos los emails
   
@@ -154,6 +171,7 @@ Listar todos los emails, se puede especificar un filtro
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Filtro||subject eq 'compras'|
+|Ordenar por||importance desc|
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
 |Asignar a variable||Variable|
@@ -165,6 +183,7 @@ Listar todos los emails no leidos de tu casilla de correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Filtro||subject eq 'compras'|
+|Ordenar por||importance desc|
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
 |Asignar a variable||Variable|
@@ -246,11 +265,24 @@ Marcar un email como no leido
 |Asignar a variable||Variable|
 |session||session|
 
+### Descargar .eml
+  
+Descargar un correo en formato .eml
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del email||345|
+|Folder path||C:/Users/user/Documents/|
+|Filename||Mail|
+|Asignar a variable||Variable|
+|session||session|
+
 ### Listar carpetas del correo
   
 Lista todas las carpetas del correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
+|Filtro||displayName eq 'Processed'|
+|Carpeta padre|||
 |Asignar a variable||Variable|
 |session||session|
 
@@ -306,6 +338,16 @@ Obtener las listas del Sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del Grupo||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener columnas de lista
+  
+Obtener las columnas editables de una Lista específica del Sitio
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Grupo||ID|
+|ID de Lista||ID|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -371,5 +413,54 @@ Actualizar datos de un Item usando si ID
 |Nombre de Lista||name|
 |ID del Item||ID|
 |Datos del Item||{'title': 'data'}|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener bibliotecas de documentos
+  
+Obtener una lista de las bibliotecas de documentos dentro del sitio
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Obtener documentos
+  
+Obtenga una lista de los documentos dentro de una biblioteca
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|ID de la Biblioteca||ID|
+|Asignar a variable||Variable|
+|session||session|
+
+### Subir documento
+  
+Subir un documento a una biblioteca del sitio
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|ID de la Biblioteca||ID|
+|ID de la Carpeta||ID|
+|Ruta|||
+|Asignar a variable||Variable|
+|session||session|
+
+### Descargar o modificar documento
+  
+Subir un documento a una biblioteca del sitio
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID del Sitio||ID|
+|ID de la Biblioteca||ID|
+|ID del Item||ID|
+|Datos a modificar||{'name': 'new_name.jpg', 'description':'new_description'}|
+|Actualizar datos de documento|||
+|ID de la carpeta destino||ID|
+|Mover documento|||
+|Ruta|||
+|Descargar documento|||
+|Borrar documento|||
 |Asignar a variable||Variable|
 |session||session|
