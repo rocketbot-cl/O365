@@ -23,7 +23,8 @@ Para instalar librerías se debe ingresar por terminal a la carpeta "libs"
    sudo pip install <package> -t .
 
 """
-
+from bs4 import BeautifulSoup
+import traceback
 import sys
 import os
 
@@ -32,12 +33,13 @@ cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
 if cur_path not in sys.path:
     sys.path.append(cur_path)
 
-from O365 import Account
-from O365.utils.attachment import BaseAttachment, UploadSessionRequest
-from O365.drive import Storage
-import traceback
-from bs4 import BeautifulSoup
-
+try:
+    from O365 import Account
+    from O365.utils.attachment import BaseAttachment, UploadSessionRequest
+    from O365.drive import Storage
+except:
+    traceback.print_exc()
+    
 module = GetParams("module")
 
 global mod_o365_session
@@ -64,7 +66,6 @@ except NameError:
     mod_o365_session = {}
 
 from email.utils import make_msgid
-import traceback
 import base64
 import re  
 global get_regex_group
@@ -100,6 +101,7 @@ if module == "connect":
         SetVar(res, mod_o365_session[session].is_authenticated) 
     except Exception as e:
         SetVar(res, mod_o365_session[session].is_authenticated)
+        traceback.print_exc()
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
@@ -250,6 +252,7 @@ if module == "replyEmail":
             message.mark_as_read()
         
     except Exception as e:
+        traceback.print_exc()
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
@@ -338,25 +341,31 @@ if module == "getAllEmails":
     res = GetParams("res")
     limit = GetParams("limit")
     filter = GetParams("filtro") or GetParams("filter")
+    order = GetParams("order")
     
-    if OutlookWellKnowFolderNames.get(folder) == None:
-        pass
-    else:
-        folder = OutlookWellKnowFolderNames.get(folder)
-    
-    if folder == "" or folder == None:
+    folder_ = OutlookWellKnowFolderNames.get(folder)
+
+    if not folder:
         folder = "Inbox"
+    elif folder_:
+        folder = folder_
+    
+    if order == "" or not order:
+        order = "lastModifiedDateTime desc"
+    
+    if filter and "lastModifiedDateTime" not in filter:
+        filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and " + filter
     
     if limit and limit != "":
         limit = int(limit)
     else:
-        limit = None
+        limit = 25
     
     try:
-        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
-                                                             folder_id=folder).get_messages(limit=limit, query=filter)
+        list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
+            print(message)
             list_object_id.append(message.object_id)
         SetVar(res, list_object_id)
     except Exception as e:
@@ -369,30 +378,33 @@ if module == "getUnreadEmails":
     res = GetParams("res")
     limit = GetParams("limit")
     filter = GetParams("filter")
+    order = GetParams("order")
     
-    if OutlookWellKnowFolderNames.get(folder) == None:
-        pass
-    else:
-        folder = OutlookWellKnowFolderNames.get(folder)
-    
-    if folder == "" or folder == None:
+    folder_ = OutlookWellKnowFolderNames.get(folder)
+
+    if not folder:
         folder = "Inbox"
+    elif folder_:
+        folder = folder_
+    
+    if order == "" or not order:
+        order = "lastModifiedDateTime desc"
+    
+    if filter and "lastModifiedDateTime" not in filter:
+        filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false and " + filter
+    else:
+        filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false"
     
     if limit and limit != "":
         limit = int(limit)
     else:
-        limit = None
-    
-    if filter:
-        filter = 'isRead eq false and ' + filter
-    else:
-        filter = 'isRead eq false'
+        limit = 25
     
     try:
-        list_messages = mod_o365_session[session].mailbox().folder_constructor(parent=mod_o365_session[session].mailbox(), name=folder,
-                                                             folder_id=folder).get_messages(limit=limit, query=filter)
+        list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
+            print(message)
             list_object_id.append(message.object_id)
         SetVar(res, list_object_id)
     except Exception as e:
@@ -631,7 +643,8 @@ if module == "moveEmail":
         raise e
 
 if module == "getFolders":
-    
+    query = GetParams('filter')
+    parent = GetParams('parent')
     folders = GetParams('res')
     
     global get_all_folders
@@ -644,45 +657,48 @@ if module == "getFolders":
             
         for folder in list_folders:
             
-            child_data, list_child = folder.get_folders()
+            child_data, list_child =  folder.get_folders()
             if child_data['value'] == []:
                 continue
-            # If list add each element of the list to the main list insted of adding the whole list as one element
+            # If list add each element of the list to the main list instead of adding the whole list as one element
             final_list.extend(child_data['value'])
             get_all_folders(child_data, list_child, final_list)
         
         return final_list
-    
-    try:
         
-        data, list_folders = mod_o365_session[session].mailbox().get_folders()
-        final_list = get_all_folders(data, list_folders)
-        
-        # data, list_folders = mod_o365_session[session].mailbox().get_folders()
-        # while True:
-        #     try:
-                
-                
-        #         # list_folders_aux = []
-        #         # for folder in list_folders:
-        #         #     if isinstance(folder, list):
-        #         #         folder = folder[0]
-        #         #     child_data, list_child = folder.get_folders()
-        #         #     if child_data['value'] == []:
-        #         #         continue
-        #         #     final_list.append(child_data['value'])
-        #         #     list_folders_aux.append(list_child)
-        #         # list_folders = list_folders_aux
-        #         # print(list_folders)
-        #         # if list_folders == []:
-        #         #     break
-        #     except:
-        #         print(traceback.format_exc())
-        #         break
-        
+    try:   
+        if parent:
+            if "/" in parent:
+                parent = parent.split("/")
+            elif "\\" in parent:
+                parent = parent.split("\\")
+            else:
+                parent = [parent]
+            try:
+                parent_folder = mod_o365_session[session].mailbox()
+                parent_folder = [parent_folder]
+                for p in parent:
+                    parent_data, parent_folder = parent_folder[0].get_folders(query="displayName eq '{p}'".format(p=p))
+                    
+                if query and query != "":
+                    final_data = parent_folder[0].get_folders(query=query)
+                    final_list = final_data[0]['value']
+                else:
+                    data, list_folders = parent_folder[0].get_folders()
+                    final_list = get_all_folders(data, list_folders)
+            except IndexError:
+                final_list = []
+        else:
+            if query and query != "":
+                final_list = mod_o365_session[session].mailbox().get_folders(query=query)
+            else:
+                data, list_folders = mod_o365_session[session].mailbox().get_folders()
+                final_list = get_all_folders(data, list_folders)
+
         SetVar(folders, final_list)
     
     except Exception as e:
+        traceback.print_exc()
         SetVar(folders, False)
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()

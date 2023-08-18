@@ -1,8 +1,13 @@
 {
   "author": "Nicolas Liendro - Juan Siro",
-  "description": "Connect to Outlook through O365.",
+  "description": "Connect to Outlook and Sharepoint through O365. | Conectate a Outlook y Sharepoint a traves de O365.",
+  "description_lang": {
+    "en": "Connect to to your Outlook email account and Sharepoint workspace.",
+    "es": "Conectate a tu cuenta de correo Outlook y a tu espacio de trabajo Sharepoint.",
+    "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
+  },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "license": "MIT",
   "homepage": "http://rocketbot.com",
   "linux": true,
@@ -125,6 +130,7 @@
               "en": "Variable name whitout {}",
               "pr": "Nome da variável sem {}"
             },
+            "remove_vars":true,
             "id": "res",
             "css": "col-md-6"
           }
@@ -179,6 +185,22 @@
               "pr": "Deixe-o vazio para obter todos"
             },
             "id": "filter",
+            "css": "col-md-12"
+          },
+          {
+            "type": "input",
+            "placeholder": "importance desc",
+            "title": {
+              "es": "Ordenar por:",
+              "en": "Order by:",
+              "pr": "Ordenar por:"
+            },
+            "help": {
+              "es": "Si se deja vacio, por defecto ordena del mas reciente al mas antiguo",
+              "en": "If left empty, by default sort from newest to oldest",
+              "pr": "Se deixado em branco, por padrão, classifique do mais recente para o mais antigo"
+            },
+            "id": "order",
             "css": "col-md-12"
           },
           {
@@ -296,6 +318,22 @@
               "pr": "Deixe-o vazio para obter todos"
             },
             "id": "filter",
+            "css": "col-md-12"
+          },
+          {
+            "type": "input",
+            "placeholder": "importance desc",
+            "title": {
+              "es": "Ordenar por:",
+              "en": "Order by:",
+              "pr": "Ordenar por:"
+            },
+            "help": {
+              "es": "Si se deja vacio, por defecto ordena del mas reciente al mas antiguo",
+              "en": "If left empty, by default sort from newest to oldest",
+              "pr": "Se deixado em branco, por padrão, classifique do mais recente para o mais antigo"
+            },
+            "id": "order",
             "css": "col-md-12"
           },
           {
@@ -1356,6 +1394,38 @@
       "form": {
         "css": "modal-lg",
         "inputs": [
+          {
+            "type": "input",
+            "placeholder": "displayName eq 'Processed'",
+            "title": {
+              "es": "Filtro:",
+              "en": "Filter:",
+              "pr": "Filter:"
+            },
+            "help": {
+              "es": "Dejar vacío para traer todos. Docs: https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties",
+              "en": "Leave it empty to get all. Docs: https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties",
+              "pr": "Deixe-o vazio para obter todos. Docs: https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties"
+            },
+            "id": "filter",
+            "css": "col-md-12"
+          },
+          {
+            "type": "input",
+            "placeholder": "",
+            "title": {
+              "es": "Carpeta padre:",
+              "en": "Parent folder:",
+              "pr": "Pasta pai:"
+            },
+            "help": {
+              "es": "Si se deja vacío, obtendrá todas las carpetas (comenzando desde la raíz). Si se especifica un nombre de carpeta o una ruta, obtendrá carpetas dentro.",
+              "en": "If left empty, will get all folders (starting from root). If a folder name or path is specified will get folders within.",
+              "pr": "Se deixado em branco, obterá todas as pastas (começando pela raiz). Se um nome ou caminho de pasta for especificado, as pastas dentro dele serão obtidas."
+            },
+            "id": "parent",
+            "css": "col-md-12"
+          },
           {
             "type": "input",
             "placeholder": "Variable",
