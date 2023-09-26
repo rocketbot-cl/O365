@@ -248,8 +248,9 @@ if module == "replyEmail":
             reply.attachments.add(filenames)
         reply.send()
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
     except Exception as e:
         traceback.print_exc()
@@ -328,8 +329,9 @@ if module == "forwardEmail":
             forward.attachments.add(filenames)
         forward.send()
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
     except Exception as e:
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -419,6 +421,7 @@ if module == "readEmail":
     id_ = GetParams("id_")
     read = GetParams("markasread")
     not_parsed = GetParams("not_parsed")
+    raw = GetParams("raw")
     
     import email
     from mailparser import mailparser
@@ -487,16 +490,25 @@ if module == "readEmail":
                     x += 1
                     key = key_2 + '(' + str(x) + ')'    
                 links[key]= a.get("href", '')
-                
-            if not not_parsed or not_parsed == False:
-                body = html_body.get_text()
-                if not body:
-                    body = message.body
-            else:
-
-                body = str(html_body) 
+            
+        if not_parsed and eval(not_parsed) == True:
+            body = str(html_body)
+        elif raw and eval(raw) == True:
+            body = parsed_mail.body
         else:
-            body = message.body
+            body = html_body.get_text()
+            if not body:
+                body = message.body
+
+        #     if not not_parsed or not_parsed == False:
+        #         body = html_body.get_text()
+        #         if not body:
+        #             body = message.body
+        #     else:
+
+        #         body = str(html_body) 
+        # else:
+        #     body = message.body
             
 
         message_all = {
@@ -513,8 +525,9 @@ if module == "readEmail":
             'files': files
         }
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
         SetVar(res, message_all)
     except Exception as e:
@@ -570,8 +583,9 @@ if module == "downAtt":
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
         SetVar(res, True)
     except Exception as e:

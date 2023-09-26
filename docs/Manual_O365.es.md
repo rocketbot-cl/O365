@@ -199,6 +199,7 @@ Leer un email utilizando su ID
 |Descargar adjuntos||-|
 |Marcar como leído||-|
 |Cuerpo de email en HTML|Si se marca esta casilla, devolvera el cuerpo del email en versión HTML.||
+|Cuerpo de email RAW|Si se marca esta casilla, devolvera el cuerpo del email en versión RAW.||
 |Asignar a variable||Variable|
 |session||session|
 
