@@ -27,6 +27,7 @@ from bs4 import BeautifulSoup
 import traceback
 import sys
 import os
+import re
 
 base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
@@ -433,9 +434,6 @@ if module == "readEmail":
     if download_att:
         download_att = eval(download_att)
     
-    if not_parsed:
-        not_parsed = eval(not_parsed)
-    
     try:
         # It creates a message object and makes available attachments to be downloaded
         message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
@@ -457,7 +455,7 @@ if module == "readEmail":
         parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
 
         for att in parsed_mail.attachments:
-            name = att['filename']
+            name = re.sub(r'[\\/*?:"<>|]', '',att['filename']) # att['filename']
             name = name.replace("\r","").replace("\n","")
             
             if download_att == True:                    
@@ -570,7 +568,7 @@ if module == "downAtt":
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
         parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
         for att in parsed_mail.attachments:
-            name = att['filename']
+            name = re.sub(r'[\\/*?:"<>|]', '',att['filename']) # att['filename']
             name = name.replace("\r","").replace("\n","")
      
             if not name in files:
@@ -749,6 +747,7 @@ mod_o365_endpoints = {
     'get_group_by_id': '/groups/{group_id}',
     'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
     'list_groups': '/groups',
+    'list_groups_delta': '/groups/delta',
     'get_group_site': '/groups/{group_id}/sites/{site_name}',
     'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
     'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/columns'
@@ -762,14 +761,10 @@ def list_groups(gs):
     """
 
     url = gs.build_url(mod_o365_endpoints.get('list_groups'))
-
     response = gs.con.get(url)
-
     if not response:
         return None
-
     data = response.json()
-
     groups = []
     for g in data['value']:
         group = {}  
@@ -778,6 +773,20 @@ def list_groups(gs):
         groups.append(group)
         groups.sort(key = lambda g: g['displayName'])
 
+    # Add this endpoint, because in some cases the groups one does not returns everything 
+    url = gs.build_url(mod_o365_endpoints.get('list_groups_delta'))
+    response = gs.con.get(url)
+    if not response:
+        return None
+    data = response.json()
+    for g in data['value']:
+        group = {}  
+        group['displayName'] = g['displayName']
+        group['id'] = g['id']
+        if group not in groups:
+            groups.append(group)
+            groups.sort(key = lambda g: g['displayName'])
+    
     return groups
 
 def get_group_by_id(gs, group_id = None):
