@@ -268,6 +268,9 @@ if module == "forwardEmail":
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
+    res = GetParams("res")
+    
+    import time
     
     if not body:
         body = ""
@@ -330,11 +333,19 @@ if module == "forwardEmail":
             forward.attachments.add(filenames)
         forward.send()
         
+        time.sleep(5)
+        
+        list_messages = mod_o365_session[session].mailbox().sent_folder().get_messages(limit=1, order_by="lastModifiedDateTime desc")
+        for message in list_messages:
+            id_f = message.object_id
+            
         if read:
             if eval(read):
                 message.mark_as_read()
         
+        SetVar(res, id_f)
     except Exception as e:
+        SetVar(res, False)
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
@@ -368,7 +379,6 @@ if module == "getAllEmails":
         list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
-            print(message)
             list_object_id.append(message.object_id)
         SetVar(res, list_object_id)
     except Exception as e:
@@ -407,7 +417,6 @@ if module == "getUnreadEmails":
         list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
-            print(message)
             list_object_id.append(message.object_id)
         SetVar(res, list_object_id)
     except Exception as e:
@@ -422,6 +431,7 @@ if module == "readEmail":
     id_ = GetParams("id_")
     read = GetParams("markasread")
     not_parsed = GetParams("not_parsed")
+    whole = GetParams("whole")
     raw = GetParams("raw")
     
     import email
@@ -467,7 +477,7 @@ if module == "readEmail":
                         file_.close()
         
         # This is for the case of an email with no body
-        html_body = BeautifulSoup(message.body, "html.parser").body
+        html_body = BeautifulSoup(message.body, "html.parser")
         
         links = {}
         if html_body:
@@ -486,10 +496,12 @@ if module == "readEmail":
                 key_2 = key
                 while key in links.keys():
                     x += 1
-                    key = key_2 + '(' + str(x) + ')'    
+                    key = key_2 + '(' + str(x) + ')'
                 links[key]= a.get("href", '')
             
         if not_parsed and eval(not_parsed) == True:
+            body = str(html_body.body)
+        elif whole and eval(whole) == True:
             body = str(html_body)
         elif raw and eval(raw) == True:
             body = parsed_mail.body
