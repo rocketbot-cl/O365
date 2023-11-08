@@ -8,7 +8,7 @@ Connect to to your Outlook email account and Sharepoint workspace.
 
 *Read this in other languages: [English](Manual_O365.md), [Português](Manual_O365.pr.md), [Español](Manual_O365.es.md)*
   
-![banner](imgs/Banner_O365.png o jpg)
+![banner](imgs/Banner_O365.jpg)
 ## How to install this module
   
 To install the module in Rocketbot Studio, it can be done in two ways:
@@ -88,6 +88,7 @@ Read an email usign its ID
 |Download attachments||-|
 |Mark as read||-|
 |Email HTML body|If this box is marked, will bring the HTML version of email body.||
+|Email RAW body|If this box is marked, will bring the RAW version of email body.||
 |Asign to variable||Variable|
 |session||session|
 

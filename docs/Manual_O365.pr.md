@@ -8,7 +8,7 @@ Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepo
 
 *Read this in other languages: [English](Manual_O365.md), [Português](Manual_O365.pr.md), [Español](Manual_O365.es.md)*
   
-![banner](imgs/Banner_O365.png o jpg)
+![banner](imgs/Banner_O365.jpg)
 ## Como instalar este módulo
   
 Para instalar o módulo no Rocketbot Studio, pode ser feito de duas formas:
@@ -27,10 +27,10 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 4. Em "Tipos de conta compatíveis" suportados, escolha:
     - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
     - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
-    - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumidores**.
+    - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumers**.
 5. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
-6. Copie o ID do aplicativo (cliente). 
-Você vai precisar desse valor.
+6. Copie o ID do aplicativo (cliente). Você
+ vai precisar desse valor.
 7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.
 8. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
 9. No Rocketbot Studio, insira o comando "Connect to O365", insira os dados solicitados (ID do cliente, valor secreto e locatário) e execute o comando.
@@ -88,6 +88,7 @@ Ler um e-mail usando seu ID
 |Baixar anexos||-|
 |Marcar como lido||-|
 |Corpo do e-mail HTML|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão HTML.||
+|Corpo do e-mail RAW|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão RAW.||
 |Atribuir à variável||Variable|
 |session||session|
 

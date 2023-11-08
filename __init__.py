@@ -27,6 +27,7 @@ from bs4 import BeautifulSoup
 import traceback
 import sys
 import os
+import re
 
 base_path = tmp_global_obj["basepath"]
 cur_path = base_path + "modules" + os.sep + "O365" + os.sep + "libs" + os.sep
@@ -248,8 +249,9 @@ if module == "replyEmail":
             reply.attachments.add(filenames)
         reply.send()
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
     except Exception as e:
         traceback.print_exc()
@@ -266,6 +268,9 @@ if module == "forwardEmail":
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
+    res = GetParams("res")
+    
+    import time
     
     if not body:
         body = ""
@@ -328,10 +333,19 @@ if module == "forwardEmail":
             forward.attachments.add(filenames)
         forward.send()
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        time.sleep(5)
         
+        list_messages = mod_o365_session[session].mailbox().sent_folder().get_messages(limit=1, order_by="lastModifiedDateTime desc")
+        for message in list_messages:
+            id_f = message.object_id
+            
+        if read:
+            if eval(read):
+                message.mark_as_read()
+        
+        SetVar(res, id_f)
     except Exception as e:
+        SetVar(res, False)
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
@@ -365,7 +379,6 @@ if module == "getAllEmails":
         list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
-            print(message)
             list_object_id.append(message.object_id)
         SetVar(res, list_object_id)
     except Exception as e:
@@ -404,7 +417,6 @@ if module == "getUnreadEmails":
         list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
-            print(message)
             list_object_id.append(message.object_id)
         SetVar(res, list_object_id)
     except Exception as e:
@@ -419,6 +431,8 @@ if module == "readEmail":
     id_ = GetParams("id_")
     read = GetParams("markasread")
     not_parsed = GetParams("not_parsed")
+    whole = GetParams("whole")
+    raw = GetParams("raw")
     
     import email
     from mailparser import mailparser
@@ -429,9 +443,6 @@ if module == "readEmail":
     
     if download_att:
         download_att = eval(download_att)
-    
-    if not_parsed:
-        not_parsed = eval(not_parsed)
     
     try:
         # It creates a message object and makes available attachments to be downloaded
@@ -454,7 +465,7 @@ if module == "readEmail":
         parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
 
         for att in parsed_mail.attachments:
-            name = att['filename']
+            name = re.sub(r'[\\/*?:"<>|]', '',att['filename']) # att['filename']
             name = name.replace("\r","").replace("\n","")
             
             if download_att == True:                    
@@ -466,7 +477,7 @@ if module == "readEmail":
                         file_.close()
         
         # This is for the case of an email with no body
-        html_body = BeautifulSoup(message.body, "html.parser").body
+        html_body = BeautifulSoup(message.body, "html.parser")
         
         links = {}
         if html_body:
@@ -485,18 +496,29 @@ if module == "readEmail":
                 key_2 = key
                 while key in links.keys():
                     x += 1
-                    key = key_2 + '(' + str(x) + ')'    
+                    key = key_2 + '(' + str(x) + ')'
                 links[key]= a.get("href", '')
-                
-            if not not_parsed or not_parsed == False:
-                body = html_body.get_text()
-                if not body:
-                    body = message.body
-            else:
-
-                body = str(html_body) 
+            
+        if not_parsed and eval(not_parsed) == True:
+            body = str(html_body.body)
+        elif whole and eval(whole) == True:
+            body = str(html_body)
+        elif raw and eval(raw) == True:
+            body = parsed_mail.body
         else:
-            body = message.body
+            body = html_body.get_text()
+            if not body:
+                body = message.body
+
+        #     if not not_parsed or not_parsed == False:
+        #         body = html_body.get_text()
+        #         if not body:
+        #             body = message.body
+        #     else:
+
+        #         body = str(html_body) 
+        # else:
+        #     body = message.body
             
 
         message_all = {
@@ -513,8 +535,9 @@ if module == "readEmail":
             'files': files
         }
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
         SetVar(res, message_all)
     except Exception as e:
@@ -557,7 +580,7 @@ if module == "downAtt":
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
         parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
         for att in parsed_mail.attachments:
-            name = att['filename']
+            name = re.sub(r'[\\/*?:"<>|]', '',att['filename']) # att['filename']
             name = name.replace("\r","").replace("\n","")
      
             if not name in files:
@@ -570,8 +593,9 @@ if module == "downAtt":
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
         
-        if read and (read == "true" or read):
-            message.mark_as_read()
+        if read:
+            if eval(read):
+                message.mark_as_read()
         
         SetVar(res, True)
     except Exception as e:
@@ -735,6 +759,7 @@ mod_o365_endpoints = {
     'get_group_by_id': '/groups/{group_id}',
     'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
     'list_groups': '/groups',
+    'list_groups_delta': '/groups/delta',
     'get_group_site': '/groups/{group_id}/sites/{site_name}',
     'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
     'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/columns'
@@ -748,14 +773,10 @@ def list_groups(gs):
     """
 
     url = gs.build_url(mod_o365_endpoints.get('list_groups'))
-
     response = gs.con.get(url)
-
     if not response:
         return None
-
     data = response.json()
-
     groups = []
     for g in data['value']:
         group = {}  
@@ -764,6 +785,20 @@ def list_groups(gs):
         groups.append(group)
         groups.sort(key = lambda g: g['displayName'])
 
+    # Add this endpoint, because in some cases the groups one does not returns everything 
+    url = gs.build_url(mod_o365_endpoints.get('list_groups_delta'))
+    response = gs.con.get(url)
+    if not response:
+        return None
+    data = response.json()
+    for g in data['value']:
+        group = {}  
+        group['displayName'] = g['displayName']
+        group['id'] = g['id']
+        if group not in groups:
+            groups.append(group)
+            groups.sort(key = lambda g: g['displayName'])
+    
     return groups
 
 def get_group_by_id(gs, group_id = None):
