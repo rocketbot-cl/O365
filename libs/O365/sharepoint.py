@@ -349,8 +349,8 @@ class SharepointList(ApiComponent):
             return []
 
         data = response.json()
-        # Modificted to return the whole data of the item and the item object itself
-        return data, self.list_item_constructor(parent=self, **{self._cloud_data_key: data})
+
+        return self.list_item_constructor(parent=self, **{self._cloud_data_key: data})
 
     def get_list_columns(self):
         """ Returns the sharepoint list columns """

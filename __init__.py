@@ -46,6 +46,7 @@ module = GetParams("module")
 global mod_o365_session
 global OutlookWellKnowFolderNames
 
+
 OutlookWellKnowFolderNames= {
         'Inbox': 'Inbox',
         'Junk': 'JunkEmail',
@@ -190,6 +191,7 @@ if module == "replyEmail":
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
+    not_to_all = GetParams("not_to_all")
     
     if not body:
         body = ""
@@ -197,9 +199,14 @@ if module == "replyEmail":
     if not id_:
         raise Exception("Missing Email ID...")
     
+    to_all = True
+    if not_to_all and eval(not_to_all):
+        to_all = False
+    
     try:
         message = mod_o365_session[session].mailbox().get_message(id_)
-        reply = message.reply()
+        # By default the behaviour is to reply all
+        reply = message.reply(to_all)
         if cc_:
             list_cc = [cc.strip() for cc in cc_.split(",")]
             reply.cc.add(list_cc)
@@ -952,6 +959,79 @@ def get_documents(sd, site_id = None, drive_id = None):
 
     return data
 
+global Pagination_O365
+from O365.utils import Pagination as Pagination_O365
+from O365.sharepoint import SharepointList
+
+def get_items_no_index(self, limit=None, *, query=None, order_by=None, batch=None, expand_fields=None):
+    
+    url = self.build_url(self._endpoints.get('get_items'))
+
+    if limit is None or limit > self.protocol.max_top_value:
+        batch = self.protocol.max_top_value
+
+    params = {'$top': batch if batch else limit}
+
+    if expand_fields is not None:
+        params['expand'] = self.build_field_filter(expand_fields)
+        
+    if order_by:
+        params['$orderby'] = order_by
+
+    if query:
+        if isinstance(query, str):
+            params['$filter'] = query
+        else:
+            params.update(query.as_params())
+
+    kwargs = {"headers": {'Prefer':"HonorNonIndexedQueriesWarningMayFailRandomly"}}
+    
+    response = self.con.get(url, params, **kwargs)
+
+    if not response:
+        return []
+
+    data = response.json()
+    next_link = data.get('@odata.nextLink', None)
+
+    items = [self.list_item_constructor(parent=self, **{self._cloud_data_key: item})
+            for item in data.get('value', [])]
+
+    if batch and next_link:
+        return Pagination_O365(parent=self, data=items, constructor=self.list_item_constructor,
+                        next_link=next_link, limit=limit)
+    else:
+        return items
+
+def get_item_by_id_custom(self, item_id, expand_fields=None):
+    """ Returns a sharepoint list item based on id
+    :param int item_id: item id to search for
+    :param expand_fields: specify user-defined fields to return,
+    True will return all fields
+    :type expand_fields: list or bool         
+    :return: Sharepoint Item
+    :rtype: SharepointListItem
+    """
+
+    url = self.build_url(self._endpoints.get('get_item_by_id').format(item_id=item_id))
+    
+    params = {}
+    
+    if expand_fields is not None:
+        params['expand'] = self.build_field_filter(expand_fields)
+    
+    response = self.con.get(url, params=params)
+
+    if not response:
+        return []
+
+    data = response.json()
+    # Modificted to return the whole data of the item and the item object itself
+    return data
+
+SharepointList.get_items_no_index = get_items_no_index
+SharepointList.get_item_by_id_custom = get_item_by_id_custom
+
 if module == "listGroups":
 
     res = GetParams("res")
@@ -1069,16 +1149,23 @@ if module == "listItems":
     
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
     listName = GetParams("listName")
+    limit = GetParams("limit") or 10
+    query = GetParams("query") or None
+    order_by = GetParams("order_by") or None
+    expand_fields = GetParams("expand_fields") or None
     res = GetParams("res")
 
     try:
+        sp_list = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_items_no_index(limit=int(limit), query=query, order_by=order_by, batch=50)
         
-        sp_list = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_items()
+        if expand_fields.startswith("[") and expand_fields.endswith("]"):
+            expand_fields = eval(expand_fields)
+        else:
+            expand_fields = expand_fields.split(",")
         
         items = []
         for item in sp_list:
-            # I modified the return statement of the 'get_item_by_id' method to bring the whole data linked to the item
-            data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(item.object_id)
+            data = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id_custom(item.object_id, expand_fields=expand_fields)
             items.append(data)
         
         
@@ -1095,12 +1182,13 @@ if module == "getItem":
     
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
     listName = GetParams("listName")
-    itemId = GetParams("itemId") 
+    itemId = GetParams("itemId")
+    expand_fields = GetParams("expand_fields") or None
     res = GetParams("res")
     
     try:
         
-        data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId) 
+        data = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id_custom(itemId, expand_fields=expand_fields)
 
         SetVar(res, data)
 
@@ -1160,8 +1248,7 @@ if module == "updateItem":
     itemInfo = GetParams("newData")
     res = GetParams("res")
 
-    try:
-
+    try:       
         data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId)
         item_.update_fields(eval(itemInfo))
         updated_item = item_.save_updates()

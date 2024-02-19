@@ -2,10 +2,10 @@
 
 Before using this module, you need to register your app in the Azure App Registrations portal.
 
-1. Sign in to the Azure portal and search for the Azure Active Directory service.
+1. Sign in to the Azure portal and search for the Microsoft Entra ID service.
 2. On the left side menu, get into "App Registrations".
 3. Select "New record".
-4. Under “Compatible account types” supported choose:
+4. Under “Compatible account types”, choose:
     - "Accounts in any organizational directory (any Azure AD directory: multi-tenant) and personal Microsoft accounts (such as Skype or Xbox)" for this case use Tenant ID = **common**.
     - "Only accounts from this organizational directory (only this account: single tenant) for this case use application-specific **Tenant ID**.
     - "Personal Microsoft accounts only" for this case use use Tenant ID = **consumers**.
@@ -26,10 +26,10 @@ Before using this module, you need to register your app in the Azure App Registr
 
 Antes de usar este módulo, es necesario registrar tu aplicación en el portal de Azure App Registrations. 
 
-1. Inicie sesión en Azure Portal y busque el servicio Azure Active Directory.
+1. Inicie sesión en Azure Portal y busque el servicio Microsoft Entra ID.
 2. En el menu en el lateral izquierdo, ingrese a "Registros de Aplicaciones".
 3. Seleccione "Nuevo registro".
-4. En “Tipos de cuenta compatibles” soportados elija:
+4. En “Tipos de cuenta compatibles”, elija:
     - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
     - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación.
     - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
@@ -149,16 +149,22 @@ Es importante tener presente que solo deben utilizarse comillas simples (') cuan
 
 Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
 
+Cuando utilice 'filtro' y 'ordenar por' en la misma consulta para obtener mensajes, asegúrese de especificar las propiedades de las siguientes maneras:
+
+Las propiedades que aparecen en 'ordenar por' también deben aparecer en 'filtro'.
+Las propiedades que aparecen en 'ordenar por' están en el mismo orden que en 'filtro'.
+Las propiedades que están presentes en 'ordenar por' aparecen en 'filtro' antes de cualquier propiedad que no lo esté.
+
 ---
 
 ## Como usar este módulo
 
 Antes de usar este módulo, você precisa registrar seu aplicativo no portal de Registros de Aplicativo do Azure.
 
-1. Entre no portal do Azure e procure o serviço Azure Active Directory.
+1. Entre no portal do Azure e procure o serviço Microsoft Entra ID.
 2. No menu do lado esquerdo, entre em "Registros de aplicativos".
 3. Selecione "Novo registro".
-4. Em "Tipos de conta compatíveis" suportados, escolha:
+4. Em "Tipos de conta compatíveis", escolha:
     - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
     - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
     - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumers**.

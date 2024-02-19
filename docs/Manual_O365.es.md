@@ -21,16 +21,16 @@ Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
 
 Antes de usar este módulo, es necesario registrar tu aplicación en el portal de Azure App Registrations. 
 
-1. Inicie sesión en Azure Portal y busque el servicio Azure Active Directory.
+1. Inicie sesión en Azure Portal y busque el servicio Microsoft Entra ID.
 2. En el menu en el lateral izquierdo, ingrese a "Registros de Aplicaciones".
 3. Seleccione "Nuevo registro".
-4. En “Tipos de cuenta compatibles” soportados elija:
+4. En “Tipos de cuenta compatibles”, elija:
     - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
     - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación.
     - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
 5. Establezca la uri de redirección (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient y haga click en "Registrar".
-6. Copie el ID de la 
-aplicación (cliente). Necesitará este valor.
+6. Copie el ID de la aplicación 
+(cliente). Necesitará este valor.
 7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente. Establezca la caducidad (preferiblemente 24 meses). Copie el **VALOR** del secreto de cliente creado (**__NO el ID de Secreto__**). El mismo se ocultará al cabo de unos minutos.
 8. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
 9. En Rocketbot Studio, insertar el comando "Conectar a O365", ingresar los datos solicitados (ID de cliente, valor del secreto y tenant) y ejecutar el comando.
@@ -150,6 +150,13 @@ __From/EmailAddress/Address eq ‘example@example.com’__
 
 Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
 
+Cuando utilice 'filtro' y 'ordenar por' en la misma consulta para obtener mensajes, asegúrese de especificar las propiedades de las siguientes maneras:
+
+Las propiedades que aparecen en 'ordenar por' también deben aparecer en 'filtro'.
+Las propiedades que aparecen en 'ordenar por' 
+están en el mismo orden que en 'filtro'.
+Las propiedades que están presentes en 'ordenar por' aparecen en 'filtro' antes de cualquier propiedad que no lo esté.
+
 
 ## Descripción de los comandos
 
@@ -199,6 +206,7 @@ Leer un email utilizando su ID
 |Descargar adjuntos||-|
 |Marcar como leído||-|
 |Cuerpo de email en HTML|Si se marca esta casilla, devolvera el cuerpo del email en versión HTML.||
+|Email completo en HTML|Si se marca esta casilla, devolvera el email completo en versión HTML.||
 |Cuerpo de email RAW|Si se marca esta casilla, devolvera el cuerpo del email en versión RAW.||
 |Asignar a variable||Variable|
 |session||session|
@@ -229,6 +237,7 @@ Responder un email utilizando su ID
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
 |Marcar como leído||-|
+|Responder al remitente||-|
 |session||session|
 
 ### Reenviar Email
@@ -244,6 +253,7 @@ Reenviar un email utilizando su ID
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
 |Marcar como leído||-|
+|Asignar a variable||Variable|
 |session||session|
 
 ### Descargar adjuntos
@@ -369,6 +379,10 @@ Obtener los items de una Lista utilizando su nombre
 | --- | --- | --- |
 |ID del Sitio||ID|
 |Nombre de Lista||name|
+|Limite||10|
+|Filtro de consulta||field/id1 eq 'value'|
+|Ordenar por||column|
+|Campos a expandir||['id1','id2',...]|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -380,6 +394,7 @@ Obtener un Item, utilizando su ID, de una Lista
 |ID del Sitio||ID|
 |Nombre de Lista||name|
 |ID del Item||ID|
+|Campos a expandir||['id1','id2',...]|
 |Asignar a variable||Variable|
 |session||session|
 
