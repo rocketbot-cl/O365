@@ -21,16 +21,16 @@ Para instalar o módulo no Rocketbot Studio, pode ser feito de duas formas:
 
 Antes de usar este módulo, você precisa registrar seu aplicativo no portal de Registros de Aplicativo do Azure.
 
-1. Entre no portal do Azure e procure o serviço Azure Active Directory.
+1. Entre no portal do Azure e procure o serviço Microsoft Entra ID.
 2. No menu do lado esquerdo, entre em "Registros de aplicativos".
 3. Selecione "Novo registro".
-4. Em "Tipos de conta compatíveis" suportados, escolha:
+4. Em "Tipos de conta compatíveis", escolha:
     - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
     - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
     - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumers**.
 5. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
-6. Copie o ID do aplicativo (cliente). Você
- vai precisar desse valor.
+6. Copie o ID do aplicativo (cliente). Você vai precisar 
+desse valor.
 7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.
 8. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
 9. No Rocketbot Studio, insira o comando "Connect to O365", insira os dados solicitados (ID do cliente, valor secreto e locatário) e execute o comando.
@@ -88,6 +88,7 @@ Ler um e-mail usando seu ID
 |Baixar anexos||-|
 |Marcar como lido||-|
 |Corpo do e-mail HTML|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão HTML.||
+|E-mail completo em HTML|Se esta caixa estiver marcada, retornará o e-mail completo em versão HTML.||
 |Corpo do e-mail RAW|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão RAW.||
 |Atribuir à variável||Variable|
 |session||session|
@@ -118,6 +119,7 @@ Responder um email usando seu ID
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
 |Marcar como lido||-|
+|Responder ao remeteste||-|
 |session||session|
 
 ### Reenviar um e-mail
@@ -133,6 +135,7 @@ Reenviar um e-mail usando seu ID
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
 |Marcar como lido||-|
+|Atribuir à variável||Variable|
 |session||session|
 
 ### Baixar anexos
@@ -258,6 +261,10 @@ Obter os itens de uma Lista usando seu nome
 | --- | --- | --- |
 |ID do Sítio||ID|
 |Nome da lista||name|
+|Limite||10|
+|Filtro do consulta||field/id1 eq 'value'|
+|Ordenar por||column|
+|Campos para expandir||['id1','id2',...]|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -269,6 +276,7 @@ Obtenha um Item, usando seu ID, de uma lista
 |ID do Sítio||ID|
 |Nome da lista||name|
 |ID do Item||ID|
+|Campos para expandir||['id1','id2',...]|
 |Atribuir à variável||Variable|
 |session||session|
 
