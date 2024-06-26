@@ -20,6 +20,27 @@ Before using this module, you need to register your app in the Azure App Registr
     - **Example:** <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M</sub>
 12. Press "enter" and if the operation was successful you will see in the console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." and a file will have been created with your credentials, in the root folder of Rocketbot, called o365_token.txt or o365_token_{session}.txt.
 
+## ERROR
+
+If in the login tab that opens when you execute the connection command you see this error:
+
+![error](imgs/o365error.png)
+
+It is because the necessary administrator permissions have not been granted to the user, so the Administrator must perform the following steps:
+
+1. Go to Azure portal >
+2. Go to Azure Active Directory
+3. Select your application
+4. Go to API Permissions
+5. Grant administrator consent
+
+Alternatively, you can also allow users to consent to the app without administrator approval as follows:
+
+1. Go to Azure portal
+2.Enterprise Application
+3. User settings
+4. Go to Consent and permissions
+5. Allow users to consent to apps
 ---
 
 ## Como usar este modulo
@@ -155,6 +176,28 @@ Las propiedades que aparecen en 'ordenar por' también deben aparecer en 'filtro
 Las propiedades que aparecen en 'ordenar por' están en el mismo orden que en 'filtro'.
 Las propiedades que están presentes en 'ordenar por' aparecen en 'filtro' antes de cualquier propiedad que no lo esté.
 
+## ERROR
+
+Si en la pestaña de login que se abre al ejecutar el comando de conexión visualizas este error:
+
+![error](imgs/o365error.png)
+
+Es porque no se han concedido los permisos de administrador necesarios al usuario, por lo que el Administrador deberá realizar los siguientes pasos:
+
+1. Ir a Azure Portal > 
+2. Ir a Azure Active Directory 
+3. Selecciona tu aplicación 
+4. Ir a API Permissions
+5. Conceder consentimiento del administrador
+
+Alternativamente, también puede permitir que los usuarios den su consentimiento a la aplicación sin la aprobación del administrador de la siguiente manera:
+
+1. Ir a Azure Portal 
+2. Enterprise Application 
+3. Ajustes de usuario 
+4. Ir a Consentimiento y permisos
+5. Permitir a los usuarios consentir para aplicaciones
+
 ---
 
 ## Como usar este módulo
@@ -178,3 +221,25 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 11. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL e cole-o no console do Rocketbot abaixo de **"Paste the authenticated url here:"**.
     - Exemplo: <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M
 12. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.
+
+## ERRO
+
+Se na guia de login que abre quando você executa o comando de conexão você vê este erro:
+
+![erro](imgs/o365error.png)
+
+Isso ocorre porque as permissões de administrador necessárias não foram concedidas ao usuário, portanto o Administrador deve executar as seguintes etapas:
+
+1. Acesse o portal do Azure >
+2. Vá para Azure Active Directory
+3. Selecione seu aplicativo
+4. Vá para Permissões da API
+5. Conceda consentimento do administrador
+
+Como alternativa, você também pode permitir que os usuários concordem com o aplicativo sem a aprovação do administrador, da seguinte forma:
+
+1. Acesse o portal do Azure
+2. Aplicação Empresarial
+3. Configurações do usuário
+4. Vá para Consentimento e permissões
+5. Permitir que os usuários concordem com os aplicativos
