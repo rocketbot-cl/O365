@@ -24,7 +24,7 @@ Before using this module, you need to register your app in the Azure App Registr
 
 If in the login tab that opens when you execute the connection command you see this error:
 
-![error](imgs/o365error.png)
+![error](imgs/o365error.PNG)
 
 It is because the necessary administrator permissions have not been granted to the user, so the Administrator must perform the following steps:
 
@@ -180,7 +180,7 @@ Las propiedades que están presentes en 'ordenar por' aparecen en 'filtro' antes
 
 Si en la pestaña de login que se abre al ejecutar el comando de conexión visualizas este error:
 
-![error](imgs/o365error.png)
+![error](imgs/o365error.PNG)
 
 Es porque no se han concedido los permisos de administrador necesarios al usuario, por lo que el Administrador deberá realizar los siguientes pasos:
 
@@ -226,7 +226,7 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 
 Se na guia de login que abre quando você executa o comando de conexão você vê este erro:
 
-![erro](imgs/o365error.png)
+![erro](imgs/o365error.PNG)
 
 Isso ocorre porque as permissões de administrador necessárias não foram concedidas ao usuário, portanto o Administrador deve executar as seguintes etapas:
 
