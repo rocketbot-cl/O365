@@ -440,6 +440,8 @@ if module == "readEmail":
     not_parsed = GetParams("not_parsed")
     whole = GetParams("whole")
     raw = GetParams("raw")
+    download_html = GetParams("download_html")
+    html_folder = GetParams("html_folder")
     
     import email
     from mailparser import mailparser
@@ -450,6 +452,9 @@ if module == "readEmail":
     
     if download_att:
         download_att = eval(download_att)
+
+    if download_html:
+        download_html = eval(download_html)
     
     try:
         # It creates a message object and makes available attachments to be downloaded
@@ -467,6 +472,44 @@ if module == "readEmail":
                 filename, file_extension = os.path.splitext(att.name)
                 if file_extension == '.eml':
                     message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
+
+        if download_html == True:
+
+            if not os.path.isdir(html_folder):
+                    raise Exception('The path for html does not exist.')
+            html_b = BeautifulSoup(message.body, "html.parser")
+
+            # Limpiar el asunto para obtener un nombre de archivo válido
+            subjecthtml = message.subject.replace("/", "_").replace("\\", "_").replace(":", "_")
+            # Crear un nombre de archivo único usando el asunto
+            filenamehtml = f"{subjecthtml}.html"
+            filepathhtml = os.path.join(html_folder, filenamehtml)
+            #Modifico el body del mensaje para agregar remitente y asunto            
+            body_tag = html_b.find("body")
+            # Agregar información del remitente
+            # Crear la nueva etiqueta
+            new_tag = html_b.new_tag("p")
+            bold_tag = html_b.new_tag("b")
+            bold_tag.string = "Sender:"
+            new_tag.append(bold_tag)
+            sender_info = f"{message.sender.address}"
+            new_tag.append(sender_info)
+            # Insertar la nueva etiqueta al inicio del email_body
+            body_tag.insert(0, new_tag)
+            
+            # Agregar el asunto
+            # Crear la nueva etiqueta
+            new_tag = html_b.new_tag("p")
+            bold_tag = html_b.new_tag("b")
+            bold_tag.string = "subject:"
+            new_tag.append(bold_tag)
+            sender_info = f"{message.subject}"
+            new_tag.append(sender_info)
+            # Insertar la nueva etiqueta al inicio del email_body
+            body_tag.insert(1, new_tag)
+            print(html_b)
+            with open(filepathhtml, "w", encoding="utf-8") as f:
+                f.write(str(html_b))
             
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
         parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
@@ -482,10 +525,10 @@ if module == "readEmail":
                     with open(os.path.join(att_folder, name), 'wb') as file_:
                         file_.write(cont)
                         file_.close()
-        
+
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser")
-        
+
         links = {}
         if html_body:
             for a in html_body.find_all("a"):

@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "1.6.10",
+  "version": "1.6.11",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -477,6 +477,37 @@
               "pr": "Se marcado, os anexos serão baixados"
             },
             "id": "down",
+            "css": "col-md-6"
+          },
+          {
+            "type": "folder_select",
+            "placeholder": "C:\\User\\Desktop",
+            "title": {
+              "es": "Ruta para descargar mensaje html:",
+              "en": "Path to download HTML message:",
+              "pr": "Caminho para download mensagem html:"
+            },
+            "id": "html_folder",
+            "css": "col-md-6"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": {
+              "es": "-",
+              "en": "-",
+              "pr": "-"
+            },
+            "title": {
+              "es": "Descargar mensaje como HTML",
+              "en": "Download message as HTML",
+              "pr": "Baixar mensagem como HTML"
+            },
+            "help": {
+              "es": "Si se marca, se descargara el mensaje en un archivo HTML",
+              "en": "If checked, the message will be downloaded in an HTML file",
+              "pr": "Se marcado, a mensagem será baixada em um arquivo HTML"
+            },
+            "id": "download_html",
             "css": "col-md-6"
           },
           {
