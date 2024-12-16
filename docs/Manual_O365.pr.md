@@ -40,6 +40,30 @@ desse valor.
 11. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL e cole-o no console do Rocketbot abaixo de **"Paste the authenticated url here:"**.
     - Exemplo: <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M
 12. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.
+
+## ERRO
+
+Se na guia de login que abre quando você executa o 
+comando de conexão você vê este erro:
+
+![erro](imgs/o365error.PNG)
+
+Isso ocorre porque as permissões de administrador necessárias não foram concedidas ao usuário, portanto o Administrador deve executar as seguintes etapas:
+
+1. Acesse o portal do Azure >
+2. Vá para Azure Active Directory
+3. Selecione seu aplicativo
+4. Vá para Permissões da API
+5. Conceda consentimento do administrador
+
+Como alternativa, você também pode permitir que os usuários concordem com o aplicativo sem a aprovação do administrador, da seguinte forma:
+
+1. Acesse o portal do Azure
+2. Aplicação Empresarial
+3. Configurações do usuário
+4. Vá para Consentimento e permissões
+5. Permitir que os usuários concordem com os aplicativos
+
 ## Descrição do comando
 
 ### Conectar a O365
@@ -86,6 +110,8 @@ Ler um e-mail usando seu ID
 |Identificação do email||345|
 |Caminho para download do anexo||C:\User\Desktop|
 |Baixar anexos||-|
+|Caminho para download mensagem html||C:\User\Desktop|
+|Baixar mensagem como HTML||-|
 |Marcar como lido||-|
 |Corpo do e-mail HTML|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão HTML.||
 |E-mail completo em HTML|Se esta caixa estiver marcada, retornará o e-mail completo em versão HTML.||
