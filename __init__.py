@@ -467,7 +467,24 @@ if module == "readEmail":
             if download_att == True:
                 if not os.path.isdir(att_folder):
                         raise Exception('The path does not exist.')
-                att.save(location=att_folder)
+                file_path = os.path.normpath(os.path.join(att_folder, att.name))
+                base, ext = os.path.splitext(att.name)
+                base = base.strip() 
+                count = 1
+                while os.path.exists(file_path):
+                    file_path = os.path.normpath(os.path.join(att_folder, f"{base}_{count}{ext}"))
+                    count += 1
+                content = att.content
+                if isinstance(content, str):
+                    try:
+                        content = base64.b64decode(content)
+                    except Exception as e:
+                        PrintException(e)
+                        raise
+                with open(file_path, 'wb') as f:
+                    f.write(content)
+                files.append(file_path)
+                # att.save(location=file_path)
                 # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
                 filename, file_extension = os.path.splitext(att.name)
                 if file_extension == '.eml':
@@ -619,8 +636,25 @@ if module == "downAtt":
         files = []
         # API: Used to download attachments of the read email
         for att in message.attachments:
-            files.append(att.name)
-            att.save(location=att_folder)
+            file_path = os.path.normpath(os.path.join(att_folder, att.name))
+            base, ext = os.path.splitext(att.name)
+            base = base.strip() 
+            count = 1
+            while os.path.exists(file_path):
+                file_path = os.path.normpath(os.path.join(att_folder, f"{base}_{count}{ext}"))
+                count += 1
+            content = att.content
+            if isinstance(content, str):
+                try:
+                    content = base64.b64decode(content)
+                except Exception as e:
+                    PrintException(e)
+                    raise
+            with open(file_path, 'wb') as f:
+                f.write(content)
+            files.append(file_path)
+            # files.append(att.name)
+            # att.save(location=file_path)
             # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
             filename, file_extension = os.path.splitext(att.name)
             if file_extension == '.eml':
