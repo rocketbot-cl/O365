@@ -4,7 +4,7 @@
 try:
     import zoneinfo
 except ImportError:
-    from backports import zoneinfo
+    from r_backports import zoneinfo
 
 import datetime
 
