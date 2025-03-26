@@ -8,7 +8,7 @@ from datetime import timezone
 from tzlocal import utils
 
 if sys.version_info >= (3, 9):
-    import zoneinfo  # pragma: no cover
+    from r_backports import zoneinfo  # pragma: no cover
 else:
     from r_backports import zoneinfo  # pragma: no cover
 
