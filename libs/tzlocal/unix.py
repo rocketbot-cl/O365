@@ -10,7 +10,7 @@ from tzlocal import utils
 if sys.version_info >= (3, 9):
     import zoneinfo  # pragma: no cover
 else:
-    from backports import zoneinfo  # pragma: no cover
+    from r_backports import zoneinfo  # pragma: no cover
 
 _cache_tz = None
 _cache_tz_name = None

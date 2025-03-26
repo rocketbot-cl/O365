@@ -62,7 +62,7 @@ The `backports.zoneinfo` module should be a drop-in replacement for the Python 3
 try:
     import zoneinfo
 except ImportError:
-    from backports import zoneinfo
+    from r_backports import zoneinfo
 ```
 
 To get access to time zones with this module, construct a `ZoneInfo` object and attach it to your datetime:
