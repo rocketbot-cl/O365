@@ -481,14 +481,18 @@ if module == "readEmail":
                     except Exception as e:
                         PrintException(e)
                         raise
-                with open(file_path, 'wb') as f:
-                    f.write(content)
-                files.append(file_path)
-                # att.save(location=file_path)
-                # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
                 filename, file_extension = os.path.splitext(att.name)
                 if file_extension == '.eml':
                     message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
+                else:
+                    with open(file_path, 'wb') as f:
+                        f.write(content)
+                    #files.append(file_path)
+                # att.save(location=file_path)
+                # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
+                #filename, file_extension = os.path.splitext(att.name)
+                #if file_extension == '.eml':
+                    #message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
 
         if download_html == True:
 
@@ -653,7 +657,7 @@ if module == "downAtt":
             with open(file_path, 'wb') as f:
                 f.write(content)
             files.append(file_path)
-            # files.append(att.name)
+
             # att.save(location=file_path)
             # Gets name and extension, if it is an '.eml' (Attached email to the read email) takes a different path because the main way do not work
             filename, file_extension = os.path.splitext(att.name)

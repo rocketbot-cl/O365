@@ -9,7 +9,7 @@ except ImportError:
 try:
     import zoneinfo  # pragma: no cover
 except ImportError:
-    from backports import zoneinfo  # pragma: no cover
+    from r_backports import zoneinfo  # pragma: no cover
 
 from tzlocal.windows_tz import win_tz
 from tzlocal import utils

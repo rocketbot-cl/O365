@@ -8,7 +8,7 @@ import warnings
 try:
     import zoneinfo  # pragma: no cover
 except ImportError:
-    from backports import zoneinfo  # pragma: no cover
+    from r_backports import zoneinfo  # pragma: no cover
 
 from tzlocal import windows_tz
 
