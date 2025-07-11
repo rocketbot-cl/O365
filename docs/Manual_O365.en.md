@@ -74,6 +74,8 @@ Connect to O365 application instance
 |tenant_id||tenant_id|
 |session||session|
 |Connect to Sharepoint||-|
+|Proxy HTTPS||https://192.168.00.00:4000|
+|Proxy HTTP||http://192.168.00.00:4000|
 |Asign to variable||Variable|
 
 ### List all emails
