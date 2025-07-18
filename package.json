@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "1.6.17",
+  "version": "1.6.18",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -116,6 +116,38 @@
             },
             "id": "sharepoint",
             "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "https://192.168.00.00:4000",
+            "title": {
+              "es": "Proxy HTTPS:",
+              "en": "Proxy HTTPS:",
+              "pr": "Proxy HTTPS:"
+            },
+            "help": {
+              "es": "Proxy protocolo HTTPS. https://192.168.00.00:4000 o https://user:pass@192.168.00.00:4000",
+              "en": "HTTPS proxy protocol. https://192.168.00.00:4000 or https://user:pass@192.168.00.00:4000",
+              "pr": "Proxy protocolo HTTPS. https://192.168.00.00:4000 ou https://user:pass@192.168.00.00:4000"
+            },
+            "id": "proxy_https",
+            "css": "col-md-4"
+          },
+          {
+            "type": "input",
+            "placeholder": "http://192.168.00.00:4000",
+            "title": {
+              "es": "Proxy HTTP:",
+              "en": "Proxy HTTP:",
+              "pr": "Proxy HTTP:"
+            },
+            "help": {
+              "es": "Proxy protocolo HTTP. http://192.168.00.00:4000 o http://user:pass@192.168.00.00:4000",
+              "en": "HTTP proxy protocol. http://192.168.00.00:4000 or http://user:pass@192.168.00.00:4000",
+              "pr": "Proxy protocolo HTTP. http://192.168.00.00:4000 ou http://user:pass@192.168.00.00:4000"
+            },
+            "id": "proxy_http",
+            "css": "col-md-4"
           },
           {
             "type": "input",

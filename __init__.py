@@ -80,8 +80,17 @@ if module == "connect":
     client_secret = GetParams("client_secret")
     tenant = GetParams("tenant")
     sharepoint_ = GetParams('sharepoint')
+    proxy_https = GetParams("proxy_https")
+    proxy_http = GetParams("proxy_http")
     res = GetParams("res")
-    
+
+    if proxy_https:
+        if 'https_proxy' not in os.environ:
+            os.environ['https_proxy'] = proxy_https
+            
+    if proxy_http:
+        if 'http_proxy' not in os.environ:
+            os.environ['http_proxy'] = proxy_http    
     if session == '':
         filename = "o365_token.txt"
     else:

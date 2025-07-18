@@ -192,6 +192,8 @@ Conectar a una insancia de la aplicación de O365
 |tenant_id||tenant_id|
 |session||session|
 |Conectarse a Sharepoint||-|
+|Proxy HTTPS||https://192.168.00.00:4000|
+|Proxy HTTP||http://192.168.00.00:4000|
 |Asignar a variable||Variable|
 
 ### Listar todos los emails
