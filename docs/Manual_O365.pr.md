@@ -232,6 +232,7 @@ Cria uma nova pasta no e-mail
 Obter lista de Grupos aos quais a conta pertence
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
+|Filtro|Filtrar os grupos que comezan con o texto introducido.||
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -250,6 +251,8 @@ Obter o site do Grupo
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do grupo||ID|
+|Hostname|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar tusitio.sharepoint.com|tusitio.sharepoint.com|
+|Rota ao sitio|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar /sites/RecursosHumanos/SubsitioRRHH|/sites/RecursosHumanos/SubsitioRRHH|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -262,12 +265,21 @@ Obter as listas do Site
 |Atribuir à variável||Variable|
 |session||session|
 
+### Obter listas por ID do Sítio
+  
+Obter as listas do Site
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID do Sítio||ID|
+|Atribuir à variável||Variable|
+|Session||session|
+
 ### Obter colunas da lista
   
 Obtenha as colunas editáveis de uma Lista específica do Site
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
-|ID do grupo||ID|
+|ID do Sítio||ID|
 |ID da lista||ID|
 |Atribuir à variável||Variable|
 |session||session|
@@ -288,6 +300,8 @@ Obter os itens de uma Lista usando seu nome
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
+|Hostname|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar tusitio.sharepoint.com|tusitio.sharepoint.com|
+|Rota ao sitio|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar /sites/RecursosHumanos/SubsitioRRHH|/sites/RecursosHumanos/SubsitioRRHH|
 |Nome da lista||name|
 |Limite||10|
 |Filtro do consulta||field/id1 eq 'value'|
@@ -302,6 +316,8 @@ Obtenha um Item, usando seu ID, de uma lista
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
+|Hostname|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar tusitio.sharepoint.com|tusitio.sharepoint.com|
+|Rota ao sitio|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar /sites/RecursosHumanos/SubsitioRRHH|/sites/RecursosHumanos/SubsitioRRHH|
 |Nome da lista||name|
 |ID do Item||ID|
 |Campos para expandir||['id1','id2',...]|
@@ -348,6 +364,8 @@ Obtenha uma lista das Bibliotecas de Documentos dentro do Site
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
+|Hostname|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar tusitio.sharepoint.com|tusitio.sharepoint.com|
+|Rota ao sitio|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar /sites/RecursosHumanos/SubsitioRRHH|/sites/RecursosHumanos/SubsitioRRHH|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -357,7 +375,11 @@ Obtenha uma lista dos documentos dentro de uma biblioteca
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |ID do Sítio||ID|
-|ID do Biblioteca||ID|
+|Hostname|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar tusitio.sharepoint.com|tusitio.sharepoint.com|
+|Rota ao sitio|Exemplo do link https//tusitio.sharepoint.com/sites/RecursosHumanos/SubsitioRRHH tirar /sites/RecursosHumanos/SubsitioRRHH|/sites/RecursosHumanos/SubsitioRRHH|
+|ID do Biblioteca|Você pode obter o ID da biblioteca usando o módulo 'Obter bibliotecas de documentos'|ID|
+|Começar de|Caminho dentro da biblioteca de onde começar a obter os documentos. Exemplo /Documentos compartilhados/Pasta1|Path/to/folder|
+|Contém|Obter apenas os documentos que contêm este texto em seu nome. Deixe vazio para obter todos os documentos.|Text|
 |Atribuir à variável||Variable|
 |session||session|
 

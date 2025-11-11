@@ -69,37 +69,40 @@ Get the site of the Group
 17. Get site lists  
 Get the lists of the Site
 
-18. Get list columns  
+18. Get lists by Site ID  
+Get the lists of the Site
+
+19. Get list columns  
 Get the editable columns of a specific List of the Site
 
-19. Create List  
+20. Create List  
 Create a new list
 
-20. Get list Items  
+21. Get list Items  
 Get the items of a List using its name
 
-21. Get Item  
+22. Get Item  
 Get an Item, using its ID, from a List
 
-22. Create Item  
+23. Create Item  
 Create an Item in a List
 
-23. Delete Item  
+24. Delete Item  
 Delete an Item, using its ID, from a List
 
-24. Update Item  
+25. Update Item  
 Update an Item data using its ID
 
-25. Get document libraries  
+26. Get document libraries  
 Get a list of the Document Libraries within the Site
 
-26. Get documents  
+27. Get documents  
 Get a list of the documents within a library
 
-27. Upload document  
+28. Upload document  
 Upload a document to a Site library
 
-28. Download or modify document  
+29. Download or modify document  
 Upload a document to a Site library  
 
 

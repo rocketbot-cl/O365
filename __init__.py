@@ -856,45 +856,78 @@ mod_o365_endpoints = {
     'get_group_by_mail': '/groups/?$search="mail:{group_mail}"&$count=true',
     'list_groups': '/groups',
     'list_groups_delta': '/groups/delta',
-    'get_group_site': '/groups/{group_id}/sites/{site_name}',
+    # 'get_group_site': '/groups/{group_id}/sites/{site_name}',
+    'get_group_site': '/groups/{group_id}/sites/root',
     'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
-    'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/columns'
+    'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/columns',
+    'get_lists_by_siteid': '/sites/{site_id}/lists',
+    'get_list_columns': '/sites/{site_id}/lists/{list_id}/columns'
     }
 
-def list_groups(gs):
+def list_groups(gs, name_filter=None):
     """ Returns list of groups orderer alphabetically by name
     
     :rtype: list[{Group Name: name, Group Id: ID}]
     
     """
-
-    url = gs.build_url(mod_o365_endpoints.get('list_groups'))
-    response = gs.con.get(url)
-    if not response:
-        return None
-    data = response.json()
+    def fetch_all(url):
+        all = []
+        while url:
+            response = gs.con.get(url)
+            if not response:
+                break
+            data = response.json()
+            all.extend(data['value'])
+            url = data.get('@odata.nextLink')
+        return all
+    base_url = mod_o365_endpoints.get('list_groups')
+    if name_filter:
+        base_url += "?$filter=startswith(displayName,'{}')".format(name_filter)
+    url = gs.build_url(base_url)
+    # response = gs.con.get(url)
+    data_list = fetch_all(url)
+    # if not response:
+    #     return None
+    # data = response.json()
     groups = []
-    for g in data['value']:
-        group = {}  
-        group['displayName'] = g['displayName']
-        group['id'] = g['id']
-        groups.append(group)
-        groups.sort(key = lambda g: g['displayName'])
-
+    # for g in data['value']:
+    #     group = {}  
+    #     group['displayName'] = g['displayName']
+    #     group['id'] = g['id']
+    #     groups.append(group)
+    #     groups.sort(key = lambda g: g['displayName'])
+    for g in data_list:
+        if 'displayName' in g and 'id' in g:
+            group = {}  
+            group['displayName'] = g['displayName']
+            group['id'] = g['id']
+            if group not in groups:
+                groups.append(group)
+                groups.sort(key = lambda g: g['displayName'])
     # Add this endpoint, because in some cases the groups one does not returns everything 
-    url = gs.build_url(mod_o365_endpoints.get('list_groups_delta'))
-    response = gs.con.get(url)
-    if not response:
-        return None
-    data = response.json()
-    for g in data['value']:
-        group = {}  
-        group['displayName'] = g['displayName']
-        group['id'] = g['id']
-        if group not in groups:
-            groups.append(group)
-            groups.sort(key = lambda g: g['displayName'])
-    
+    if not name_filter:
+        url = gs.build_url(mod_o365_endpoints.get('list_groups_delta'))
+        data_list = fetch_all(url)
+        # response = gs.con.get(url)
+        # if not response:
+        #     return None
+        # data = response.json()
+        # for g in data['value']:
+        #     group = {}  
+        #     group['displayName'] = g['displayName']
+        #     group['id'] = g['id']
+        #     if group not in groups:
+        #         groups.append(group)
+        #         groups.sort(key = lambda g: g['displayName'])
+        for g in data_list:
+            if 'displayName' in g and 'id' in g:
+                group = {}  
+                group['displayName'] = g['displayName']
+                group['id'] = g['id']
+                if group not in groups:
+                    groups.append(group)
+                    groups.sort(key = lambda g: g['displayName'])
+
     return groups
 
 def get_group_by_id(gs, group_id = None):
@@ -919,7 +952,7 @@ def get_group_by_id(gs, group_id = None):
 
     return data
 
-def get_group_site(gs, group_id = None, group_site = None):
+def get_group_site(gs, group_id = None):
     """ Returns Microsoft O365/AD group with given id
     :param group_id: group id of group
     :rtype: Group
@@ -930,8 +963,8 @@ def get_group_site(gs, group_id = None, group_site = None):
 
     if group_id:
         # get channels by the team id
-        url = gs.build_url(mod_o365_endpoints.get('get_group_site').format(group_id=group_id, site_name=group_site))
-
+        url = gs.build_url(mod_o365_endpoints.get('get_group_site').format(group_id=group_id))
+        
     response = gs.con.get(url)
 
     if not response:
@@ -1002,6 +1035,40 @@ def get_list_columns(gs, group_id = None, group_site = None, list_id= None):
         if column['readOnly'] == False:
             data_.append(column)
     
+    return data_
+
+##update
+def get_list_columns_by_siteid(gs, site_id=None, list_id=None):
+    """
+    Returns a list with the editable columns of a list within a SharePoint site.
+    Args:
+        sp (Sharepoint Object): Sharepoint session object.
+        site_id (str): Site ID in format "domain,GUID1,GUID2"
+        list_id (str): List ID of the document library or list
+    Raises:
+        RuntimeError: If required parameters are missing.
+    Returns:
+        list: List of editable column definitions (dict)
+    """
+    if not site_id:
+        raise RuntimeError("Provide the site_id")
+
+    if not list_id:
+        raise RuntimeError("Provide the list_id")
+
+    url = gs.build_url(mod_o365_endpoints.get('get_list_columns').format(site_id=site_id, list_id=list_id))
+
+    response = gs.con.get(url)
+    if not response:
+        return None
+
+    data = response.json()
+    data_ = []
+
+    for column in data.get("value", []):
+        if column.get("readOnly") is False:
+            data_.append(column)
+
     return data_
 
 def get_libraries(s, site_id = None):
@@ -1118,15 +1185,34 @@ def get_item_by_id_custom(self, item_id, expand_fields=None):
     # Modificted to return the whole data of the item and the item object itself
     return data
 
+def get_lists_by_siteid(gs, site_id=None):
+    """ Returns all lists of a given SharePoint site by site_id """
+
+    if not site_id:
+        raise RuntimeError('Provide the site_id')
+
+    url = gs.build_url(mod_o365_endpoints.get('get_lists_by_siteid').format(site_id=site_id))
+    response = gs.con.get(url)
+
+    if not response:
+        return None
+
+    data = response.json()
+    return data
+
 SharepointList.get_items_no_index = get_items_no_index
 SharepointList.get_item_by_id_custom = get_item_by_id_custom
 
 if module == "listGroups":
 
     res = GetParams("res")
+    filter = GetParams("filter")
 
     try:
-        groups_list = list_groups(mod_o365_session[session].groups())
+        if filter:
+            groups_list = list_groups(mod_o365_session[session].groups(), name_filter=filter)
+        else:
+            groups_list = list_groups(mod_o365_session[session].groups())
 
         SetVar(res, groups_list) 
 
@@ -1154,14 +1240,16 @@ if module == "group":
 if module == "site":
 
     group_ = GetParams("groupId")
+    hostname = GetParams("hostname")
+    path_to_site = GetParams("path_to_site")
     res = GetParams("res")
 
     try:
-        
-        site = get_group_site(mod_o365_session[session].groups(), 
-                              group_, 
-                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName']
-                              )
+        if hostname and path_to_site:
+            site = mod_o365_session[session].sharepoint().get_site(hostname, path_to_site)
+            site = site.object_id
+        else:
+            site = get_group_site(mod_o365_session[session].groups(), group_)
 
         SetVar(res, site)
 
@@ -1191,22 +1279,34 @@ if module == "siteLists":
         PrintException()
         raise e
 
-if module == "getListColumns":
+if module == "getListsBySiteId":
+    site_id = GetParams("siteId")
+    res = GetParams("res")
 
-    group_ = GetParams("groupId")
+    try:
+        sp_lists = get_lists_by_siteid(mod_o365_session[session].groups(), site_id)
+        SetVar(res, sp_lists)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        PrintException()
+        raise e
+
+if module == "getListColumns":
+    # group_ = GetParams("groupId")
+    site_id = GetParams("siteId")
     list_id = GetParams("listId")
     res = GetParams("res")
 
     try:
-          
-        list = get_list(mod_o365_session[session].groups(), 
-                              group_, 
-                              get_group_by_id(mod_o365_session[session].groups(), group_)['displayName'],
-                              list_id
-                              )
-
-        SetVar(res, list)
-
+        # list = get_list_columns(mod_o365_session[session].groups(), 
+        #                       group_, 
+        #                       get_group_by_id(mod_o365_session[session].groups(), group_)['displayName'],
+        #                       list_id
+        #                       )
+        gs = mod_o365_session[session].sharepoint()
+        columnas = get_list_columns_by_siteid(gs, site_id=site_id, list_id=list_id)
+        SetVar(res, columnas)
     except Exception as e:
         print(traceback.format_exc())
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
@@ -1237,24 +1337,37 @@ if module == "createList":
 if module == "listItems":
     
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    hostname = GetParams("hostname")
+    path_to_site = GetParams("path_to_site")
     listName = GetParams("listName")
     limit = GetParams("limit") or 10
     query = GetParams("query") or None
     order_by = GetParams("order_by") or None
-    expand_fields = GetParams("expand_fields") or None
+    expand_fields = GetParams("expand_fields")
     res = GetParams("res")
 
     try:
-        sp_list = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_items_no_index(limit=int(limit), query=query, order_by=order_by, batch=50)
-        
-        if expand_fields.startswith("[") and expand_fields.endswith("]"):
-            expand_fields = eval(expand_fields)
-        else:
-            expand_fields = expand_fields.split(",")
+        sp = mod_o365_session[session].sharepoint()
+        if site_ and "," in site_:
+            site_obj = sp.get_site(site_)
+        elif hostname and path_to_site:
+            site_obj = sp.get_site(hostname, path_to_site).object_id
+
+        # sp_list = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_items_no_index(limit=int(limit), query=query, order_by=order_by, batch=50)
+        sp_list = site_obj.get_list_by_name(listName).get_items_no_index(
+            limit=int(limit), query=query, order_by=order_by, batch=50
+        )
+        if expand_fields:
+            if expand_fields.startswith("[") and expand_fields.endswith("]"):
+                expand_fields = eval(expand_fields)
+            else:
+                expand_fields = expand_fields.split(",")
         
         items = []
         for item in sp_list:
-            data = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id_custom(item.object_id, expand_fields=expand_fields)
+            # data = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id_custom(item.object_id, expand_fields=expand_fields)
+            data = site_obj.get_list_by_name(listName).get_item_by_id_custom(
+                item.object_id, expand_fields=expand_fields)
             items.append(data)
         
         
@@ -1270,15 +1383,23 @@ if module == "listItems":
 if module == "getItem":
     
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    hostname = GetParams("hostname")
+    path_to_site = GetParams("path_to_site")
     listName = GetParams("listName")
     itemId = GetParams("itemId")
     expand_fields = GetParams("expand_fields") or None
     res = GetParams("res")
     
     try:
+        sp = mod_o365_session[session].sharepoint()
+        if site_ and "," in site_:
+            site_obj = sp.get_site(site_)
+        elif hostname and path_to_site:
+            site_obj = sp.get_site(hostname, path_to_site).object_id
         
-        data = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id_custom(itemId, expand_fields=expand_fields)
-
+        # data = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id_custom(itemId, expand_fields=expand_fields)
+        data = site_obj.get_list_by_name(listName).get_item_by_id_custom(
+            itemId, expand_fields=expand_fields)
         SetVar(res, data)
 
     except Exception as e:
@@ -1315,9 +1436,7 @@ if module == "deleteItem":
     res = GetParams("res")
 
     try:
-        
-        listName = listName.encode()
-        
+        # listName = listName.encode()
         del_item = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).delete_list_item(itemId)
 
         SetVar(res, del_item)
@@ -1338,7 +1457,8 @@ if module == "updateItem":
     res = GetParams("res")
 
     try:       
-        data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId)
+        # data, item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId)
+        item_ = mod_o365_session[session].sharepoint().get_site(site_).get_list_by_name(listName).get_item_by_id(itemId)
         item_.update_fields(eval(itemInfo))
         updated_item = item_.save_updates()
         
@@ -1350,14 +1470,17 @@ if module == "updateItem":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
-    
+
 if module == "getDocumentLibraries":
 
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    hostname = GetParams("hostname")
+    path_to_site = GetParams("path_to_site")
     res = GetParams("res")
 
     try:
-   
+        if hostname and path_to_site:
+            site_ = mod_o365_session[session].sharepoint().get_site(hostname, path_to_site).object_id
         libraries = get_libraries(mod_o365_session[session].sharepoint(), site_)
         
         SetVar(res, libraries)
@@ -1372,9 +1495,16 @@ if module == "getDocumentLibraries":
 if module == "documentsList":
 
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)
+    hostname = GetParams("hostname")
+    path_to_site = GetParams("path_to_site")
     drive_ = GetParams("driveId")
     res = GetParams("res")
-    
+    global name_contains
+    start_path = GetParams("start_path")      # p.ej. "2025/Reportes"
+    name_contains = GetParams("name_contains")  # p.ej. "excel" o ".xlsx"
+    if not name_contains:
+        name_contains = ""
+     
     def get_drive_contents(drive):
         """Recursively iterates through the content of a drive (at first) and checks if each item if a folder
           or a file. If the case is the it is a Folder, it calls the function again to get its sub-folders 
@@ -1390,29 +1520,41 @@ if module == "documentsList":
             file = {}
             if doc.is_folder:
                 folder = doc.get_items()
-                folder_ = {'name': doc.name,
-                        'object_id': doc.object_id,
-                        'parent': doc.get_parent(),
-                        'parent_id': doc.get_parent().object_id,
-                }
-                folders.append(folder_)     
-                get_drive_contents(folder)
+                if (not name_contains) or (name_contains.lower() in doc.name.lower()):
+                    folder_ = {'name': doc.name,
+                            'object_id': doc.object_id,
+                            'parent': getattr(doc.get_parent(), "name", str(doc.get_parent())),
+                            'parent_id': getattr(doc.get_parent(), "object_id", None),
+                    }
+                    folders.append(folder_) 
+
+                if folder:
+                    get_drive_contents(folder)
                 
             if doc.is_file:
-                file = {'name': doc.name,
-                        'object_id': doc.object_id,
-                        'parent': doc.get_parent(),
-                        'parent_id': doc.get_parent().object_id,
-                }
-                files.append(file)     
+                if (not name_contains) or (name_contains.lower() in doc.name.lower()):
+                    file = {'name': doc.name,
+                            'object_id': doc.object_id,
+                            'parent': getattr(doc.get_parent(), "name", str(doc.get_parent())),
+                            'parent_id': getattr(doc.get_parent(), "object_id", None),
+                    }
+                    files.append(file)     
     
     try:
-        drive = mod_o365_session[session].sharepoint().get_site(site_).get_document_library(drive_).get_items()
-        
+        sp = mod_o365_session[session].sharepoint()
+        if site_ and "," in site_:
+            site_obj = sp.get_site(site_)
+        elif hostname and path_to_site:
+            # site_obj = sp.get_site(hostname, path_to_site).object_id
+            site_obj = sp.get_site(hostname, path_to_site)
+        # drive = site_obj.get_document_library(drive_).get_items()
+        lib = site_obj.get_document_library(drive_)
+        root_item = lib.get_item_by_path(start_path) if start_path else lib.get_root_folder()
+        items = root_item.get_items()
         folders = []
         files = []
-        
-        get_drive_contents(drive)
+        if items:
+            get_drive_contents(items)
 
         contents = {'folders': folders, 'files': files}
         

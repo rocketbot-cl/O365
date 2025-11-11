@@ -69,37 +69,40 @@ Obtener el sitio del Grupo
 17. Obtener listas  
 Obtener las listas del Sitio
 
-18. Obtener columnas de lista  
+18. Obtener listas por ID del Sitio  
+Obtener las listas del Sitio
+
+19. Obtener columnas de lista  
 Obtener las columnas editables de una Lista específica del Sitio
 
-19. Crear Lista  
+20. Crear Lista  
 Crear una nueva lista
 
-20. Obtener items de lista  
+21. Obtener items de lista  
 Obtener los items de una Lista utilizando su nombre
 
-21. Obtener Item  
+22. Obtener Item  
 Obtener un Item, utilizando su ID, de una Lista
 
-22. Crear Item  
+23. Crear Item  
 Crear un Item dentro de una Lista
 
-23. Borrar Item  
+24. Borrar Item  
 Borrar un Item, usando su ID, de una Lista
 
-24. Actalizar Item  
+25. Actalizar Item  
 Actualizar datos de un Item usando si ID
 
-25. Obtener bibliotecas de documentos  
+26. Obtener bibliotecas de documentos  
 Obtener una lista de las bibliotecas de documentos dentro del sitio
 
-26. Obtener documentos  
+27. Obtener documentos  
 Obtenga una lista de los documentos dentro de una biblioteca
 
-27. Subir documento  
+28. Subir documento  
 Subir un documento a una biblioteca del sitio
 
-28. Descargar o modificar documento  
+29. Descargar o modificar documento  
 Subir un documento a una biblioteca del sitio  
 
 
