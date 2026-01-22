@@ -108,10 +108,12 @@ if module == "connect":
         credentials = (client_id, client_secret)
         mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
         if not mod_o365_session[session].is_authenticated:
-            mod_o365_session[session].authenticate(scopes=scopes_)
+            mod_o365_session[session].authenticate(scopes=scopes_, redirect_uri="https://localhost:5001/")
         SetVar(res, mod_o365_session[session].is_authenticated) 
     except Exception as e:
-        SetVar(res, mod_o365_session[session].is_authenticated)
+        SetVar(res, False)
+        if session in mod_o365_session:
+            del mod_o365_session[session]
         traceback.print_exc()
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()

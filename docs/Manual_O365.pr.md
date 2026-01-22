@@ -28,23 +28,22 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
     - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
     - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo.
     - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumers**.
-5. Defina o uri de redirecionamento (Web) como: https://login.microsoftonline.com/common/oauth2/nativeclient e clique em "Registrar".
-6. Copie o ID do aplicativo (cliente). Você vai precisar 
-desse valor.
-7. Em "Certificados e segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.
+5. Defina o uri de redirecionamento (Web) como: https://localhost:5001/ e clique em "Registrar".
+6. Copie o ID do aplicativo (cliente). Você vai precisar desse valor.
+7. Em "Certificados e 
+segredos", gere um novo segredo do cliente. Defina a validade (de preferência 24 meses). Copie o **VALUE** do segredo do cliente criado (**__NÃO o ID do segredo__**). Ele vai esconder depois de alguns minutos.
 8. Em "Permissões de API", clique em "Adicionar uma permissão", selecione "Microsoft Graph", depois em "Permissões delegadas", localize e selecione "Mail.ReadWrite" e "User.Read" e, finalmente, "Adicionar permissões".
 9. No Rocketbot Studio, insira o comando "Connect to O365", insira os dados solicitados (ID do cliente, valor secreto e locatário) e execute o comando.
 10. No console do Rocketbot será gerado um URL, copie e cole no seu navegador.
-    - **Exemplo:** 
-<sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline
-11. Aceite a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL e cole-o no console do Rocketbot abaixo de **"Paste the authenticated url here:"**.
+    - **Exemplo:** <sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline
+11. Aceite
+ a concessão de permissões e retornará uma tela sem conteúdo. Copie o URL e cole-o no console do Rocketbot abaixo de **"Paste the authenticated url here:"**.
     - Exemplo: <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M
 12. Pressione "enter" e se a operação foi bem sucedida você verá no console: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." e será criado um arquivo com suas credenciais, na pasta raiz do Rocketbot, chamado o365_token.txt o o365_token_{session}.txt.
 
 ## ERRO
 
-Se na guia de login que abre quando você executa o 
-comando de conexão você vê este erro:
+Se na guia de login que abre quando você executa o comando de conexão você vê este erro:
 
 ![erro](imgs/o365error.PNG)
 
@@ -53,7 +52,8 @@ Isso ocorre porque as permissões de administrador necessárias não foram conce
 1. Acesse o portal do Azure >
 2. Vá para Azure Active Directory
 3. Selecione seu aplicativo
-4. Vá para Permissões da API
+4. Vá 
+para Permissões da API
 5. Conceda consentimento do administrador
 
 Como alternativa, você também pode permitir que os usuários concordem com o aplicativo sem a aprovação do administrador, da seguinte forma:
