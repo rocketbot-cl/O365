@@ -103,7 +103,10 @@ Obtenha uma lista dos documentos dentro de uma biblioteca
 Carregar um documento para uma biblioteca do Site
 
 29. Baixe ou modifique o documento  
-Carregar um documento para uma biblioteca do Site  
+Carregar um documento para uma biblioteca do Site
+
+30. Criar pasta do SharePoint  
+Crie uma nova pasta do SharePoint.  
 
 
 

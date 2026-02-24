@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "2.6.19",
+  "version": "2.7.19",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -3662,6 +3662,134 @@
       "video_youtube": "aMV6cXPMMSo",
       "icon": "data:image/png;base64,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",
       "module": "modify_item",
+      "module_name": "O365",
+      "visible": true,
+      "options": false,
+      "father": "module",
+      "group": "scripts",
+      "linux": true,
+      "windows": true,
+      "mac": true,
+      "docker": true
+    },
+    {
+      "en": {
+        "title": "Create folder Sharepoint",
+        "description": "Create a new SharePoint folder",
+        "title_options": "Select Option",
+        "options": null
+      },
+      "es": {
+        "title": "Crear carpeta SharePoint",
+        "description": "Crea una nueva carpeta sharepoint.",
+        "title_options": "Seleccione una opción",
+        "options": null
+      },
+      "pr": {
+        "title": "Criar pasta do SharePoint",
+        "description": "Crie uma nova pasta do SharePoint.",
+        "title_options": "Selecione uma opção",
+        "options": null
+      },
+      "form": {
+        "css": "modal-lg",
+        "inputs": [
+          {
+            "type": "input",
+            "placeholder": "Id de la biblioteca...",
+            "title": {
+              "es": "ID de la biblioteca",
+              "en": "Parent folder ID",
+              "pr": "ID pasta Pai"
+            },
+            "help": {
+              "es": "El ID de la biblioteca de documentos (Drive ID) donde se creará la carpeta.",
+              "en": "The ID of the document library (Drive ID) from which the carpet will be created.",
+              "pr": "O ID da biblioteca de documentos (Drive ID) onde a pasta será criada."
+            },
+            "id": "driveId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID de la carpeta contenedora o 'root'",
+            "title": {
+              "es": "ID Carpeta Contenedora",
+              "en": "Parent Folder Item ID",
+              "pr": "ID Pasta Contenedora"
+            },
+            "help": {
+              "es": "Si se deja vacio, la carpeta se creara en la raiz.",
+              "en": "If left empty, the folder will be created at the root.",
+              "pr": "Se deixado em branco, a pasta será criada na raiz."
+            },
+            "id": "parentitemId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "ID del Grupo de M365",
+            "title": {
+              "es": "ID del Grupo/Sitio",
+              "en": "Group/Site ID",
+              "pr": "ID do Grupo/Local"
+            },
+            "help": {
+              "es": "El ID del Grupo de Microsoft 365 que contiene la biblioteca.",
+              "en": "The ID of the Microsoft 365 Group that contains the library.",
+              "pr": "O ID do Grupo do Microsoft 365 que contém a biblioteca."
+            },
+            "id": "groupId",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "new_folder",
+            "title": {
+              "es": "Nombre de la nueva carpeta",
+              "en": "Name of the new folder",
+              "pr": "Nome da nova pasta"
+            },
+            "id": "foldername",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "Variable",
+            "title": {
+              "es": "Asignar a variable:",
+              "en": "Asign to variable:",
+              "pr": "Atribuir à variável:"
+            },
+            "help": {
+              "es": "Nombre de variable sin {}",
+              "en": "Variable name whitout {}",
+              "pr": "Nome da variável sem {}"
+            },
+            "id": "res",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "session",
+            "title": {
+              "en": "session",
+              "es": "session",
+              "pr": "session"
+            },
+            "help": {
+              "es": "Identificador de sesión",
+              "en": "Session ID",
+              "pr": "ID da sessão"
+            },
+            "id": "session",
+            "css": "col-md-6"
+          }
+        ]
+      },
+      "video_youtube": "aMV6cXPMMSo",
+      "icon": "data:image/png;base64,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",
+      "module": "createFolderSharepoint",
       "module_name": "O365",
       "visible": true,
       "options": false,

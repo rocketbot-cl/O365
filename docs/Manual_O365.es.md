@@ -528,3 +528,15 @@ Subir un documento a una biblioteca del sitio
 |Borrar documento|||
 |Asignar a variable||Variable|
 |session||session|
+
+### Crear carpeta SharePoint
+  
+Crea una nueva carpeta sharepoint.
+|Parámetros|Descripción|ejemplo|
+| --- | --- | --- |
+|ID de la biblioteca||Id de la biblioteca...|
+|ID Carpeta Contenedora||ID de la carpeta contenedora o 'root'|
+|ID del Grupo/Sitio||ID del Grupo de M365|
+|Nombre de la nueva carpeta||new_folder|
+|Asignar a variable||Variable|
+|session||session|

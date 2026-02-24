@@ -863,7 +863,9 @@ mod_o365_endpoints = {
     'get_site_lists': '/groups/{group_id}/sites/{site_name}/lists',
     'get_list': '/groups/{group_id}/sites/{site_name}/lists/{list_id}/columns',
     'get_lists_by_siteid': '/sites/{site_id}/lists',
-    'get_list_columns': '/sites/{site_id}/lists/{list_id}/columns'
+    'get_list_columns': '/sites/{site_id}/lists/{list_id}/columns',
+    'create_folder_root': '/drives/{drive_id}/root/children',
+    'create_folder':'/drives/{drive_id}/items/{parent_item_id}/children'
     }
 
 def list_groups(gs, name_filter=None):
@@ -1472,7 +1474,60 @@ if module == "updateItem":
         print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
         PrintException()
         raise e
+    
+    
+if module == "createFolderSharepoint":
+    drive_id = GetParams("driveId")
+    parent_item_id = GetParams("parentitemId")
+    folder_name = GetParams("foldername")
+    site_id = GetParams("groupId")
+    res_variable_name = GetParams("res")
+    
+    #recuperar objeto account autenticado
+    account_obj = mod_o365_session[session]
+    
+    if not account_obj:
+        SetVar(res_variable_name, False)
+        raise RuntimeError("Sesion no activa")
+    
+    
+    if not site_id:
+        SetVar(res_variable_name, False)
+        raise RuntimeError("Error: el parámetro 'groupId' es obligatorio")
 
+    
+    try:
+    
+        if parent_item_id:
+            url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}/items/{parent_item_id}/children"
+        else:
+            url = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root/children"
+
+
+        body = {
+            "name": folder_name,
+            "folder": {},
+            "@microsoft.graph.conflictBehavior": "rename"
+        }
+
+        response = account_obj.con.post(url, json=body)
+
+        if not response.ok:
+            raise Exception(response.text)
+
+        #result = response.json()[
+        result = response.status_code in [200,201]
+        if res_variable_name:
+            SetVar(res_variable_name, result)
+
+    except Exception as e:
+        SetVar(res_variable_name, False)
+        print(traceback.format_exc())
+        print("\x1B[" + "31;40mAn error occurred\x1B[" + "0m")
+        PrintException()
+        raise e
+        
+    
 if module == "getDocumentLibraries":
 
     site_ = GetParams("siteId") # site_id: a comma separated string of (host_name, site_collection_id, site_id)

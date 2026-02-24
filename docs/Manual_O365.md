@@ -410,3 +410,15 @@ Upload a document to a Site library
 |Delete document|||
 |Asign to variable||Variable|
 |session||session|
+
+### Create folder Sharepoint
+  
+Create a new SharePoint folder
+|Parameters|Description|example|
+| --- | --- | --- |
+|Parent folder ID||Id de la biblioteca...|
+|Parent Folder Item ID||ID de la carpeta contenedora o 'root'|
+|Group/Site ID||ID del Grupo de M365|
+|Name of the new folder||new_folder|
+|Asign to variable||Variable|
+|session||session|

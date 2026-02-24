@@ -103,7 +103,10 @@ Get a list of the documents within a library
 Upload a document to a Site library
 
 29. Download or modify document  
-Upload a document to a Site library  
+Upload a document to a Site library
+
+30. Create folder Sharepoint  
+Create a new SharePoint folder  
 
 
 
