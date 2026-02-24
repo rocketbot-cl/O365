@@ -412,3 +412,15 @@ Carregar um documento para uma biblioteca do Site
 |Excluir documento|||
 |Atribuir à variável||Variable|
 |session||session|
+
+### Criar pasta do SharePoint
+  
+Crie uma nova pasta do SharePoint.
+|Parâmetros|Descrição|exemplo|
+| --- | --- | --- |
+|ID pasta Pai||Id de la biblioteca...|
+|ID Pasta Contenedora||ID de la carpeta contenedora o 'root'|
+|ID do Grupo/Local||ID del Grupo de M365|
+|Nome da nova pasta||new_folder|
+|Atribuir à variável||Variable|
+|session||session|

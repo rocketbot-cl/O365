@@ -103,7 +103,10 @@ Obtenga una lista de los documentos dentro de una biblioteca
 Subir un documento a una biblioteca del sitio
 
 29. Descargar o modificar documento  
-Subir un documento a una biblioteca del sitio  
+Subir un documento a una biblioteca del sitio
+
+30. Crear carpeta SharePoint  
+Crea una nueva carpeta sharepoint.  
 
 
 
