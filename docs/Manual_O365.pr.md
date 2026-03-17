@@ -89,6 +89,7 @@ Listar todos os e-mails, você pode especificar um filtro
 |Ordenar por||importance desc|
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
+|Buzão compartilhado (Opcional)|Email do buzon compartilhado para acesso|sharedmailbox@outlook|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -101,6 +102,7 @@ Liste todos os e-mails não lidos da sua caixa de correio
 |Ordenar por||importance desc|
 |ID Pasta||Inbox|
 |Número de e-mails para listar||25|
+|Buzão compartilhado|Email do buzon compartilhado para acesso|sharedmailbox@outlook|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -118,6 +120,7 @@ Ler um e-mail usando seu ID
 |Corpo do e-mail HTML|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão HTML.||
 |E-mail completo em HTML|Se esta caixa estiver marcada, retornará o e-mail completo em versão HTML.||
 |Corpo do e-mail RAW|Se esta caixa estiver marcada, retornará o corpo do e-mail na versão RAW.||
+|Buzão compartilhado|Email do buzon compartilhado para acesso|sharedmailbox@outlook|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -129,6 +132,7 @@ Envia un email
 |Para||to@mail.com, to1@mail.com|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Buzão compartilhado (Opcional)|Email do buzon compartilhado da qual deseja enviar o email|sharedmailbox@outlook|
 |Assunto||Nuevo mail|
 |Mensagem||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
@@ -143,6 +147,7 @@ Responder um email usando seu ID
 |Identificação do email||345|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Buzão compartilhado (Opcional)|Email do buzon compartilhado da qual deseja responder o email|sharedmailbox@outlook|
 |Mensagem||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
@@ -159,6 +164,7 @@ Reenviar um e-mail usando seu ID
 |Para||to@mail.com, to1@mail.com|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Buzão compartilhado (Opcional)|Email do buzon compartilhado da qual deseja reenviar o email|sharedmailbox@outlook|
 |Mensagem||This is a test.|
 |Attached File||C:\User\Desktop\test.txt|
 |Pasta (vários arquivos)||C:\User\Desktop\Files|
@@ -174,6 +180,7 @@ Baixar anexos de e-mail
 |Identificação do email||345|
 |Caminho para download do anexo||C:\User\Desktop|
 |Marcar como lido||-|
+|Buzão compartilhado|Opcional. Deve ser fornecido o email do buzon compartilhado.|shared@mailbox.com|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -183,6 +190,7 @@ Marcar um e-mail como não lido
 |Parâmetros|Descrição|exemplo|
 | --- | --- | --- |
 |Identificação do email||345|
+|Buzão compartilhado|Opcional. Deve ser fornecido o email do buzon compartilhado.|shared@mailbox.com|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -194,6 +202,7 @@ Baixe um e-mail no formato .eml
 |Identificação do email||345|
 |Caminho da pasta||C:/Users/user/Documents/|
 |Nome do arquivo||Mail|
+|Buzão compartilhado|Opcional. Deve ser fornecido o email do buzon compartilhado.|shared@mailbox.com|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -204,6 +213,7 @@ Lista de pastas de e-mail
 | --- | --- | --- |
 |Filter||displayName eq 'Processed'|
 |Pasta pai|||
+|Buzão compartilhado|Opcional. Deve ser fornecido o email do buzon compartilhado.|shared@mailbox.com|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -214,6 +224,7 @@ Mover um email de uma pasta para outra
 | --- | --- | --- |
 |Identificação do email||345|
 |Identificação da pasta||345|
+|Buzão compartilhado|Opcional. Deve ser fornecido o email do buzon compartilhado.|shared@mailbox.com|
 |Atribuir à variável||Variable|
 |session||session|
 
@@ -224,6 +235,7 @@ Cria uma nova pasta no e-mail
 | --- | --- | --- |
 |ID pasta Pai||Inbox or 345...|
 |Nome da nova pasta||new_folder|
+|Buzão compartilhado|Opcional. Deve ser fornecido o email do buzon compartilhado.|shared@mailbox.com|
 |Atribuir à variável||Variable|
 |session||session|
 

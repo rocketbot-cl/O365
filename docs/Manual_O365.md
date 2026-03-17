@@ -87,6 +87,7 @@ List all email, you can specify a filter
 |Order by||importance desc|
 |Folder ID||Inbox|
 |Number of emails to list||25|
+|Shared Mailbox (Optional)|Shared mailbox email to access|sharedmailbox@outlook|
 |Asign to variable||Variable|
 |session||session|
 
@@ -99,6 +100,7 @@ List all unread emails from your mailbox
 |Order by||importance desc|
 |Folder ID||Inbox|
 |Number of emails to list||25|
+|Shared Mailbox|Shared mailbox email to access|sharedmailbox@outlook|
 |Asign to variable||Variable|
 |session||session|
 
@@ -116,6 +118,7 @@ Read an email usign its ID
 |Email HTML body|If this box is marked, will bring the HTML version of email body.||
 |Whole email in HTML|If this box is checked, it will return the whole email in HTML version.||
 |Email RAW body|If this box is marked, will bring the RAW version of email body.||
+|Shared Mailbox|Shared mailbox email to access|sharedmailbox@outlook|
 |Asign to variable||Variable|
 |session||session|
 
@@ -127,6 +130,7 @@ Send an email
 |To||to@mail.com, to1@mail.com|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Shared Mailbox (Optional)|Shared mailbox email from which you want to send the email|sharedmailbox@outlook|
 |Subject||Nuevo mail|
 |Body||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
@@ -141,6 +145,7 @@ Reply an email using its ID
 |Email ID||345|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Shared Mailbox (Optional)|Shared mailbox email from which you want to reply the email|sharedmailbox@outlook|
 |Body||Esto es una prueba|
 |Attached File||C:\User\Desktop\test.txt|
 |Folder (Multiple files)||C:\User\Desktop\Files|
@@ -157,6 +162,7 @@ Forward an email using its ID
 |To||to@mail.com, to1@mail.com|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Shared Mailbox (Optional)|Shared mailbox email from which you want to forward the email|sharedmailbox@outlook|
 |Body||This is a test.|
 |Attached File||C:\User\Desktop\test.txt|
 |Folder (Multiple files)||C:\User\Desktop\Files|
@@ -172,6 +178,7 @@ Download attached files from an email
 |Email ID||345|
 |Path for download attachment||C:\User\Desktop|
 |Mark as read||-|
+|Shared mailbox|Optional. You must provide the email of the shared mailbox.|shared@mailbox.com|
 |Asign to variable||Variable|
 |session||session|
 
@@ -181,6 +188,7 @@ Mark an email as unread
 |Parameters|Description|example|
 | --- | --- | --- |
 |Email ID||345|
+|Shared mailbox|Optional. You must provide the email of the shared mailbox.|shared@mailbox.com|
 |Asign to variable||Variable|
 |session||session|
 
@@ -192,6 +200,7 @@ Download an email in .eml format
 |Email ID||345|
 |Ruta de la carpeta||C:/Users/user/Documents/|
 |Nombre del archivo||Mail|
+|Shared mailbox|Optional. You must provide the email of the shared mailbox.|shared@mailbox.com|
 |Asign to variable||Variable|
 |session||session|
 
@@ -202,6 +211,7 @@ List of email folders
 | --- | --- | --- |
 |Filter||displayName eq 'Processed'|
 |Parent folder|||
+|Shared mailbox|Optional. You must provide the email of the shared mailbox.|shared@mailbox.com|
 |Asign to variable||Variable|
 |session||session|
 
@@ -212,6 +222,7 @@ Move an email from one folder to another
 | --- | --- | --- |
 |Email ID||345|
 |Folder ID||345|
+|Shared mailbox|Optional. You must provide the email of the shared mailbox.|shared@mailbox.com|
 |Asign to variable||Variable|
 |session||session|
 
@@ -222,6 +233,7 @@ Creates a new folder in the email
 | --- | --- | --- |
 |Parent folder ID||Inbox or 345...|
 |Name of the new folder||new_folder|
+|Shared mailbox|Optional. You must provide the email of the shared mailbox.|shared@mailbox.com|
 |Asign to variable||Variable|
 |session||session|
 
