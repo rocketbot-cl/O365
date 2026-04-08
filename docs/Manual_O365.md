@@ -74,6 +74,7 @@ Connect to O365 application instance
 |tenant_id||tenant_id|
 |session||session|
 |Connect to Sharepoint||-|
+|Enable shared mailbox||-|
 |Proxy HTTPS||https://192.168.00.00:4000|
 |Proxy HTTP||http://192.168.00.00:4000|
 |Asign to variable||Variable|

@@ -83,6 +83,13 @@ if module == "connect":
     proxy_https = GetParams("proxy_https")
     proxy_http = GetParams("proxy_http")
     res = GetParams("res")
+    use_shared_mailbox_scopes = GetParams("use_shared_mailbox_scopes")
+    
+    
+    scopes_ = ['offline_access', 'User.Read', 'Mail.ReadWrite', 'Mail.Send']
+
+    if use_shared_mailbox_scopes and eval(use_shared_mailbox_scopes) == True:
+        scopes_.extend(['Mail.ReadWrite.Shared', 'Mail.Send.Shared'])
 
     if proxy_https:
         if 'https_proxy' not in os.environ:
@@ -98,7 +105,7 @@ if module == "connect":
     
     filename = os.path.join(base_path, filename)
     # offline_access scope is needed to get the refresh token. That token is used to get a new token automatically with every connection (leaving out the first one).  
-    scopes_ = ['offline_access', 'User.Read', 'Mail.ReadWrite', 'Mail.Send', 'Mail.ReadWrite.Shared', 'Mail.Send.Shared']
+    
     
     if sharepoint_ and eval(sharepoint_) == True:
         share_scopes = ['Group.Read.All', 'Sites.ReadWrite.All', 'Sites.Manage.All', 'Files.ReadWrite.All']

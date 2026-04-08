@@ -76,6 +76,7 @@ Conectar-se à instância do aplicativo O365
 |tenant_id||tenant_id|
 |session||session|
 |Conectar ao Sharepoint||-|
+|Ativar caixa de correio compartilhada||-|
 |Proxy HTTPS||https://192.168.00.00:4000|
 |Proxy HTTP||http://192.168.00.00:4000|
 |Atribuir à variável||Variable|

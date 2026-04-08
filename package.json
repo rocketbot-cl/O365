@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "2.7.20",
+  "version": "2.7.21",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -115,6 +115,26 @@
               "pr": "Por defeito, a aplicação liga-se ao Outlook, verifique para adicionar âmbitos de Sharepoint."
             },
             "id": "sharepoint",
+            "css": "col-md-6"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": {
+              "es": "-",
+              "en": "-",
+              "pr": "-"
+            },
+            "title": {
+              "es": "Habilitar buzón compartido",
+              "en": "Enable shared mailbox",
+              "pr": "Ativar caixa de correio compartilhada"
+            },
+            "help": {
+              "es": "Por defecto la aplicación se conecta a Outlook, tildar para agregar scopes de buzón compartido.",
+              "en": "By default the application connects to Outlook; check the box to add shared mailbox scopes.",
+              "pr": "Por padrão, o aplicativo se conecta ao Outlook; marque a caixa para adicionar escopos de caixa de correio compartilhada."
+            },
+            "id": "use_shared_mailbox_scopes",
             "css": "col-md-6"
           },
           {
