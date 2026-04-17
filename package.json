@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "2.7.19",
+  "version": "2.7.21",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -115,6 +115,26 @@
               "pr": "Por defeito, a aplicação liga-se ao Outlook, verifique para adicionar âmbitos de Sharepoint."
             },
             "id": "sharepoint",
+            "css": "col-md-6"
+          },
+          {
+            "type": "checkbox",
+            "placeholder": {
+              "es": "-",
+              "en": "-",
+              "pr": "-"
+            },
+            "title": {
+              "es": "Habilitar buzón compartido",
+              "en": "Enable shared mailbox",
+              "pr": "Ativar caixa de correio compartilhada"
+            },
+            "help": {
+              "es": "Por defecto la aplicación se conecta a Outlook, tildar para agregar scopes de buzón compartido.",
+              "en": "By default the application connects to Outlook; check the box to add shared mailbox scopes.",
+              "pr": "Por padrão, o aplicativo se conecta ao Outlook; marque a caixa para adicionar escopos de caixa de correio compartilhada."
+            },
+            "id": "use_shared_mailbox_scopes",
             "css": "col-md-6"
           },
           {
@@ -269,6 +289,22 @@
           },
           {
             "type": "input",
+            "placeholder": "sharedmailbox@outlook",
+            "title": {
+              "en": "Shared Mailbox (Optional)",
+              "es": "Buzón compartido (Opcional)",
+              "pr": "Buzão compartilhado (Opcional)"
+            },
+            "description": {
+              "es": "Email del buzón compartido al que se quiere acceder",
+              "en": "Shared mailbox email to access",
+              "pr": "Email do buzon compartilhado para acesso"
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
             "placeholder": "Variable",
             "title": {
               "es": "Asignar a variable:",
@@ -398,6 +434,22 @@
               "pr": "Número entre 1 e 999. Se deixado em branco por padrão, trará os últimos 25."
             },
             "id": "limit",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "sharedmailbox@outlook",
+            "title": {
+              "en": "Shared Mailbox",
+              "es": "Buzón compartido",
+              "pr": "Buzão compartilhado"
+            },
+            "description": {
+              "es": "Email del buzón compartido al que se quiere acceder",
+              "en": "Shared mailbox email to access",
+              "pr": "Email do buzon compartilhado para acesso"
+            },
+            "id": "shared_mailbox",
             "css": "col-md-6"
           },
           {
@@ -624,6 +676,22 @@
           },
           {
             "type": "input",
+            "placeholder": "sharedmailbox@outlook",
+            "title": {
+              "en": "Shared Mailbox",
+              "es": "Buzón compartido",
+              "pr": "Buzão compartilhado"
+            },
+            "description": {
+              "es": "Email del buzón compartido al que se quiere acceder",
+              "en": "Shared mailbox email to access",
+              "pr": "Email do buzon compartilhado para acesso"
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
             "placeholder": "Variable",
             "title": {
               "es": "Asignar a variable:",
@@ -737,6 +805,22 @@
               "pr": "Para vários destinatários separados por vírgula"
             },
             "id": "bcc",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "sharedmailbox@outlook",
+            "title": {
+              "en": "Shared Mailbox (Optional)",
+              "es": "Buzón compartido (Opcional)",
+              "pr": "Buzão compartilhado (Opcional)"
+            },
+            "description": {
+              "es": "Email del buzón compartido desde el que se quiere enviar el correo",
+              "en": "Shared mailbox email from which you want to send the email",
+              "pr": "Email do buzon compartilhado da qual deseja enviar o email"
+            },
+            "id": "shared_mailbox",
             "css": "col-md-6"
           },
           {
@@ -895,6 +979,22 @@
               "pr": "Para vários destinatários separados por vírgula"
             },
             "id": "bcc",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "sharedmailbox@outlook",
+            "title": {
+              "en": "Shared Mailbox (Optional)",
+              "es": "Buzón compartido (Opcional)",
+              "pr": "Buzão compartilhado (Opcional)"
+            },
+            "description": {
+              "es": "Email del buzón compartido desde el que se quiere responder el correo",
+              "en": "Shared mailbox email from which you want to reply the email",
+              "pr": "Email do buzon compartilhado da qual deseja responder o email"
+            },
+            "id": "shared_mailbox",
             "css": "col-md-6"
           },
           {
@@ -1101,6 +1201,22 @@
             "css": "col-md-6"
           },
           {
+            "type": "input",
+            "placeholder": "sharedmailbox@outlook",
+            "title": {
+              "en": "Shared Mailbox (Optional)",
+              "es": "Buzón compartido (Opcional)",
+              "pr": "Buzão compartilhado (Opcional)"
+            },
+            "description": {
+              "es": "Email del buzón compartido desde el que se quiere reenviar el correo",
+              "en": "Shared mailbox email from which you want to forward the email",
+              "pr": "Email do buzon compartilhado da qual deseja reenviar o email"
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
             "type": "textarea",
             "placeholder": "This is a test.",
             "title": {
@@ -1284,6 +1400,22 @@
           },
           {
             "type": "input",
+            "placeholder": "shared@mailbox.com",
+            "title": {
+              "es": "Buzón compartido:",
+              "en": "Shared mailbox:",
+              "pr": "Buzão compartilhado:"
+            },
+            "description": {
+              "es": "Opcional. Se debe proporcionar el email del buzón compartido.",
+              "en": "Optional. You must provide the email of the shared mailbox.",
+              "pr": "Opcional. Deve ser fornecido o email do buzon compartilhado."
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
             "placeholder": "Variable",
             "title": {
               "es": "Asignar a variable:",
@@ -1360,6 +1492,22 @@
               "pr": "Identificação do email"
             },
             "id": "id_",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "shared@mailbox.com",
+            "title": {
+              "es": "Buzón compartido:",
+              "en": "Shared mailbox:",
+              "pr": "Buzão compartilhado:"
+            },
+            "description": {
+              "es": "Opcional. Se debe proporcionar el email del buzón compartido.",
+              "en": "Optional. You must provide the email of the shared mailbox.",
+              "pr": "Opcional. Deve ser fornecido o email do buzon compartilhado."
+            },
+            "id": "shared_mailbox",
             "css": "col-md-6"
           },
           {
@@ -1466,6 +1614,22 @@
           },
           {
             "type": "input",
+            "placeholder": "shared@mailbox.com",
+            "title": {
+              "es": "Buzón compartido:",
+              "en": "Shared mailbox:",
+              "pr": "Buzão compartilhado:"
+            },
+            "description": {
+              "es": "Opcional. Se debe proporcionar el email del buzón compartido.",
+              "en": "Optional. You must provide the email of the shared mailbox.",
+              "pr": "Opcional. Deve ser fornecido o email do buzon compartilhado."
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
             "placeholder": "Variable",
             "title": {
               "es": "Asignar a variable:",
@@ -1567,6 +1731,22 @@
           },
           {
             "type": "input",
+            "placeholder": "shared@mailbox.com",
+            "title": {
+              "es": "Buzón compartido:",
+              "en": "Shared mailbox:",
+              "pr": "Buzão compartilhado:"
+            },
+            "description": {
+              "es": "Opcional. Se debe proporcionar el email del buzón compartido.",
+              "en": "Optional. You must provide the email of the shared mailbox.",
+              "pr": "Opcional. Deve ser fornecido o email do buzon compartilhado."
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
             "placeholder": "Variable",
             "title": {
               "es": "Asignar a variable:",
@@ -1663,6 +1843,22 @@
           },
           {
             "type": "input",
+            "placeholder": "shared@mailbox.com",
+            "title": {
+              "es": "Buzón compartido:",
+              "en": "Shared mailbox:",
+              "pr": "Buzão compartilhado:"
+            },
+            "description": {
+              "es": "Opcional. Se debe proporcionar el email del buzón compartido.",
+              "en": "Optional. You must provide the email of the shared mailbox.",
+              "pr": "Opcional. Deve ser fornecido o email do buzon compartilhado."
+            },
+            "id": "shared_mailbox",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
             "placeholder": "Variable",
             "title": {
               "es": "Asignar a variable:",
@@ -1755,6 +1951,22 @@
               "pr": "Nome da nova pasta"
             },
             "id": "new_folder",
+            "css": "col-md-6"
+          },
+          {
+            "type": "input",
+            "placeholder": "shared@mailbox.com",
+            "title": {
+              "es": "Buzón compartido:",
+              "en": "Shared mailbox:",
+              "pr": "Buzão compartilhado:"
+            },
+            "description": {
+              "es": "Opcional. Se debe proporcionar el email del buzón compartido.",
+              "en": "Optional. You must provide the email of the shared mailbox.",
+              "pr": "Opcional. Deve ser fornecido o email do buzon compartilhado."
+            },
+            "id": "shared_mailbox",
             "css": "col-md-6"
           },
           {

@@ -192,6 +192,7 @@ Conectar a una insancia de la aplicación de O365
 |tenant_id||tenant_id|
 |session||session|
 |Conectarse a Sharepoint||-|
+|Habilitar buzón compartido||-|
 |Proxy HTTPS||https://192.168.00.00:4000|
 |Proxy HTTP||http://192.168.00.00:4000|
 |Asignar a variable||Variable|
@@ -205,6 +206,7 @@ Listar todos los emails, se puede especificar un filtro
 |Ordenar por||importance desc|
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
+|Buzón compartido (Opcional)|Email del buzón compartido al que se quiere acceder|sharedmailbox@outlook|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -217,6 +219,7 @@ Listar todos los emails no leidos de tu casilla de correo
 |Ordenar por||importance desc|
 |ID Carpeta||Inbox|
 |Cantidad de emails a listar||25|
+|Buzón compartido|Email del buzón compartido al que se quiere acceder|sharedmailbox@outlook|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -234,6 +237,7 @@ Leer un email utilizando su ID
 |Cuerpo de email en HTML|Si se marca esta casilla, devolvera el cuerpo del email en versión HTML.||
 |Email completo en HTML|Si se marca esta casilla, devolvera el email completo en versión HTML.||
 |Cuerpo de email RAW|Si se marca esta casilla, devolvera el cuerpo del email en versión RAW.||
+|Buzón compartido|Email del buzón compartido al que se quiere acceder|sharedmailbox@outlook|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -245,6 +249,7 @@ Envia un email
 |Para||to@mail.com, to1@mail.com|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Buzón compartido (Opcional)|Email del buzón compartido desde el que se quiere enviar el correo|sharedmailbox@outlook|
 |Asunto||Nuevo mail|
 |Mensaje||Esto es una prueba|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
@@ -259,6 +264,7 @@ Responder un email utilizando su ID
 |ID del email||345|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Buzón compartido (Opcional)|Email del buzón compartido desde el que se quiere responder el correo|sharedmailbox@outlook|
 |Mensaje||Esto es una prueba|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
@@ -275,6 +281,7 @@ Reenviar un email utilizando su ID
 |Para||to@mail.com, to1@mail.com|
 |Cc||to2@mail.com, to3@mail.com|
 |Bcc||to4@mail.com, to5@mail.com|
+|Buzón compartido (Opcional)|Email del buzón compartido desde el que se quiere reenviar el correo|sharedmailbox@outlook|
 |Mensaje||This is a test.|
 |Archivo Adjunto||C:\User\Desktop\test.txt|
 |Carpeta (Varios archivos)||C:\User\Desktop\Files|
@@ -290,6 +297,7 @@ Descarga los archivos adjuntos de un correo
 |ID del email||345|
 |Ruta para descargar adjuntos||C:\User\Desktop|
 |Marcar como leído||-|
+|Buzón compartido|Opcional. Se debe proporcionar el email del buzón compartido.|shared@mailbox.com|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -299,6 +307,7 @@ Marcar un email como no leido
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |ID del email||345|
+|Buzón compartido|Opcional. Se debe proporcionar el email del buzón compartido.|shared@mailbox.com|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -310,6 +319,7 @@ Descargar un correo en formato .eml
 |ID del email||345|
 |Folder path||C:/Users/user/Documents/|
 |Filename||Mail|
+|Buzón compartido|Opcional. Se debe proporcionar el email del buzón compartido.|shared@mailbox.com|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -320,6 +330,7 @@ Lista todas las carpetas del correo
 | --- | --- | --- |
 |Filtro||displayName eq 'Processed'|
 |Carpeta padre|||
+|Buzón compartido|Opcional. Se debe proporcionar el email del buzón compartido.|shared@mailbox.com|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -330,6 +341,7 @@ Mover un email de una carpeta a otra
 | --- | --- | --- |
 |ID del email||345|
 |ID de carpeta||345|
+|Buzón compartido|Opcional. Se debe proporcionar el email del buzón compartido.|shared@mailbox.com|
 |Asignar a variable||Variable|
 |session||session|
 
@@ -340,6 +352,7 @@ Crea una nueva carpeta en el correo electrónico.
 | --- | --- | --- |
 |ID carpeta padre||Inbox or 345...|
 |Nombre de la nueva carpeta||new_folder|
+|Buzón compartido|Opcional. Se debe proporcionar el email del buzón compartido.|shared@mailbox.com|
 |Asignar a variable||Variable|
 |session||session|
 

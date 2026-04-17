@@ -2,7 +2,7 @@
 """
 Base para desarrollo de módulos externos.
 Para obtener el modulo/Función que se esta llamando:
-     GetParams("module")
+    GetParams("module")
 
 Para obtener las variables enviadas desde formulario/comando Rocketbot:
     var = GetParams(variable)
@@ -83,6 +83,13 @@ if module == "connect":
     proxy_https = GetParams("proxy_https")
     proxy_http = GetParams("proxy_http")
     res = GetParams("res")
+    use_shared_mailbox_scopes = GetParams("use_shared_mailbox_scopes")
+    
+    
+    scopes_ = ['offline_access', 'User.Read', 'Mail.ReadWrite', 'Mail.Send']
+
+    if use_shared_mailbox_scopes and eval(use_shared_mailbox_scopes) == True:
+        scopes_.extend(['Mail.ReadWrite.Shared', 'Mail.Send.Shared'])
 
     if proxy_https:
         if 'https_proxy' not in os.environ:
@@ -98,7 +105,7 @@ if module == "connect":
     
     filename = os.path.join(base_path, filename)
     # offline_access scope is needed to get the refresh token. That token is used to get a new token automatically with every connection (leaving out the first one).  
-    scopes_ = ['offline_access', 'User.Read', 'Mail.ReadWrite', 'Mail.Send']
+    
     
     if sharepoint_ and eval(sharepoint_) == True:
         share_scopes = ['Group.Read.All', 'Sites.ReadWrite.All', 'Sites.Manage.All', 'Files.ReadWrite.All']
@@ -129,9 +136,13 @@ if module == "sendEmail":
     body = GetParams("body")
     attached_file = GetParams("attached_file")
     attached_folder = GetParams("attached_folder")
+    shared_mailbox = GetParams("shared_mailbox")
     
     try:
-        message = mod_o365_session[session].new_message()
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).new_message()
+        else:
+            message = mod_o365_session[session].new_message()
         if not to_:
             raise Exception("'To' field must not be empty.")
         list_to = [to.strip() for to in to_.split(",")]
@@ -203,6 +214,7 @@ if module == "replyEmail":
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
     not_to_all = GetParams("not_to_all")
+    shared_mailbox = GetParams("shared_mailbox")
     
     if not body:
         body = ""
@@ -215,7 +227,10 @@ if module == "replyEmail":
         to_all = False
     
     try:
-        message = mod_o365_session[session].mailbox().get_message(id_)
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).get_message(id_)
+        else:
+            message = mod_o365_session[session].mailbox().get_message(id_)
         # By default the behaviour is to reply all
         reply = message.reply(to_all)
         if cc_:
@@ -287,7 +302,7 @@ if module == "forwardEmail":
     attached_folder = GetParams("attached_folder")
     read = GetParams("markasread")
     res = GetParams("res")
-    
+    shared_mailbox = GetParams("shared_mailbox")
     import time
     
     if not body:
@@ -297,7 +312,11 @@ if module == "forwardEmail":
         raise Exception("Missing Email ID...")
     
     try:
-        message = mod_o365_session[session].mailbox().get_message(id_)
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).get_message(id_)
+        else:
+            message = mod_o365_session[session].mailbox().get_message(id_)
+
         forward = message.forward()
         if not to_:
             raise Exception("'To' field must not be empty.")
@@ -352,8 +371,10 @@ if module == "forwardEmail":
         forward.send()
         
         time.sleep(5)
-        
-        list_messages = mod_o365_session[session].mailbox().sent_folder().get_messages(limit=1, order_by="lastModifiedDateTime desc")
+        if shared_mailbox:
+            list_messages = mod_o365_session[session].mailbox(resource=shared_mailbox).sent_folder().get_messages(limit=1, order_by="lastModifiedDateTime desc")
+        else:
+            list_messages = mod_o365_session[session].mailbox().sent_folder().get_messages(limit=1, order_by="lastModifiedDateTime desc")
         for message in list_messages:
             id_f = message.object_id
             
@@ -374,7 +395,8 @@ if module == "getAllEmails":
     limit = GetParams("limit")
     filter = GetParams("filtro") or GetParams("filter")
     order = GetParams("order")
-    
+    shared_mailbox = GetParams("shared_mailbox")
+
     folder_ = OutlookWellKnowFolderNames.get(folder)
 
     if not folder:
@@ -394,7 +416,12 @@ if module == "getAllEmails":
         limit = 25
     
     try:
-        list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
+        if shared_mailbox:
+            mailbox = mod_o365_session[session].mailbox(resource=shared_mailbox)
+        else:
+            mailbox = mod_o365_session[session].mailbox()
+
+        list_messages = mailbox.get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
             list_object_id.append(message.object_id)
@@ -410,7 +437,8 @@ if module == "getUnreadEmails":
     limit = GetParams("limit")
     filter = GetParams("filter")
     order = GetParams("order")
-    
+    shared_mailbox = GetParams("shared_mailbox")
+
     folder_ = OutlookWellKnowFolderNames.get(folder)
 
     if not folder:
@@ -432,7 +460,11 @@ if module == "getUnreadEmails":
         limit = 25
     
     try:
-        list_messages = mod_o365_session[session].mailbox().get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
+        if shared_mailbox:
+            mailbox = mod_o365_session[session].mailbox(resource=shared_mailbox)
+        else:
+            mailbox = mod_o365_session[session].mailbox()
+        list_messages = mailbox.get_folder(folder_id=folder).get_messages(limit=limit, query=filter, order_by=order)
         list_object_id = []
         for message in list_messages:
             list_object_id.append(message.object_id)
@@ -453,6 +485,7 @@ if module == "readEmail":
     raw = GetParams("raw")
     download_html = GetParams("download_html")
     html_folder = GetParams("html_folder")
+    shared_mailbox = GetParams("shared_mailbox")
     
     import email
     from mailparser import mailparser
@@ -468,8 +501,13 @@ if module == "readEmail":
         download_html = eval(download_html)
     
     try:
+        if shared_mailbox:
+            mailbox = mod_o365_session[session].mailbox(resource=shared_mailbox)
+        else:
+            mailbox = mod_o365_session[session].mailbox()
+
         # It creates a message object and makes available attachments to be downloaded
-        message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
+        message = mailbox.get_message(id_, download_attachments=True)
         
         files = []
         # API: Used to download attachments of the read email
@@ -632,7 +670,8 @@ if module == "downAtt":
     att_folder = GetParams("att_folder")
     id_ = GetParams("id_")
     read = GetParams("markasread")
-    
+    shared_mailbox = GetParams("shared_mailbox")
+
     from mailparser import mailparser
     import base64
     
@@ -643,8 +682,11 @@ if module == "downAtt":
         raise Exception('The path does not exist.')
     
     try:
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).get_message(id_, download_attachments=True)
+        else:
         # It creates a message object and makes available attachments to be downloaded
-        message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
+            message = mod_o365_session[session].mailbox().get_message(id_, download_attachments=True)
 
         att_q = int(message._Message__attachments.__str__().split(': ')[1])
 
@@ -705,13 +747,17 @@ if module == "downAtt":
 if module == "markUnread":
     res = GetParams("res")
     id_ = GetParams("id_")
-    
+    shared_mailbox = GetParams("shared_mailbox")
+
     if not id_:
         raise Exception("Missing Email ID...")
     
     try:
-        # It creates a message object and makes available attachments to be downloaded
-        message = mod_o365_session[session].mailbox().get_message(id_)
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).get_message(id_)
+        else:
+            # It creates a message object and makes available attachments to be downloaded
+            message = mod_o365_session[session].mailbox().get_message(id_)
    
         unread = message.mark_as_unread()
         
@@ -726,7 +772,8 @@ if module == "downloadEML":
     path = GetParams("path")
     name = GetParams("filename")
     id_ = GetParams("id_")
-    
+    shared_mailbox = GetParams("shared_mailbox")
+
     if not id_:
         raise Exception("Missing Email ID...")
     if not path:
@@ -735,8 +782,11 @@ if module == "downloadEML":
         name = "Message"
         
     try:
-        # It creates a message object and makes available attachments to be downloaded
-        message = mod_o365_session[session].mailbox().get_message(id_)
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).get_message(id_)
+        else:
+            # It creates a message object and makes available attachments to be downloaded
+            message = mod_o365_session[session].mailbox().get_message(id_)
         path = os.path.join(path,name)
         eml = message.save_as_eml(path)
         
@@ -750,12 +800,16 @@ if module == "moveEmail":
     folderId = GetParams("folderId")
     id_ = GetParams("id_")
     res = GetParams("res")
-    
+    shared_mailbox = GetParams("shared_mailbox")
+
     if folderId == "" or folderId == None:
         folderId = "Inbox"
     
     try:
-        message = mod_o365_session[session].mailbox().get_message(id_)
+        if shared_mailbox:
+            message = mod_o365_session[session].mailbox(resource=shared_mailbox).get_message(id_)
+        else:
+            message = mod_o365_session[session].mailbox().get_message(id_)
         move = message.move(folderId)
         
         SetVar(res, move)
@@ -768,7 +822,7 @@ if module == "getFolders":
     query = GetParams('filter')
     parent = GetParams('parent')
     folders = GetParams('res')
-    
+    shared_mailbox = GetParams('shared_mailbox')
     global get_all_folders
     
     def get_all_folders(data, list_folders, final_list = []):
@@ -797,7 +851,10 @@ if module == "getFolders":
             else:
                 parent = [parent]
             try:
-                parent_folder = mod_o365_session[session].mailbox()
+                if shared_mailbox:
+                    parent_folder = mod_o365_session[session].mailbox(resource=shared_mailbox)
+                else:
+                    parent_folder = mod_o365_session[session].mailbox()
                 parent_folder = [parent_folder]
                 for p in parent:
                     parent_data, parent_folder = parent_folder[0].get_folders(query="displayName eq '{p}'".format(p=p))
@@ -812,9 +869,15 @@ if module == "getFolders":
                 final_list = []
         else:
             if query and query != "":
-                final_list = mod_o365_session[session].mailbox().get_folders(query=query)
+                if shared_mailbox:
+                    final_list = mod_o365_session[session].mailbox(resource=shared_mailbox).get_folders(query=query)
+                else:
+                    final_list = mod_o365_session[session].mailbox().get_folders(query=query)
             else:
-                data, list_folders = mod_o365_session[session].mailbox().get_folders()
+                if shared_mailbox:
+                    data, list_folders = mod_o365_session[session].mailbox(resource=shared_mailbox).get_folders()
+                else:
+                    data, list_folders = mod_o365_session[session].mailbox().get_folders()
                 final_list = get_all_folders(data, list_folders)
 
         SetVar(folders, final_list)
@@ -830,12 +893,19 @@ if module == "newFolder":
     parent = GetParams("parent")
     new_folder = GetParams("new_folder")
     res = GetParams("res")
+    shared_mailbox = GetParams("shared_mailbox")
     
     try:
         try:
-            parent = mod_o365_session[session].mailbox().get_folder(folder_id = parent)
+            if shared_mailbox:
+                parent = mod_o365_session[session].mailbox(resource=shared_mailbox).get_folder(folder_id = parent)
+            else:
+                parent = mod_o365_session[session].mailbox().get_folder(folder_id = parent)
         except:
-            parent = mod_o365_session[session].mailbox()
+            if shared_mailbox:
+                parent = mod_o365_session[session].mailbox(resource=shared_mailbox)
+            else:
+                parent = mod_o365_session[session].mailbox()
         
         parent.create_child_folder(new_folder)
         SetVar(res, True)
