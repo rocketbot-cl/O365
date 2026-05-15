@@ -406,7 +406,7 @@ if module == "getAllEmails":
     
     if order and filter:
         if "lastModifiedDateTime" not in filter:
-            filter = filter.strip() + " and lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false"
+            filter = filter.strip() + " and lastModifiedDateTime gt 1900-01-01T00:00:00Z"
 
     else:
         if order == "" or not order:
