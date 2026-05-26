@@ -404,11 +404,16 @@ if module == "getAllEmails":
     elif folder_:
         folder = folder_
     
-    if order == "" or not order:
-        order = "lastModifiedDateTime desc"
-    
-    if filter and "lastModifiedDateTime" not in filter:
-        filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and " + filter
+    if order and filter:
+        if "lastModifiedDateTime" not in filter:
+            filter = filter.strip() + " and lastModifiedDateTime gt 1900-01-01T00:00:00Z"
+
+    else:
+        if order == "" or not order:
+            order = "lastModifiedDateTime desc"
+        
+        if filter and "lastModifiedDateTime" not in filter:
+            filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and " + filter
     
     if limit and limit != "":
         limit = int(limit)
@@ -446,13 +451,17 @@ if module == "getUnreadEmails":
     elif folder_:
         folder = folder_
     
-    if order == "" or not order:
-        order = "lastModifiedDateTime desc"
-    
-    if filter and "lastModifiedDateTime" not in filter:
-        filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false and " + filter
+    if order and filter:
+        if "lastModifiedDateTime" not in filter:
+            filter = filter.strip() + " and lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false"
     else:
-        filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false"
+        if order == "" or not order:
+            order = "lastModifiedDateTime desc"
+        
+        if filter and "lastModifiedDateTime" not in filter:
+            filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false and " + filter
+        else:
+            filter = "lastModifiedDateTime gt 1900-01-01T00:00:00Z and isRead eq false"
     
     if limit and limit != "":
         limit = int(limit)
