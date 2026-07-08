@@ -652,6 +652,7 @@ if module == "readEmail":
         message_all = {
             # Recipient object
             'sender': message.sender.address,
+            'sender_name': message.sender.name or None,
             # Iterate over a Recipients object (List of Recipient objects) and parses each element into string
             'cc': [str(rec) for rec in message.cc._recipients],
             'subject': message.subject,
