@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "2.7.23",
+  "version": "2.7.24",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -317,6 +317,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -466,6 +467,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -704,6 +706,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1301,6 +1304,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1428,6 +1432,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1524,6 +1529,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1642,6 +1648,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1759,6 +1766,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1871,6 +1879,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -1983,6 +1992,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2068,6 +2078,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2148,6 +2159,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2270,6 +2282,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2350,6 +2363,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2430,6 +2444,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2521,6 +2536,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2612,6 +2628,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2789,6 +2806,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -2944,6 +2962,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3046,6 +3065,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3148,6 +3168,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3261,6 +3282,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3383,6 +3405,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3553,6 +3576,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3666,6 +3690,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3851,6 +3876,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
@@ -3979,6 +4005,7 @@
               "pr": "Nome da variável sem {}"
             },
             "id": "res",
+            "remove_vars": true,
             "css": "col-md-6"
           },
           {
