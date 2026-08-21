@@ -75,6 +75,29 @@ def get_regex_group(regex, string):
     matches = re.finditer(regex, string, re.MULTILINE)
     return [[group for group in match.groups()] for match in matches]
 
+def parse_message_mime(message, mailparser):
+    raw_mime = message.get_mime_content()
+    if raw_mime is None:
+        return None
+    if isinstance(raw_mime, str):
+        raw_mime = raw_mime.encode("utf-8", errors="ignore")
+    return mailparser.parse_from_bytes(raw_mime)
+
+def save_parser_attachments(parsed_mail, att_folder, files, download_att=True):
+    if not parsed_mail:
+        return
+    saved_names = {os.path.basename(file_) for file_ in files}
+    for att in parsed_mail.attachments:
+        name = re.sub(r'[\\/*?:"<>|]', '', att['filename'])
+        name = name.replace("\r", "").replace("\n", "")
+
+        if download_att == True and name not in saved_names:
+            files.append(name)
+            saved_names.add(name)
+            cont = base64.b64decode(att['payload'])
+            with open(os.path.join(att_folder, name), 'wb') as file_:
+                file_.write(cont)
+
 if module == "connect":
     client_id = GetParams("client_id")
     client_secret = GetParams("client_secret")
@@ -590,19 +613,12 @@ if module == "readEmail":
                 f.write(str(html_b))
             
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
-        parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
-
-        for att in parsed_mail.attachments:
-            name = re.sub(r'[\\/*?:"<>|]', '',att['filename']) # att['filename']
-            name = name.replace("\r","").replace("\n","")
-            
-            if download_att == True:                    
-                if not name in files:
-                    files.append(name)
-                    cont = base64.b64decode(att['payload'])
-                    with open(os.path.join(att_folder, name), 'wb') as file_:
-                        file_.write(cont)
-                        file_.close()
+        parsed_mail = None
+        try:
+            parsed_mail = parse_message_mime(message, mailparser)
+            save_parser_attachments(parsed_mail, att_folder, files, download_att)
+        except Exception:
+            parsed_mail = None
 
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser")
@@ -631,7 +647,7 @@ if module == "readEmail":
             body = str(html_body.body)
         elif whole and eval(whole) == True:
             body = str(html_body)
-        elif raw and eval(raw) == True:
+        elif raw and eval(raw) == True and parsed_mail:
             body = parsed_mail.body
         else:
             body = html_body.get_text()
@@ -728,17 +744,11 @@ if module == "downAtt":
                 message.attachments.save_as_eml(att, os.path.join(att_folder, att.name))
             
         # Parser: Used to download attachments within an email attached ('.eml') to the read email
-        parsed_mail = mailparser.parse_from_bytes(message.get_mime_content())
-        for att in parsed_mail.attachments:
-            name = re.sub(r'[\\/*?:"<>|]', '',att['filename']) # att['filename']
-            name = name.replace("\r","").replace("\n","")
-     
-            if not name in files:
-                files.append(name)
-                cont = base64.b64decode(att['payload'])
-                with open(os.path.join(att_folder, name), 'wb') as file_:
-                    file_.write(cont)
-                    file_.close()
+        try:
+            parsed_mail = parse_message_mime(message, mailparser)
+            save_parser_attachments(parsed_mail, att_folder, files, True)
+        except Exception:
+            pass
         
         # This is for the case of an email with no body
         html_body = BeautifulSoup(message.body, "html.parser").body
