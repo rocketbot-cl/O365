@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from collections import namedtuple, Counter
 from email.errors import HeaderParseError
-from email.header import decode_header
+from email.header import Header, decode_header
 from unicodedata import normalize
 
 import base64
@@ -103,6 +103,9 @@ def ported_string(raw_data, encoding='utf-8', errors='ignore'):
     if isinstance(raw_data, six.text_type):
         return raw_data
 
+    if six.PY3 and not isinstance(raw_data, bytes):
+        return six.text_type(raw_data)
+
     if six.PY2:
         try:
             return six.text_type(raw_data, encoding, errors)
@@ -129,6 +132,9 @@ def decode_header_part(header):
     if not header:
         return six.text_type()
 
+    if isinstance(header, Header):
+        header = six.text_type(header)
+
     output = six.text_type()
 
     try:
@@ -137,9 +143,9 @@ def decode_header_part(header):
             output += ported_string(d, c, 'ignore')
 
     # Header parsing failed, when header has charset Shift_JIS
-    except (HeaderParseError, UnicodeError):
+    except (HeaderParseError, TypeError, UnicodeError):
         log.error("Failed decoding header part: {}".format(header))
-        output += header
+        output += six.text_type(header)
 
     return output.strip()
 
