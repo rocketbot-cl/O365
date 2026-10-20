@@ -7,7 +7,7 @@
     "pr": "Conecte-se à sua conta de e-mail do Outlook e ao espaço de trabalho do Sharepoint."
   },
   "disclaimer": "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.",
-  "version": "2.7.23",
+  "version": "2.8.23",
   "license": "MIT",
   "homepage": "http://rockertbot.com",
   "linux": true,
@@ -35,7 +35,7 @@
       },
       "es": {
         "title": "Conectar a O365",
-        "description": "Conectar a una insancia de la aplicación de O365",
+        "description": "Conectar a una instancia de la aplicación de O365",
         "title_options": null,
         "options": null
       },
@@ -48,6 +48,32 @@
       "form": {
         "css": "modal-lg",
         "inputs": [
+          {
+            "type": "select",
+            "placeholder": "--- Select ---",
+            "title": {
+              "es": "Tipo de autenticación",
+              "en": "Authentication type",
+              "pr": "Tipo de autenticação"
+            },
+            "description": {
+              "es": "Delegada mantiene el comportamiento anterior y utiliza la sesión de un usuario. Aplicación usa client credentials, requiere user_id y no utiliza refresh token.",
+              "en": "Delegated keeps the previous behavior and uses a user's session. Application uses client credentials, requires user_id, and does not use a refresh token.",
+              "pr": "Delegada mantém o comportamento anterior e utiliza a sessão de um usuário. Aplicação usa client credentials, requer user_id e não utiliza refresh token."
+            },
+            "options": [
+              {
+                "title": "Delegated (user)",
+                "value": "delegated"
+              },
+              {
+                "title": "Application (client credentials)",
+                "value": "application"
+              }
+            ],
+            "id": "auth_type",
+            "css": "col-md-12"
+          },
           {
             "type": "input",
             "placeholder": "client_id",
@@ -83,6 +109,22 @@
           },
           {
             "type": "input",
+            "placeholder": "robot@test.com or object ID",
+            "title": {
+              "es": "Usuario objetivo (user_id)",
+              "en": "Target user (user_id)",
+              "pr": "Usuário de destino (user_id)"
+            },
+            "description": {
+              "es": "Solo para autenticación de Aplicación. UPN (correo) u Object ID del usuario sobre el que operará el robot.",
+              "en": "Application authentication only. UPN (email) or Object ID of the user on which the robot will operate.",
+              "pr": "Autenticação de aplicação apenas. UPN (email) ou Object ID do usuário sobre o qual o robô operará."
+            },
+            "id": "user_id",
+            "css": "col-md-12"
+          },
+          {
+            "type": "input",
             "placeholder": "session",
             "title": {
               "en": "session",
@@ -110,9 +152,14 @@
               "pr": "Conectar ao Sharepoint"
             },
             "help": {
-              "es": "Por defecto la aplicación se copnecta a Outlook, tildar para agregar scopes de Sharepoint",
+              "es": "Por defecto la aplicación se copnecta a Outlook, tildar para agregar scopes de Sharepoint.",
               "en": "By default the application connects to Outlook, check to add Sharepoint scopes.",
               "pr": "Por defeito, a aplicação liga-se ao Outlook, verifique para adicionar âmbitos de Sharepoint."
+            },
+            "description": {
+              "es": "Solo para autenticación Delegada. En modo Aplicación, los permisos se configuran en Azure.",
+              "en": "Delegated authentication only. In Application mode, permissions are configured in Azure.",
+              "pr": "Somente para autenticação Delegada. No modo Aplicação, as permissões são configuradas no Azure."
             },
             "id": "sharepoint",
             "css": "col-md-6"
@@ -133,6 +180,11 @@
               "es": "Por defecto la aplicación se conecta a Outlook, tildar para agregar scopes de buzón compartido.",
               "en": "By default the application connects to Outlook; check the box to add shared mailbox scopes.",
               "pr": "Por padrão, o aplicativo se conecta ao Outlook; marque a caixa para adicionar escopos de caixa de correio compartilhada."
+            },
+            "description": {
+              "es": "Solo para autenticación Delegada. En modo Aplicación, los permisos se configuran en Azure.",
+              "en": "Delegated authentication only. In Application mode, permissions are configured in Azure.",
+              "pr": "Somente para autenticação Delegada. No modo Aplicação, as permissões são configuradas no Azure."
             },
             "id": "use_shared_mailbox_scopes",
             "css": "col-md-6"

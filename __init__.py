@@ -38,6 +38,7 @@ try:
     from O365 import Account
     from O365.utils.attachment import BaseAttachment, UploadSessionRequest
     from O365.drive import Storage
+    from O365.utils.token import MemoryTokenBackend
 except:
     traceback.print_exc()
     
@@ -84,6 +85,8 @@ if module == "connect":
     proxy_http = GetParams("proxy_http")
     res = GetParams("res")
     use_shared_mailbox_scopes = GetParams("use_shared_mailbox_scopes")
+    auth_type = (GetParams("auth_type") or "delegated").strip().lower()
+    user_id = GetParams("user_id")
     
     
     scopes_ = ['offline_access', 'User.Read', 'Mail.ReadWrite', 'Mail.Send']
@@ -113,9 +116,26 @@ if module == "connect":
     
     try:
         credentials = (client_id, client_secret)
-        mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
-        if not mod_o365_session[session].is_authenticated:
-            mod_o365_session[session].authenticate(scopes=scopes_, redirect_uri="https://localhost:5001/")
+        if auth_type == "application":
+            if not user_id:
+                raise ValueError(
+                    "user_id is required for application authentication"
+                )
+
+            mod_o365_session[session] = Account(
+                credentials,
+                tenant_id=tenant,
+                auth_flow_type="credentials",
+                main_resource="user:{}".format(user_id),
+                token_backend=MemoryTokenBackend()
+            )
+
+            if not mod_o365_session[session].authenticate():
+                raise RuntimeError("Application authentication failed")
+        else:
+            mod_o365_session[session] = Account(credentials, tenant_id = tenant, token_filename = filename)
+            if not mod_o365_session[session].is_authenticated:
+                mod_o365_session[session].authenticate(scopes=scopes_, redirect_uri="https://localhost:5001/")
         SetVar(res, mod_o365_session[session].is_authenticated) 
     except Exception as e:
         SetVar(res, False)

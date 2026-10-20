@@ -112,3 +112,4 @@ graph.py
 config.cfg
 o365_token.txt
 O365.zip
+.DS_Store
