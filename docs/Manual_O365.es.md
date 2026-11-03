@@ -16,33 +16,150 @@ Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
 2. Automática: Al ingresar a Rocketbot Studio sobre el margen derecho encontrara la sección de **Addons**, seleccionar **Install Mods**, buscar el modulo deseado y presionar install.  
 
 
-
 ## Como usar este modulo
 
 Antes de usar este módulo, es necesario registrar tu aplicación en el portal de Azure App Registrations. 
 
 1. Inicie sesión en Azure Portal y busque el servicio Microsoft Entra ID.
-2. En el menu en el lateral izquierdo, ingrese a "Registros de Aplicaciones".
+2. En el menú lateral izquierdo, ingrese a "Registros de aplicaciones".
 3. Seleccione "Nuevo registro".
 4. En “Tipos de cuenta compatibles”, elija:
     - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
-    - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación.
+    - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación. (Recomendado para autenticación de aplicación)
     - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
 5. Establezca la uri de redirección (Web) como: https://localhost:5001/ y haga click en "Registrar".
-6. Copie el ID de la aplicación (cliente). Necesitará este valor.
-7. 
-Dentro de "Certificados y secretos", genere un nuevo secreto de cliente. Establezca la caducidad (preferiblemente 24 meses). Copie el **VALOR** del secreto de cliente creado (**__NO el ID de Secreto__**). El mismo se ocultará al cabo de unos minutos.
-8. Dentro de "Permisos de API", haga click en "Agregar un permiso", seleccione "Microsoft Graph", luego "Permisos delegados", busque y seleccione "Mail.ReadWrite" y "User.Read", y por ultimo "Agregar permisos".
-9. En Rocketbot Studio, insertar el comando "Conectar a O365", ingresar los datos solicitados (ID de cliente, valor del secreto y tenant) y ejecutar el comando.
-10. En la consola de Rocketbot se generara una url, copiarla y pegarla en su navegador.
-    - **Ejemplo:** 
-<sub>https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=82f8efcd-6a0d-4532-a62e-3e2aecb4d19f&redirect_uri=https%3A%2F%2Flogin.microsoftonline.com%2Fcommon%2Foauth2%2Fnativeclient&scope=Mail.ReadWrite+User.Read.All&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M&access_type=offline</sub>
-11. Aceptar el otorgamiento de permisos y devolverá una pantalla sin contenido. Copiar la URL y pegarla el la consola de Rocketbot debajo de **"Paste the authenticated url here:"**.
-    - **Ejemplo:** <sub>https://login.microsoftonline.com/common/oauth2/nativeclient?code=M.R3_SN1.5dcda10b-6567-ce05-3a5b-f67145c62684&state=3LvNFBfX0qej9Q0rsixmSWjCGJyi0M</sub> 
-12. Presionar "enter" y si la operación fue exitosa vera en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API." y se habra creado un archivo con sus credenciales, en la carpeta raíz de Rocketbot, llamado o365_token.txt o o365_token_{session}.txt.
+6. Copie el ID de la aplicación 
+(cliente). Necesitará este valor.
+7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente y establezca su caducidad. Copie el **VALOR** del secreto creado (**no el ID de secreto**), ya que se ocultará después de unos minutos.
 
-## Como filtrar correos
+### Tipos de autenticación
 
+| Tipo | Inicio de sesión del usuario | Uso recomendado |
+| --- | --- | --- |
+| Delegada | Requerido para la primera conexión y cuando sea necesario volver a autorizar | Procesos que se ejecutan en nombre de un usuario |
+| Aplicación | No requerido | Procesos desatendidos que utilizan una cuenta corporativa |
+
+### Autenticación delegada
+
+1. Dentro de "Permisos de API", seleccione "Microsoft Graph" > "Permisos delegados" y agregue:
+    - `Mail.ReadWrite`
+    - `Mail.Send`
+    - `User.Read`
+2. Para utilizar buzones compartidos, agregue también:
+    - `Mail.ReadWrite.Shared`
+    - `Mail.Send.Shared`
+3. Si utilizará los comandos de SharePoint, agregue también:
+    - `Group.Read.All`
+    - `Sites.ReadWrite.All`
+    - `Sites.Manage.All`
+    - `Files.ReadWrite.All`
+4. En Rocketbot Studio, inserte el comando "Conectar a O365" y complete:
+    - Tipo de autenticación: `Delegada`
+    - `client_id`
+    - `client_secret`
+    - `tenant_id`
+    - `session`, si corresponde
+5. Ejecute el comando. En la consola de Rocketbot se generará una URL de autorización. Cópiela y ábrala en su navegador.
+6. Acepte los permisos solicitados. El navegador redirigirá a una página sin contenido. Copie la URL completa y péguela en la consola de Rocketbot debajo de **"Paste the authenticated url here:"**.
+7. Presione Enter. Si la autenticación fue exitosa, verá en la consola: "Authentication Flow Completed. Oauth Access Token Stored. You can now use the API."
+
+En la carpeta raíz de Rocketbot se creará un archivo de credenciales llamado `o365_token.txt` o `o365_token_{session}.txt`. Si el refresh token guardado es revocado o deja de ser válido, ejecute nuevamente el comando de conexión y complete la autorización con la nueva URL.
+
+
+### Autenticación de aplicación (app-only)
+
+La autenticación de aplicación está disponible únicamente para cuentas organizativas de Microsoft. No admite cuentas personales de Microsoft.
+
+1. Dentro de "Permisos de API", seleccione "Microsoft Graph" > "Permisos de aplicación" y agregue:
+    - `Mail.ReadWrite`
+    - `Mail.Send`
+2. Si utilizará los comandos de SharePoint, agregue también:
+    - `Group.Read.All`
+    - `Sites.ReadWrite.All`
+    - `Sites.Manage.All`
+    - `Files.ReadWrite.All`
+3. Seleccione "Conceder consentimiento del administrador". Los permisos de aplicación requieren consentimiento del administrador.
+4. En Rocketbot Studio, inserte el comando "Conectar a O365" y complete:
+    - Tipo de autenticación: `Aplicación`
+    - `client_id`
+    - `client_secret`
+    - `tenant_id` específico de la organización
+    - `user_id`: nombre principal de usuario, por ejemplo `robot@empresa.com`, u Object ID del buzón que utilizará el robot
+    - `session`, si corresponde
+5. Ejecute el 
+comando. Este tipo de autenticación no genera una URL de autorización ni requiere que el usuario inicie sesión.
+
+La aplicación obtiene los access tokens utilizando sus propias credenciales. No utiliza un refresh token delegado. La opción "Habilitar buzón compartido" aplica únicamente a la autenticación delegada.
+
+El `user_id` selecciona el buzón que utilizará el módulo, pero no limita los permisos concedidos a la aplicación. Si se debe restringir el acceso a buzones específicos, el administrador deberá configurar RBAC para aplicaciones en Exchange Online.
+
+### Permisos adicionales para autenticación de Aplicación
+
+En autenticación de Aplicación, los permisos se configuran directamente en Azure App Registrations. Los checkboxes **Conectarse a SharePoint** y **Habilitar buzón compartido** del comando de conexión solo agregan permisos delegados y no son necesarios en este modo.
+
+Todos los permisos indicados a continuación deben agregarse desde:
+
+1. Ingrese en **Azure Portal > App 
+registrations**.
+2. Seleccione la aplicación.
+3. Ingrese en **API permissions**.
+4. Seleccione **Add a permission > Microsoft Graph**.
+5. Seleccione **Application permissions**.
+6. Agregue los permisos necesarios.
+7. Seleccione **Grant admin consent** para autorizar los permisos.
+
+#### SharePoint
+
+Para utilizar los comandos de SharePoint con autenticación de Aplicación, agregue los permisos según las operaciones que realizará el robot:
+
+- `Sites.Read.All`: permite leer documentos y elementos de listas de SharePoint.
+- `Sites.ReadWrite.All`: permite crear, leer, modificar y eliminar documentos y elementos de listas.
+- `Sites.Manage.All`: necesario para crear o eliminar listas y bibliotecas de documentos.
+- `Files.Read.All`: permite leer documentos.
+- `Files.ReadWrite.All`: permite cargar, modificar, mover y eliminar documentos.
+- `Group.Read.All`: necesario cuando el comando obtiene el sitio mediante el ID de un grupo de Microsoft 365.
+
+No es necesario agregar todos los permisos si el 
+robot no utilizará todas esas operaciones.
+
+En el comando **Conectar a O365** deje desmarcado el checkbox **Conectarse a SharePoint**.
+
+Como alternativa, puede utilizar el permiso `Sites.Selected` para limitar el acceso de la aplicación a sitios específicos. En ese caso, además de agregar el permiso y otorgar consentimiento de administrador, un administrador debe conceder acceso explícitamente a cada sitio.
+
+Documentación oficial:
+
+- [Microsoft Graph permissions reference](https://learn.microsoft.com/en-us/graph/permissions-reference)
+- [Selected permissions in OneDrive and SharePoint](https://learn.microsoft.com/en-us/graph/permissions-selected-overview)
+
+#### Buzones compartidos
+
+Para utilizar buzones compartidos con autenticación de Aplicación, agregue los siguientes permisos:
+
+- `Mail.Read`: permite únicamente leer correos.
+- `Mail.ReadWrite`: permite crear, leer, modificar, mover y eliminar correos.
+- `Mail.Send`: permite enviar correos.
+
+Para utilizar todos los comandos de correo
+ del módulo, agregue:
+
+- `Mail.ReadWrite`
+- `Mail.Send`
+
+Los permisos `Mail.Read.Shared`, `Mail.ReadWrite.Shared` y `Mail.Send.Shared` corresponden únicamente a autenticación Delegada y no deben seleccionarse para autenticación de Aplicación.
+
+Luego, en el comando **Conectar a O365** complete `user_id` con el UPN o el Object ID del usuario predeterminado. Si el robot trabajará únicamente con un buzón compartido, puede colocar el correo de ese buzón. Deje desmarcado el checkbox **Habilitar buzón compartido**.
+
+En cada comando de correo que incluya el campo **Buzón compartido**, informe el correo del buzón sobre el que se realizará la operación. 
+
+Los permisos de Aplicación de correo pueden otorgar acceso a todos los buzones de la organización. Si se requiere limitar el acceso a buzones específicos, el administrador debe configurar una política de acceso o Application RBAC en Exchange Online.
+
+Documentación oficial:
+
+- [Microsoft Graph permissions 
+reference](https://learn.microsoft.com/en-us/graph/permissions-reference)
+- [Role Based Access Control for Applications in Exchange Online](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac)
+
+### Como filtrar correos
 
 Para realizar filtro de correos deberá utilizar los siguientes Operadores y Funciones. 
 
@@ -77,8 +194,7 @@ Las principales propiedades que pueden utilizarse para realizar filtros son:
     "isRead": true/false,
     "isDraft": true/false,
     "inferenceClassification": "",
-    
-"body": {
+    "body": {
         "contentType": "",
         "content": ""
     },
@@ -130,8 +246,7 @@ Las principales propiedades que pueden utilizarse para realizar filtros son:
         "flagStatus": ""
     }
 
-Las mismas surgen del json de la respuesta a la consulta realizada a la 
-API. Para revisar las propiedades de correos específicos puede ingresar a https://developer.microsoft.com/en-us/graph/graph-explorer ingresando con su cuenta de AZURE y realizar la consulta https://graph.microsoft.com/v1.0/me/messages/<ID_correo>.
+Las mismas surgen del json de la respuesta a la consulta realizada a la API. Para revisar las propiedades de correos específicos puede ingresar a https://developer.microsoft.com/en-us/graph/graph-explorer ingresando con su cuenta de AZURE y realizar la consulta https://graph.microsoft.com/v1.0/me/messages/<ID_correo>.
 
 Es importante tener presente que solo deben utilizarse comillas simples (') cuando se indique el valor a filtrar, salvo para el caso de valores booleanos (__true__ / __false__). A continuación se muestran ejemplos prácticos de cómo realizar filtros:
 
@@ -139,60 +254,54 @@ Es importante tener presente que solo deben utilizarse comillas simples (') cuan
 - Correos leidos = __isRead eq true__
 - El Asunto es igual a... = __subject eq ‘example’__
 - El Asunto contiene... = __contains(Subject, ‘example’)__
-- El Asunto comienza con la palabra... = __startswith(Subject, ‘example’)__
+- El Asunto comienza con la palabra... = 
+__startswith(Subject, ‘example’)__
 - La fecha de recepción esta entre... = __ReceivedDateTime ge <date> and ReceivedDateTime le <date>__
 - El cuerpo del correo contiene... = __contains(Body/Content, ‘example’)__
-- El remitente del correo es igual a... = 
-__From/EmailAddress/Address eq ‘example@example.com’__
+- El remitente del correo es igual a... = __From/EmailAddress/Address eq ‘example@example.com’__
 - El remitente del correo comienza con... = __Startswith(From/EmailAddress/Address, ‘example’)__
 - El correo tiene adjuntos = __HasAttachments eq true__
-## Como identificar correos (ID)
+
+### Como identificar correos (ID)
 
 Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
 
-Cuando utilice 'filtro' y 'ordenar por' en la misma consulta para obtener mensajes, asegúrese de especificar las propiedades de las siguientes maneras:
+Cuando utilice 'filtro' y 
+'ordenar por' en la misma consulta para obtener mensajes, asegúrese de especificar las propiedades de las siguientes maneras:
 
 Las propiedades que aparecen en 'ordenar por' también deben aparecer en 'filtro'.
-Las propiedades que aparecen en 'ordenar por' 
-están en el mismo orden que en 'filtro'.
+Las propiedades que aparecen en 'ordenar por' están en el mismo orden que en 'filtro'.
 Las propiedades que están presentes en 'ordenar por' aparecen en 'filtro' antes de cualquier propiedad que no lo esté.
 
-## ERROR
+### Errores de autenticación
 
-Si en la pestaña de login que se abre al ejecutar el comando de conexión visualizas este error:
+Si se muestra un error de autorización durante la autenticación delegada:
 
 ![error](imgs/o365error.PNG)
 
-Es porque no se han concedido los permisos de administrador necesarios al usuario, por lo que el Administrador deberá realizar los siguientes pasos:
+1. Ingrese a Microsoft Entra ID > "Registros de aplicaciones".
+2. Seleccione la aplicación.
+3. Ingrese a "Permisos de API".
+4. Verifique que se hayan agregado los permisos necesarios.
+5. Conceda el consentimiento del administrador cuando corresponda.
 
-1. Ir a Azure Portal > 
-2. Ir a Azure Active Directory 
-3. Selecciona tu aplicación 
-4. Ir a API Permissions
-5. Conceder consentimiento del administrador
-
-Alternativamente, también puede permitir que los usuarios den su consentimiento a la aplicación sin la aprobación del administrador de la siguiente manera:
-
-1. Ir a Azure Portal 
-2. Enterprise Application 
-3. Ajustes de usuario 
-4. Ir a Consentimiento y permisos
-5. Permitir a los usuarios consentir para aplicaciones
-
+Para autenticación de aplicación, verifique además que se esté utilizando el ID específico del inquilino organizativo y un `user_id` válido.
 
 ## Descripción de los comandos
 
 ### Conectar a O365
   
-Conectar a una insancia de la aplicación de O365
+Conectar a una instancia de la aplicación de O365
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
+|Tipo de autenticación|Delegada mantiene el comportamiento anterior y utiliza la sesión de un usuario. Aplicación usa client credentials, requiere user_id y no utiliza refresh token.|--- Select ---|
 |client_id||client_id|
 |client_secret||client_secret|
 |tenant_id||tenant_id|
+|Usuario objetivo (user_id)|Solo para autenticación de Aplicación. UPN (correo) u Object ID del usuario sobre el que operará el robot.|robot@test.com or object ID|
 |session||session|
-|Conectarse a Sharepoint||-|
-|Habilitar buzón compartido||-|
+|Conectarse a Sharepoint|Solo para autenticación Delegada. En modo Aplicación, los permisos se configuran en Azure.|-|
+|Habilitar buzón compartido|Solo para autenticación Delegada. En modo Aplicación, los permisos se configuran en Azure.|-|
 |Proxy HTTPS||https://192.168.00.00:4000|
 |Proxy HTTP||http://192.168.00.00:4000|
 |Asignar a variable||Variable|
