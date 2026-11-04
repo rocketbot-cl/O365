@@ -153,6 +153,26 @@ class BaseTokenBackend(ABC):
         """
         return True
 
+class MemoryTokenBackend(BaseTokenBackend):
+    """Store tokens in memory for the lifetime of this backend instance."""
+
+    def load_token(self):
+        return self.token
+
+    def save_token(self):
+        if self.token is None:
+            raise ValueError('You have to set the "token" first.')
+        return True
+
+    def delete_token(self):
+        if self.token is None:
+            return False
+        self.token = None
+        return True
+
+    def check_token(self):
+        return self.token is not None
+
 class EnvTokenBackend(BaseTokenBackend):
     """ A token backend based on environmental variable """
 
