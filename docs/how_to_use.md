@@ -1,15 +1,30 @@
 ## How to use this module
 
-Before using this module, you need to register your app in the Azure App Registrations portal.
+Before using this module, register your app in Microsoft Entra ID > App registrations (formerly Azure AD).
 
 1. Sign in to the Azure portal and search for the Microsoft Entra ID service.
 2. In the left menu, select "App registrations".
 3. Select "New registration".
-4. Under “Compatible account types”, choose:
-    - "Accounts in any organizational directory (any Azure AD directory: multi-tenant) and personal Microsoft accounts (such as Skype or Xbox)" for this case use Tenant ID = **common**.
-    - "Only accounts from this organizational directory (only this account: single tenant) for this case use application-specific **Tenant ID**. (recommended for application authentication)
-    - "Personal Microsoft accounts only" for this case use use Tenant ID = **consumers**.
-5. Set the redirect uri (Web) as: https://localhost:5001/ and click "Register".
+4. Under "Supported account types", choose according to the accounts and authentication flow the bot will use. Labels may vary by portal language or version:
+
+    | Account type | Equivalent description | Tenant for Delegated authentication | Tenant for Application authentication |
+    | --- | --- | --- | --- |
+    | Single tenant only | Accounts in this organizational directory only | Organization tenant ID | Organization tenant ID |
+    | Multiple Entra ID tenants | Accounts in any organizational directory | `organizations` or the target tenant ID | Target organization tenant ID, with admin consent in that tenant |
+    | Any Entra ID Tenant + Personal Microsoft accounts | Accounts in any organizational directory and personal Microsoft accounts | `common`; a specific tenant can also be used for organizational accounts | Target organization tenant ID, with admin consent in that tenant; personal mailboxes are not supported |
+    | Personal accounts only | Personal Microsoft accounts only | `consumers` | Not supported |
+
+    **Choosing an account type:**
+
+    - For a bot used within one company's Microsoft 365 organization, choose **Single tenant only** and copy the **Tenant ID** from **Microsoft Entra ID > Overview**.
+    - For delegated sign-in across organizations, choose **Multiple Entra ID tenants** and use `organizations`.
+    - For delegated sign-in supporting both organizational and personal accounts, choose **Any Entra ID Tenant + Personal Microsoft accounts** and use `common`.
+    - For delegated sign-in with personal Outlook.com or Hotmail accounts only, choose **Personal accounts only** and use `consumers`.
+
+    **Application authentication (client credentials) always requires a specific organization tenant ID.** Do not use `common`, `organizations`, or `consumers` in this mode. Single tenant is recommended for an internal company bot, but is not mandatory: multitenant applications can also use client credentials after admin consent in each target organization. Registering an app to accept personal accounts does not grant app-only access to personal mailboxes.
+
+    The account types supported by the registration, the selected authentication flow, and the tenant authority must be compatible. A successful token request alone does not guarantee mailbox access; the required permissions and mailbox must also be available in the target organization.
+5. For Delegated authentication, set the Web redirect URI to https://localhost:5001/. Application authentication does not use a redirect URI. Click "Register".
 6. Copy the Application (client) ID. You will need this value.
 7. Under "Certificates & secrets", generate a new client secret and set its expiration. Copy the **VALUE** of the created secret (**not the Secret ID**), since it will be hidden after a few minutes.
 
@@ -49,6 +64,13 @@ A credential file named `o365_token.txt` or `o365_token_{session}.txt` will be c
 ### Application authentication (app-only)
 
 Application authentication is available only for organizational Microsoft accounts. It does not support personal Microsoft accounts.
+
+Use the target organization's tenant ID even when the app registration is multitenant. The `user_id` must identify a mailbox in that organization; adding a personal account as a guest does not make its personal mailbox accessible through application authentication.
+
+Official documentation:
+
+- [Single and multitenant apps in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/single-and-multi-tenant-apps)
+- [Client credential flows and tenant authorities](https://learn.microsoft.com/en-us/entra/msal/dotnet/acquiring-tokens/web-apps-apis/client-credential-flows)
 
 1. Under "API permissions", select "Microsoft Graph" > "Application permissions" and add:
     - `Mail.ReadWrite`
@@ -285,11 +307,17 @@ Antes de usar este módulo, es necesario registrar tu aplicación en el portal d
 1. Inicie sesión en Azure Portal y busque el servicio Microsoft Entra ID.
 2. En el menú lateral izquierdo, ingrese a "Registros de aplicaciones".
 3. Seleccione "Nuevo registro".
-4. En “Tipos de cuenta compatibles”, elija:
-    - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
-    - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación. (Recomendado para autenticación de aplicación)
-    - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
-5. Establezca la uri de redirección (Web) como: https://localhost:5001/ y haga click en "Registrar".
+4. En “Tipos de cuenta compatibles”, elija según las cuentas y el tipo de autenticación:
+
+    | Opción de Microsoft Entra ID | Tenant para autenticación delegada | Tenant para autenticación de aplicación |
+    | --- | --- | --- |
+    | Single tenant only (solo este directorio organizativo) | ID del tenant de la organización | ID del tenant de la organización |
+    | Multiple Entra ID tenants (cualquier directorio organizativo) | `organizations` o ID del tenant de destino | ID del tenant de destino, con consentimiento administrativo |
+    | Any Entra ID Tenant + Personal Microsoft accounts | `common`; también se puede usar un tenant específico para cuentas organizativas | ID del tenant organizativo de destino, con consentimiento administrativo; no permite acceder a buzones personales |
+    | Personal accounts only (solo cuentas personales de Microsoft) | `consumers` | No compatible |
+
+    Para un bot de una sola empresa, se recomienda **Single tenant only**. Una aplicación multitenant también puede usar client credentials, pero siempre debe solicitar el token al tenant organizativo de destino. En modo **Aplicación**, no utilice `common`, `organizations` ni `consumers`. El ID se encuentra en **Microsoft Entra ID > Overview > Tenant ID**.
+5. Para autenticación delegada, establezca la URI de redirección (Web) como https://localhost:5001/. En autenticación de aplicación no se utiliza esta redirección. Haga clic en "Registrar".
 6. Copie el ID de la aplicación (cliente). Necesitará este valor.
 7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente y establezca su caducidad. Copie el **VALOR** del secreto creado (**no el ID de secreto**), ya que se ocultará después de unos minutos.
 
@@ -418,7 +446,7 @@ Documentación oficial:
 
 Para realizar filtro de correos deberá utilizar los siguientes Operadores y Funciones. 
 
-1. __Equality operators__	
+1. __Equality operators__
     - Igual (__eq__)
     - Diferente (__ne__)
     - Negación (__not__)
@@ -432,7 +460,7 @@ Para realizar filtro de correos deberá utilizar los siguientes Operadores y Fun
 3. __Conditional operators__
     - Y (__and__)
     - O (__or__)
-4. __Functions__	
+4. __Functions__
     - Comienza con (__startsWith__)
     - Termina con (__endsWith__)
     - Contiene (__contains__)
@@ -551,11 +579,26 @@ Antes de usar este módulo, você precisa registrar seu aplicativo no portal de 
 1. Entre no portal do Azure e procure o serviço Microsoft Entra ID.
 2. No menu lateral esquerdo, acesse "Registros de aplicativos".
 3. Selecione "Novo registro".
-4. Em "Tipos de conta compatíveis", escolha:
-    - "Contas em qualquer diretório organizacional (qualquer diretório do Azure AD: multilocatário) e contas pessoais da Microsoft (como Skype ou Xbox)" para este caso, use ID de locatário = **common**.
-    - "Somente contas deste diretório organizacional (somente esta conta: locatário único) para este caso usam **ID de locatário específico** do aplicativo. (Recomendado para autenticação de aplicação)
-    - "Somente contas pessoais da Microsoft" para este caso, use ID do locatário = **consumers**.
-5. Defina o uri de redirecionamento (Web) como: https://localhost:5001/ e clique em "Registrar".
+4. Em "Tipos de conta compatíveis", escolha conforme as contas e o tipo de autenticação utilizados pelo robô. Os nomes podem variar conforme o idioma ou a versão do portal:
+
+    | Opção do Microsoft Entra ID | Descrição equivalente | Tenant para autenticação Delegada | Tenant para autenticação de Aplicativo |
+    | --- | --- | --- | --- |
+    | Single tenant only | Contas somente neste diretório organizacional | ID do tenant da organização | ID do tenant da organização |
+    | Multiple Entra ID tenants | Contas em qualquer diretório organizacional | `organizations` ou ID do tenant de destino | ID do tenant organizacional de destino, com consentimento administrativo nesse tenant |
+    | Any Entra ID Tenant + Personal Microsoft accounts | Contas em qualquer diretório organizacional e contas pessoais da Microsoft | `common`; também é possível usar um tenant específico para contas organizacionais | ID do tenant organizacional de destino, com consentimento administrativo; caixas de correio pessoais não são compatíveis |
+    | Personal accounts only | Somente contas pessoais da Microsoft | `consumers` | Não compatível |
+
+    **Como escolher:**
+
+    - Para um robô que utiliza o Microsoft 365 de uma única empresa, recomenda-se **Single tenant only**. Copie o **Tenant ID** em **Microsoft Entra ID > Overview**.
+    - Para login delegado em várias organizações, escolha **Multiple Entra ID tenants** e use `organizations`.
+    - Para login delegado com contas organizacionais e pessoais, escolha **Any Entra ID Tenant + Personal Microsoft accounts** e use `common`.
+    - Para login delegado somente com contas pessoais do Outlook.com ou Hotmail, escolha **Personal accounts only** e use `consumers`.
+
+    **A autenticação de Aplicativo (client credentials) sempre exige o ID de um tenant organizacional específico.** Não use `common`, `organizations` ou `consumers` nesse modo. Single tenant é recomendado para um robô interno de uma empresa, mas não é obrigatório: aplicativos multitenant também podem usar client credentials após o consentimento administrativo em cada organização de destino. Permitir contas pessoais no registro não concede acesso de aplicativo às caixas de correio pessoais.
+
+    Os tipos de conta aceitos pelo registro, o fluxo de autenticação e o tenant configurado devem ser compatíveis. Obter um token não garante acesso à caixa de correio: as permissões necessárias e a caixa de correio também devem estar disponíveis na organização de destino.
+5. Para autenticação Delegada, defina a URI de redirecionamento (Web) como https://localhost:5001/. A autenticação de Aplicativo não utiliza URI de redirecionamento. Clique em "Registrar".
 6. Copie o ID do aplicativo (cliente). Você precisará desse valor.
 7. Em "Certificados e segredos", gere um novo segredo do cliente e defina sua validade. Copie o **VALOR** do segredo criado (**não o ID do segredo**), pois ele ficará oculto após alguns minutos.
 
