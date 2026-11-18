@@ -38,7 +38,17 @@ try:
     from O365 import Account
     from O365.utils.attachment import BaseAttachment, UploadSessionRequest
     from O365.drive import Storage
-    from O365.utils.token import MemoryTokenBackend
+    try:
+        from O365.utils.token import MemoryTokenBackend
+    except ImportError:
+        from O365.utils.token import BaseTokenBackend
+
+        class MemoryTokenBackend(BaseTokenBackend):
+            def load_token(self):
+                return True
+
+            def save_token(self, force=False):
+                return True
 except:
     traceback.print_exc()
     
@@ -149,7 +159,7 @@ if module == "connect":
                 credentials,
                 tenant_id=tenant,
                 auth_flow_type="credentials",
-                main_resource="user:{}".format(user_id),
+                main_resource="users/{}".format(user_id),
                 token_backend=MemoryTokenBackend()
             )
 
