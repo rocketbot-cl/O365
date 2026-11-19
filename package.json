@@ -105,6 +105,11 @@
               "pr": "tenant_id"
             },
             "id": "tenant",
+            "description": {
+              "es": "Aplicación: ID del tenant organizativo de destino; no usar common, organizations ni consumers. Delegada: ID del tenant, organizations (organizaciones), common (organizaciones y cuentas personales) o consumers (personales), según los tipos de cuenta admitidos por la app.",
+              "en": "Application: target organization tenant ID; do not use common, organizations or consumers. Delegated: tenant ID, organizations (work/school), common (work/school and personal) or consumers (personal), according to the account types supported by the app.",
+              "pr": "Aplicação: ID do tenant organizacional de destino; não usar common, organizations ou consumers. Delegada: ID do tenant, organizations (organizações), common (organizações e contas pessoais) ou consumers (pessoais), conforme os tipos de conta aceitos pelo app."
+            },
             "css": "col-md-12"
           },
           {

@@ -3,110 +3,110 @@
 
 
 # O365
-  
-Conectate a tu cuenta de correo Outlook y a tu espacio de trabajo Sharepoint.  
+
+Conectate a tu cuenta de correo Outlook y a tu espacio de trabajo Sharepoint.
 
 *Read this in other languages: [English](README.md), [Português](README.pr.md), [Español](README.es.md)*
 
 ## Como instalar este módulo
-  
+
 Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
 1. Manual: __Descargar__ el archivo .zip y descomprimirlo en la carpeta modules. El nombre de la carpeta debe ser el mismo al del módulo y dentro debe tener los siguientes archivos y carpetas: \__init__.py, package.json, docs, example y libs. Si tiene abierta la aplicación, refresca el navegador para poder utilizar el nuevo modulo.
-2. Automática: Al ingresar a Rocketbot Studio sobre el margen derecho encontrara la sección de **Addons**, seleccionar **Install Mods**, buscar el modulo deseado y presionar install.  
+2. Automática: Al ingresar a Rocketbot Studio sobre el margen derecho encontrara la sección de **Addons**, seleccionar **Install Mods**, buscar el modulo deseado y presionar install.
 
 
 ## Overview
 
 
-1. Conectar a O365  
+1. Conectar a O365
 Conectar a una instancia de la aplicación de O365
 
-2. Listar todos los emails  
+2. Listar todos los emails
 Listar todos los emails, se puede especificar un filtro
 
-3. Listar emails no leidos  
+3. Listar emails no leidos
 Listar todos los emails no leidos de tu casilla de correo
 
-4. Leer email por ID  
+4. Leer email por ID
 Leer un email utilizando su ID
 
-5. Enviar Email  
+5. Enviar Email
 Envia un email
 
-6. Responder Email  
+6. Responder Email
 Responder un email utilizando su ID
 
-7. Reenviar Email  
+7. Reenviar Email
 Reenviar un email utilizando su ID
 
-8. Descargar adjuntos  
+8. Descargar adjuntos
 Descarga los archivos adjuntos de un correo
 
-9. Marcar como no leido  
+9. Marcar como no leido
 Marcar un email como no leido
 
-10. Descargar .eml  
+10. Descargar .eml
 Descargar un correo en formato .eml
 
-11. Listar carpetas del correo  
+11. Listar carpetas del correo
 Lista todas las carpetas del correo
 
-12. Mover email  
+12. Mover email
 Mover un email de una carpeta a otra
 
-13. Crear carpeta  
+13. Crear carpeta
 Crea una nueva carpeta en el correo electrónico.
 
-14. Obtener grupos  
+14. Obtener grupos
 Obtener lista de Grupos a los que pertenece la cuenta
 
-15. Obtener grupo  
+15. Obtener grupo
 Obtener Grupo por su ID
 
-16. Obtener sitio  
+16. Obtener sitio
 Obtener el sitio del Grupo
 
-17. Obtener listas  
+17. Obtener listas
 Obtener las listas del Sitio
 
-18. Obtener listas por ID del Sitio  
+18. Obtener listas por ID del Sitio
 Obtener las listas del Sitio
 
-19. Obtener columnas de lista  
+19. Obtener columnas de lista
 Obtener las columnas editables de una Lista específica del Sitio
 
-20. Crear Lista  
+20. Crear Lista
 Crear una nueva lista
 
-21. Obtener items de lista  
+21. Obtener items de lista
 Obtener los items de una Lista utilizando su nombre
 
-22. Obtener Item  
+22. Obtener Item
 Obtener un Item, utilizando su ID, de una Lista
 
-23. Crear Item  
+23. Crear Item
 Crear un Item dentro de una Lista
 
-24. Borrar Item  
+24. Borrar Item
 Borrar un Item, usando su ID, de una Lista
 
-25. Actalizar Item  
+25. Actalizar Item
 Actualizar datos de un Item usando si ID
 
-26. Obtener bibliotecas de documentos  
+26. Obtener bibliotecas de documentos
 Obtener una lista de las bibliotecas de documentos dentro del sitio
 
-27. Obtener documentos  
+27. Obtener documentos
 Obtenga una lista de los documentos dentro de una biblioteca
 
-28. Subir documento  
+28. Subir documento
 Subir un documento a una biblioteca del sitio
 
-29. Descargar o modificar documento  
+29. Descargar o modificar documento
 Subir un documento a una biblioteca del sitio
 
-30. Crear carpeta SharePoint  
-Crea una nueva carpeta sharepoint.  
+30. Crear carpeta SharePoint
+Crea una nueva carpeta sharepoint.
 
 
 
@@ -122,6 +122,6 @@ Crea una nueva carpeta sharepoint.
 ### Dependencies
 - [**bs4**](https://pypi.org/project/bs4/)- [**O365**](https://pypi.org/project/O365/)
 ### License
-  
-![MIT](https://img.shields.io/github/license/instaloader/instaloader.svg)  
-[MIT](https://opensource.org/license/mit)
+
+![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+[MIT](http://opensource.org/licenses/mit-license.ph)

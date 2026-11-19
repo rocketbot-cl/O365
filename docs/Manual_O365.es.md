@@ -3,17 +3,19 @@
 
 
 # O365
-  
-Conectate a tu cuenta de correo Outlook y a tu espacio de trabajo Sharepoint.  
+
+Conectate a tu cuenta de correo Outlook y a tu espacio de trabajo Sharepoint.
 
 *Read this in other languages: [English](Manual_O365.md), [Português](Manual_O365.pr.md), [Español](Manual_O365.es.md)*
-  
+
 ![banner](imgs/Banner_O365.jpg)
 ## Como instalar este módulo
-  
+
 Para instalar el módulo en Rocketbot Studio, se puede hacer de dos formas:
 1. Manual: __Descargar__ el archivo .zip y descomprimirlo en la carpeta modules. El nombre de la carpeta debe ser el mismo al del módulo y dentro debe tener los siguientes archivos y carpetas: \__init__.py, package.json, docs, example y libs. Si tiene abierta la aplicación, refresca el navegador para poder utilizar el nuevo modulo.
-2. Automática: Al ingresar a Rocketbot Studio sobre el margen derecho encontrara la sección de **Addons**, seleccionar **Install Mods**, buscar el modulo deseado y presionar install.  
+2. Automática: Al ingresar a Rocketbot Studio sobre el margen derecho encontrara la sección de **Addons**, seleccionar **Install Mods**, buscar el modulo deseado y presionar install.
+
+
 
 
 ## Como usar este modulo
@@ -23,13 +25,18 @@ Antes de usar este módulo, es necesario registrar tu aplicación en el portal d
 1. Inicie sesión en Azure Portal y busque el servicio Microsoft Entra ID.
 2. En el menú lateral izquierdo, ingrese a "Registros de aplicaciones".
 3. Seleccione "Nuevo registro".
-4. En “Tipos de cuenta compatibles”, elija:
-    - "Cuentas en cualquier directorio organizativo (cualquier directorio de Azure AD: multiinquilino) y cuentas de Microsoft personales (como Skype o Xbox)" para este caso utilizar  ID Inquilino = **common**.
-    - "Solo cuentas de este directorio organizativo (solo esta cuenta: inquilino único) para este caso utilizar **ID Inquilino** especifico de la aplicación. (Recomendado para autenticación de aplicación)
-    - "Solo cuentas personales de Microsoft " for this case use use Tenant ID = **consumers**.
-5. Establezca la uri de redirección (Web) como: https://localhost:5001/ y haga click en "Registrar".
-6. Copie el ID de la aplicación 
-(cliente). Necesitará este valor.
+4. En “Tipos de cuenta compatibles”, elija según las cuentas y el tipo de autenticación:
+
+    | Opción de Microsoft Entra ID | Tenant para autenticación delegada | Tenant para autenticación de aplicación |
+    | --- | --- | --- |
+    | Single tenant only (solo este directorio organizativo) | ID del tenant de la organización | ID del tenant de la organización |
+    | Multiple Entra ID tenants (cualquier directorio organizativo) | `organizations` o ID del tenant de destino | ID del tenant de destino, con consentimiento administrativo |
+    | Any Entra ID Tenant + Personal Microsoft accounts | `common`; también se puede usar un tenant específico para cuentas organizativas | ID del tenant organizativo de destino, con consentimiento administrativo; no permite acceder a buzones personales |
+    | Personal accounts only (solo cuentas personales de Microsoft) | `consumers` | No compatible |
+
+    Para un bot de una sola empresa, se recomienda **Single tenant only**. Una aplicación multitenant también puede usar client credentials, pero siempre debe solicitar el token al tenant organizativo de destino. En modo **Aplicación**, no utilice `common`, `organizations` ni `consumers`. El ID se encuentra en **Microsoft Entra ID > Overview > Tenant ID**.
+5. Para autenticación delegada, establezca la URI de redirección (Web) como https://localhost:5001/. En autenticación de aplicación no se utiliza esta redirección. Haga clic en "Registrar".
+6. Copie el ID de la aplicación (cliente). Necesitará este valor.
 7. Dentro de "Certificados y secretos", genere un nuevo secreto de cliente y establezca su caducidad. Copie el **VALOR** del secreto creado (**no el ID de secreto**), ya que se ocultará después de unos minutos.
 
 ### Tipos de autenticación
@@ -65,7 +72,6 @@ Antes de usar este módulo, es necesario registrar tu aplicación en el portal d
 
 En la carpeta raíz de Rocketbot se creará un archivo de credenciales llamado `o365_token.txt` o `o365_token_{session}.txt`. Si el refresh token guardado es revocado o deja de ser válido, ejecute nuevamente el comando de conexión y complete la autorización con la nueva URL.
 
-
 ### Autenticación de aplicación (app-only)
 
 La autenticación de aplicación está disponible únicamente para cuentas organizativas de Microsoft. No admite cuentas personales de Microsoft.
@@ -86,8 +92,7 @@ La autenticación de aplicación está disponible únicamente para cuentas organ
     - `tenant_id` específico de la organización
     - `user_id`: nombre principal de usuario, por ejemplo `robot@empresa.com`, u Object ID del buzón que utilizará el robot
     - `session`, si corresponde
-5. Ejecute el 
-comando. Este tipo de autenticación no genera una URL de autorización ni requiere que el usuario inicie sesión.
+5. Ejecute el comando. Este tipo de autenticación no genera una URL de autorización ni requiere que el usuario inicie sesión.
 
 La aplicación obtiene los access tokens utilizando sus propias credenciales. No utiliza un refresh token delegado. La opción "Habilitar buzón compartido" aplica únicamente a la autenticación delegada.
 
@@ -99,8 +104,7 @@ En autenticación de Aplicación, los permisos se configuran directamente en Azu
 
 Todos los permisos indicados a continuación deben agregarse desde:
 
-1. Ingrese en **Azure Portal > App 
-registrations**.
+1. Ingrese en **Azure Portal > App registrations**.
 2. Seleccione la aplicación.
 3. Ingrese en **API permissions**.
 4. Seleccione **Add a permission > Microsoft Graph**.
@@ -119,8 +123,7 @@ Para utilizar los comandos de SharePoint con autenticación de Aplicación, agre
 - `Files.ReadWrite.All`: permite cargar, modificar, mover y eliminar documentos.
 - `Group.Read.All`: necesario cuando el comando obtiene el sitio mediante el ID de un grupo de Microsoft 365.
 
-No es necesario agregar todos los permisos si el 
-robot no utilizará todas esas operaciones.
+No es necesario agregar todos los permisos si el robot no utilizará todas esas operaciones.
 
 En el comando **Conectar a O365** deje desmarcado el checkbox **Conectarse a SharePoint**.
 
@@ -139,8 +142,7 @@ Para utilizar buzones compartidos con autenticación de Aplicación, agregue los
 - `Mail.ReadWrite`: permite crear, leer, modificar, mover y eliminar correos.
 - `Mail.Send`: permite enviar correos.
 
-Para utilizar todos los comandos de correo
- del módulo, agregue:
+Para utilizar todos los comandos de correo del módulo, agregue:
 
 - `Mail.ReadWrite`
 - `Mail.Send`
@@ -155,15 +157,14 @@ Los permisos de Aplicación de correo pueden otorgar acceso a todos los buzones 
 
 Documentación oficial:
 
-- [Microsoft Graph permissions 
-reference](https://learn.microsoft.com/en-us/graph/permissions-reference)
+- [Microsoft Graph permissions reference](https://learn.microsoft.com/en-us/graph/permissions-reference)
 - [Role Based Access Control for Applications in Exchange Online](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac)
 
 ### Como filtrar correos
 
 Para realizar filtro de correos deberá utilizar los siguientes Operadores y Funciones. 
 
-1. __Equality operators__       
+1. __Equality operators__
     - Igual (__eq__)
     - Diferente (__ne__)
     - Negación (__not__)
@@ -177,7 +178,7 @@ Para realizar filtro de correos deberá utilizar los siguientes Operadores y Fun
 3. __Conditional operators__
     - Y (__and__)
     - O (__or__)
-4. __Functions__        
+4. __Functions__
     - Comienza con (__startsWith__)
     - Termina con (__endsWith__)
     - Contiene (__contains__)
@@ -254,8 +255,7 @@ Es importante tener presente que solo deben utilizarse comillas simples (') cuan
 - Correos leidos = __isRead eq true__
 - El Asunto es igual a... = __subject eq ‘example’__
 - El Asunto contiene... = __contains(Subject, ‘example’)__
-- El Asunto comienza con la palabra... = 
-__startswith(Subject, ‘example’)__
+- El Asunto comienza con la palabra... = __startswith(Subject, ‘example’)__
 - La fecha de recepción esta entre... = __ReceivedDateTime ge <date> and ReceivedDateTime le <date>__
 - El cuerpo del correo contiene... = __contains(Body/Content, ‘example’)__
 - El remitente del correo es igual a... = __From/EmailAddress/Address eq ‘example@example.com’__
@@ -266,8 +266,7 @@ __startswith(Subject, ‘example’)__
 
 Los correos se encuentran identificados con un ID único y dinámico. Esta última cualidad hace que si un correo cambia algunas de sus propiedades el ID se verá afectado, el caso más claro se produce al cambiar un correo de carpeta. Por ejemplo: el ID de un correo en Inbox no será el mismo una vez lo hayamos movido a la carpeta "Procesados", para volver a hacer uso del correo se deberá ejecutar el comando Listar Emails sobre la carpeta "Procesados" y obtener el nuevo ID.
 
-Cuando utilice 'filtro' y 
-'ordenar por' en la misma consulta para obtener mensajes, asegúrese de especificar las propiedades de las siguientes maneras:
+Cuando utilice 'filtro' y 'ordenar por' en la misma consulta para obtener mensajes, asegúrese de especificar las propiedades de las siguientes maneras:
 
 Las propiedades que aparecen en 'ordenar por' también deben aparecer en 'filtro'.
 Las propiedades que aparecen en 'ordenar por' están en el mismo orden que en 'filtro'.
@@ -290,14 +289,14 @@ Para autenticación de aplicación, verifique además que se esté utilizando el
 ## Descripción de los comandos
 
 ### Conectar a O365
-  
+
 Conectar a una instancia de la aplicación de O365
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
 |Tipo de autenticación|Delegada mantiene el comportamiento anterior y utiliza la sesión de un usuario. Aplicación usa client credentials, requiere user_id y no utiliza refresh token.|--- Select ---|
 |client_id||client_id|
 |client_secret||client_secret|
-|tenant_id||tenant_id|
+|tenant_id|Aplicación ID del tenant organizativo de destino; no usar common, organizations ni consumers. Delegada ID del tenant, organizations (organizaciones), common (organizaciones y cuentas personales) o consumers (personales), según los tipos de cuenta admitidos por la app.|tenant_id|
 |Usuario objetivo (user_id)|Solo para autenticación de Aplicación. UPN (correo) u Object ID del usuario sobre el que operará el robot.|robot@test.com or object ID|
 |session||session|
 |Conectarse a Sharepoint|Solo para autenticación Delegada. En modo Aplicación, los permisos se configuran en Azure.|-|
@@ -307,7 +306,7 @@ Conectar a una instancia de la aplicación de O365
 |Asignar a variable||Variable|
 
 ### Listar todos los emails
-  
+
 Listar todos los emails, se puede especificar un filtro
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -320,7 +319,7 @@ Listar todos los emails, se puede especificar un filtro
 |session||session|
 
 ### Listar emails no leidos
-  
+
 Listar todos los emails no leidos de tu casilla de correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -333,7 +332,7 @@ Listar todos los emails no leidos de tu casilla de correo
 |session||session|
 
 ### Leer email por ID
-  
+
 Leer un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -351,7 +350,7 @@ Leer un email utilizando su ID
 |session||session|
 
 ### Enviar Email
-  
+
 Envia un email
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -366,7 +365,7 @@ Envia un email
 |session||session|
 
 ### Responder Email
-  
+
 Responder un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -382,7 +381,7 @@ Responder un email utilizando su ID
 |session||session|
 
 ### Reenviar Email
-  
+
 Reenviar un email utilizando su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -399,7 +398,7 @@ Reenviar un email utilizando su ID
 |session||session|
 
 ### Descargar adjuntos
-  
+
 Descarga los archivos adjuntos de un correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -411,7 +410,7 @@ Descarga los archivos adjuntos de un correo
 |session||session|
 
 ### Marcar como no leido
-  
+
 Marcar un email como no leido
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -421,7 +420,7 @@ Marcar un email como no leido
 |session||session|
 
 ### Descargar .eml
-  
+
 Descargar un correo en formato .eml
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -433,7 +432,7 @@ Descargar un correo en formato .eml
 |session||session|
 
 ### Listar carpetas del correo
-  
+
 Lista todas las carpetas del correo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -444,7 +443,7 @@ Lista todas las carpetas del correo
 |session||session|
 
 ### Mover email
-  
+
 Mover un email de una carpeta a otra
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -455,7 +454,7 @@ Mover un email de una carpeta a otra
 |session||session|
 
 ### Crear carpeta
-  
+
 Crea una nueva carpeta en el correo electrónico.
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -466,7 +465,7 @@ Crea una nueva carpeta en el correo electrónico.
 |session||session|
 
 ### Obtener grupos
-  
+
 Obtener lista de Grupos a los que pertenece la cuenta
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -475,7 +474,7 @@ Obtener lista de Grupos a los que pertenece la cuenta
 |session||session|
 
 ### Obtener grupo
-  
+
 Obtener Grupo por su ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -484,7 +483,7 @@ Obtener Grupo por su ID
 |session||session|
 
 ### Obtener sitio
-  
+
 Obtener el sitio del Grupo
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -495,7 +494,7 @@ Obtener el sitio del Grupo
 |session||session|
 
 ### Obtener listas
-  
+
 Obtener las listas del Sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -504,7 +503,7 @@ Obtener las listas del Sitio
 |session||session|
 
 ### Obtener listas por ID del Sitio
-  
+
 Obtener las listas del Sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -513,7 +512,7 @@ Obtener las listas del Sitio
 |Session||session|
 
 ### Obtener columnas de lista
-  
+
 Obtener las columnas editables de una Lista específica del Sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -523,7 +522,7 @@ Obtener las columnas editables de una Lista específica del Sitio
 |session||session|
 
 ### Crear Lista
-  
+
 Crear una nueva lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -533,7 +532,7 @@ Crear una nueva lista
 |session||session|
 
 ### Obtener items de lista
-  
+
 Obtener los items de una Lista utilizando su nombre
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -549,7 +548,7 @@ Obtener los items de una Lista utilizando su nombre
 |session||session|
 
 ### Obtener Item
-  
+
 Obtener un Item, utilizando su ID, de una Lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -563,7 +562,7 @@ Obtener un Item, utilizando su ID, de una Lista
 |session||session|
 
 ### Crear Item
-  
+
 Crear un Item dentro de una Lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -574,7 +573,7 @@ Crear un Item dentro de una Lista
 |session||session|
 
 ### Borrar Item
-  
+
 Borrar un Item, usando su ID, de una Lista
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -585,7 +584,7 @@ Borrar un Item, usando su ID, de una Lista
 |session||session|
 
 ### Actalizar Item
-  
+
 Actualizar datos de un Item usando si ID
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -597,7 +596,7 @@ Actualizar datos de un Item usando si ID
 |session||session|
 
 ### Obtener bibliotecas de documentos
-  
+
 Obtener una lista de las bibliotecas de documentos dentro del sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -608,7 +607,7 @@ Obtener una lista de las bibliotecas de documentos dentro del sitio
 |session||session|
 
 ### Obtener documentos
-  
+
 Obtenga una lista de los documentos dentro de una biblioteca
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -622,7 +621,7 @@ Obtenga una lista de los documentos dentro de una biblioteca
 |session||session|
 
 ### Subir documento
-  
+
 Subir un documento a una biblioteca del sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -634,7 +633,7 @@ Subir un documento a una biblioteca del sitio
 |session||session|
 
 ### Descargar o modificar documento
-  
+
 Subir un documento a una biblioteca del sitio
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |
@@ -652,7 +651,7 @@ Subir un documento a una biblioteca del sitio
 |session||session|
 
 ### Crear carpeta SharePoint
-  
+
 Crea una nueva carpeta sharepoint.
 |Parámetros|Descripción|ejemplo|
 | --- | --- | --- |

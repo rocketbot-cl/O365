@@ -3,33 +3,47 @@
 
 
 # O365
-  
-Connect to to your Outlook email account and Sharepoint workspace.  
+
+Connect to to your Outlook email account and Sharepoint workspace.
 
 *Read this in other languages: [English](Manual_O365.md), [Português](Manual_O365.pr.md), [Español](Manual_O365.es.md)*
-  
+
 ![banner](imgs/Banner_O365.jpg)
 ## How to install this module
-  
+
 To install the module in Rocketbot Studio, it can be done in two ways:
 1. Manual: __Download__ the .zip file and unzip it in the modules folder. The folder name must be the same as the module and inside it must have the following files and folders: \__init__.py, package.json, docs, example and libs. If you have the application open, refresh your browser to be able to use the new module.
-2. Automatic: When entering Rocketbot Studio on the right margin you will find the **Addons** section, select **Install Mods**, search for the desired module and press install.  
+2. Automatic: When entering Rocketbot Studio on the right margin you will find the **Addons** section, select **Install Mods**, search for the desired module and press install.
 
 ## How to use this module
 
-Before using this module, you need to register your app in the Azure App Registrations portal.
+Before using this module, register your app in Microsoft Entra ID > App registrations (formerly Azure AD).
 
 1. Sign in to the Azure portal and search for the Microsoft Entra ID service.
 2. In the left menu, select "App registrations".
 3. Select "New registration".
-4. Under “Compatible account types”, choose:
-    - "Accounts in any organizational directory (any Azure AD directory: multi-tenant) and personal Microsoft accounts (such as Skype or Xbox)" for this case use Tenant ID = **common**.
-    - "Only accounts from this organizational directory (only this account: single tenant) for this case use application-specific **Tenant ID**. (recommended for application authentication)
-    - "Personal Microsoft accounts only" for this case use use Tenant ID = **consumers**.
-5. Set the redirect uri (Web) as: https://localhost:5001/ and click "Register".
+4. Under "Supported account types", choose according to the accounts and authentication flow the bot will use. Labels may vary by portal language or version:
+
+    | Account type | Equivalent description | Tenant for Delegated authentication | Tenant for Application authentication |
+    | --- | --- | --- | --- |
+    | Single tenant only | Accounts in this organizational directory only | Organization tenant ID | Organization tenant ID |
+    | Multiple Entra ID tenants | Accounts in any organizational directory | `organizations` or the target tenant ID | Target organization tenant ID, with admin consent in that tenant |
+    | Any Entra ID Tenant + Personal Microsoft accounts | Accounts in any organizational directory and personal Microsoft accounts | `common`; a specific tenant can also be used for organizational accounts | Target organization tenant ID, with admin consent in that tenant; personal mailboxes are not supported |
+    | Personal accounts only | Personal Microsoft accounts only | `consumers` | Not supported |
+
+    **Choosing an account type:**
+
+    - For a bot used within one company's Microsoft 365 organization, choose **Single tenant only** and copy the **Tenant ID** from **Microsoft Entra ID > Overview**.
+    - For delegated sign-in across organizations, choose **Multiple Entra ID tenants** and use `organizations`.
+    - For delegated sign-in supporting both organizational and personal accounts, choose **Any Entra ID Tenant + Personal Microsoft accounts** and use `common`.
+    - For delegated sign-in with personal Outlook.com or Hotmail accounts only, choose **Personal accounts only** and use `consumers`.
+
+    **Application authentication (client credentials) always requires a specific organization tenant ID.** Do not use `common`, `organizations`, or `consumers` in this mode. Single tenant is recommended for an internal company bot, but is not mandatory: multitenant applications can also use client credentials after admin consent in each target organization. Registering an app to accept personal accounts does not grant app-only access to personal mailboxes.
+
+    The account types supported by the registration, the selected authentication flow, and the tenant authority must be compatible. A successful token request alone does not guarantee mailbox access; the required permissions and mailbox must also be available in the target organization.
+5. For Delegated authentication, set the Web redirect URI to https://localhost:5001/. Application authentication does not use a redirect URI. Click "Register".
 6. Copy the Application (client) ID. You will need this value.
-7. Under "Certificates & secrets", generate a new client secret 
-and set its expiration. Copy the **VALUE** of the created secret (**not the Secret ID**), since it will be hidden after a few minutes.
+7. Under "Certificates & secrets", generate a new client secret and set its expiration. Copy the **VALUE** of the created secret (**not the Secret ID**), since it will be hidden after a few minutes.
 
 ### Authentication types
 
@@ -68,8 +82,14 @@ A credential file named `o365_token.txt` or `o365_token_{session}.txt` will be c
 
 Application authentication is available only for organizational Microsoft accounts. It does not support personal Microsoft accounts.
 
-1. Under
- "API permissions", select "Microsoft Graph" > "Application permissions" and add:
+Use the target organization's tenant ID even when the app registration is multitenant. The `user_id` must identify a mailbox in that organization; adding a personal account as a guest does not make its personal mailbox accessible through application authentication.
+
+Official documentation:
+
+- [Single and multitenant apps in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/single-and-multi-tenant-apps)
+- [Client credential flows and tenant authorities](https://learn.microsoft.com/en-us/entra/msal/dotnet/acquiring-tokens/web-apps-apis/client-credential-flows)
+
+1. Under "API permissions", select "Microsoft Graph" > "Application permissions" and add:
     - `Mail.ReadWrite`
     - `Mail.Send`
 2. If you will use the SharePoint commands, also add:
@@ -87,8 +107,7 @@ Application authentication is available only for organizational Microsoft accoun
     - `session`, if required
 5. Run the command. This authentication type does not generate an authorization URL and does not require user sign-in.
 
-The application obtains access tokens using its own credentials. It does not use a delegated refresh token. The "Enable shared mailbox" option applies 
-only to delegated authentication.
+The application obtains access tokens using its own credentials. It does not use a delegated refresh token. The "Enable shared mailbox" option applies only to delegated authentication.
 
 The `user_id` selects the mailbox used by the module, but it does not restrict the permissions granted to the application. If access must be limited to specific mailboxes, the administrator must configure RBAC for Applications in Exchange Online.
 
@@ -108,8 +127,7 @@ All permissions listed below must be added from:
 
 #### SharePoint
 
-To use SharePoint commands with 
-Application authentication, add permissions according to the operations that the robot will perform:
+To use SharePoint commands with Application authentication, add permissions according to the operations that the robot will perform:
 
 - `Sites.Read.All`: allows reading documents and SharePoint list items.
 - `Sites.ReadWrite.All`: allows creating, reading, updating, and deleting documents and list items.
@@ -122,8 +140,7 @@ You do not need to add all permissions if the robot will not use all these opera
 
 In the **Connect to O365** command, leave the **Connect to SharePoint** checkbox unchecked.
 
-Alternatively, you can use the `Sites.Selected` permission to restrict application access to specific sites. In that case, in addition to adding the permission and granting admin consent, an administrator must explicitly grant access 
-to each site.
+Alternatively, you can use the `Sites.Selected` permission to restrict application access to specific sites. In that case, in addition to adding the permission and granting admin consent, an administrator must explicitly grant access to each site.
 
 Official documentation:
 
@@ -145,8 +162,7 @@ To use all email commands in the module, add:
 
 The `Mail.Read.Shared`, `Mail.ReadWrite.Shared`, and `Mail.Send.Shared` permissions apply only to Delegated authentication and should not be selected for Application authentication.
 
-Then, in the **Connect to O365** command, complete `user_id` with the UPN or Object ID of the default user. If the robot will work only with a shared mailbox, you can enter that mailbox's 
-email address. Leave the **Enable shared mailbox** checkbox unchecked.
+Then, in the **Connect to O365** command, complete `user_id` with the UPN or Object ID of the default user. If the robot will work only with a shared mailbox, you can enter that mailbox's email address. Leave the **Enable shared mailbox** checkbox unchecked.
 
 In each email command that includes the **Shared mailbox** field, enter the email address of the mailbox on which the operation will be performed.
 
@@ -172,8 +188,7 @@ To filter emails, use the following operators and functions.
 2. **Relational operators**
 
    - Less than (**lt**)
-   - 
-Greater than (**gt**)
+   - Greater than (**gt**)
    - Less than or equal to (**le**)
    - Greater than or equal to (**ge**)
 
@@ -225,7 +240,6 @@ The main properties that can be used to create filters are:
         }
     }
 ],
-
 "ccRecipients": [
     {
         "emailAddress": {
@@ -264,8 +278,7 @@ https://graph.microsoft.com/v1.0/me/messages/<email_ID>
 It is important to use only single quotation marks (`'`) when specifying the value to filter, except for Boolean values (**true** / **false**). The following are practical examples of how to create filters:
 
 - Unread emails = **isRead eq false**
-- Read emails = 
-**isRead eq true**
+- Read emails = **isRead eq true**
 - The subject is equal to... = **subject eq 'example'**
 - The subject contains... = **contains(Subject, 'example')**
 - The subject starts with the word... = **startswith(Subject, 'example')**
@@ -277,8 +290,7 @@ It is important to use only single quotation marks (`'`) when specifying the val
 
 ### How to identify emails (ID)
 
-Emails are identified by a unique and dynamic ID. This means that if some of an email's properties change, its ID will also be affected. The clearest example occurs when an email is moved to another folder. For example, the ID of an email in Inbox will not be the same after it has been moved to the "Processed" folder. To use the email again, run 
-the **List Emails** command on the "Processed" folder and obtain its new ID.
+Emails are identified by a unique and dynamic ID. This means that if some of an email's properties change, its ID will also be affected. The clearest example occurs when an email is moved to another folder. For example, the ID of an email in Inbox will not be the same after it has been moved to the "Processed" folder. To use the email again, run the **List Emails** command on the "Processed" folder and obtain its new ID.
 
 When using `filter` and `order by` in the same query to retrieve messages, make sure to specify the properties as follows:
 
@@ -304,14 +316,14 @@ For application authentication, also verify that a specific organizational Tenan
 ## Description of the commands
 
 ### Connect to O365
-  
+
 Connect to O365 application instance
 |Parameters|Description|example|
 | --- | --- | --- |
 |Authentication type|Delegated keeps the previous behavior and uses a user's session. Application uses client credentials, requires user_id, and does not use a refresh token.|--- Select ---|
 |client_id||client_id|
 |client_secret||client_secret|
-|tenant_id||tenant_id|
+|tenant_id|Application target organization tenant ID; do not use common, organizations or consumers. Delegated tenant ID, organizations (work/school), common (work/school and personal) or consumers (personal), according to the account types supported by the app.|tenant_id|
 |Target user (user_id)|Application authentication only. UPN (email) or Object ID of the user on which the robot will operate.|robot@test.com or object ID|
 |session||session|
 |Connect to Sharepoint|Delegated authentication only. In Application mode, permissions are configured in Azure.|-|
@@ -321,7 +333,7 @@ Connect to O365 application instance
 |Asign to variable||Variable|
 
 ### List all emails
-  
+
 List all email, you can specify a filter
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -334,7 +346,7 @@ List all email, you can specify a filter
 |session||session|
 
 ### List unread emails
-  
+
 List all unread emails from your mailbox
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -347,7 +359,7 @@ List all unread emails from your mailbox
 |session||session|
 
 ### Read email for ID
-  
+
 Read an email usign its ID
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -365,7 +377,7 @@ Read an email usign its ID
 |session||session|
 
 ### Send Email
-  
+
 Send an email
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -380,7 +392,7 @@ Send an email
 |session||session|
 
 ### Reply Email
-  
+
 Reply an email using its ID
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -396,7 +408,7 @@ Reply an email using its ID
 |session||session|
 
 ### Forward Email
-  
+
 Forward an email using its ID
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -413,7 +425,7 @@ Forward an email using its ID
 |session||session|
 
 ### Download attachments
-  
+
 Download attached files from an email
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -425,7 +437,7 @@ Download attached files from an email
 |session||session|
 
 ### Mark as unread
-  
+
 Mark an email as unread
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -435,7 +447,7 @@ Mark an email as unread
 |session||session|
 
 ### Download .eml
-  
+
 Download an email in .eml format
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -447,7 +459,7 @@ Download an email in .eml format
 |session||session|
 
 ### Email folders list
-  
+
 List of email folders
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -458,7 +470,7 @@ List of email folders
 |session||session|
 
 ### Move email
-  
+
 Move an email from one folder to another
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -469,7 +481,7 @@ Move an email from one folder to another
 |session||session|
 
 ### Create folder
-  
+
 Creates a new folder in the email
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -480,7 +492,7 @@ Creates a new folder in the email
 |session||session|
 
 ### Get groups
-  
+
 Get the list of Groups that the account is part of
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -489,7 +501,7 @@ Get the list of Groups that the account is part of
 |session||session|
 
 ### Get group
-  
+
 Get Group by its ID
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -498,7 +510,7 @@ Get Group by its ID
 |session||session|
 
 ### Get site
-  
+
 Get the site of the Group
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -509,7 +521,7 @@ Get the site of the Group
 |session||session|
 
 ### Get site lists
-  
+
 Get the lists of the Site
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -518,7 +530,7 @@ Get the lists of the Site
 |session||session|
 
 ### Get lists by Site ID
-  
+
 Get the lists of the Site
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -527,7 +539,7 @@ Get the lists of the Site
 |Session||session|
 
 ### Get list columns
-  
+
 Get the editable columns of a specific List of the Site
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -537,7 +549,7 @@ Get the editable columns of a specific List of the Site
 |session||session|
 
 ### Create List
-  
+
 Create a new list
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -547,7 +559,7 @@ Create a new list
 |session||session|
 
 ### Get list Items
-  
+
 Get the items of a List using its name
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -563,7 +575,7 @@ Get the items of a List using its name
 |session||session|
 
 ### Get Item
-  
+
 Get an Item, using its ID, from a List
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -577,7 +589,7 @@ Get an Item, using its ID, from a List
 |session||session|
 
 ### Create Item
-  
+
 Create an Item in a List
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -588,7 +600,7 @@ Create an Item in a List
 |session||session|
 
 ### Delete Item
-  
+
 Delete an Item, using its ID, from a List
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -599,7 +611,7 @@ Delete an Item, using its ID, from a List
 |session||session|
 
 ### Update Item
-  
+
 Update an Item data using its ID
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -611,7 +623,7 @@ Update an Item data using its ID
 |session||session|
 
 ### Get document libraries
-  
+
 Get a list of the Document Libraries within the Site
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -622,7 +634,7 @@ Get a list of the Document Libraries within the Site
 |session||session|
 
 ### Get documents
-  
+
 Get a list of the documents within a library
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -636,7 +648,7 @@ Get a list of the documents within a library
 |session||session|
 
 ### Upload document
-  
+
 Upload a document to a Site library
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -648,7 +660,7 @@ Upload a document to a Site library
 |session||session|
 
 ### Download or modify document
-  
+
 Upload a document to a Site library
 |Parameters|Description|example|
 | --- | --- | --- |
@@ -666,7 +678,7 @@ Upload a document to a Site library
 |session||session|
 
 ### Create folder Sharepoint
-  
+
 Create a new SharePoint folder
 |Parameters|Description|example|
 | --- | --- | --- |

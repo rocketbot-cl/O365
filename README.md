@@ -3,110 +3,110 @@
 
 
 # O365
-  
-Connect to to your Outlook email account and Sharepoint workspace.  
+
+Connect to to your Outlook email account and Sharepoint workspace.
 
 *Read this in other languages: [English](README.md), [Português](README.pr.md), [Español](README.es.md)*
 
 ## How to install this module
-  
+
 To install the module in Rocketbot Studio, it can be done in two ways:
 1. Manual: __Download__ the .zip file and unzip it in the modules folder. The folder name must be the same as the module and inside it must have the following files and folders: \__init__.py, package.json, docs, example and libs. If you have the application open, refresh your browser to be able to use the new module.
-2. Automatic: When entering Rocketbot Studio on the right margin you will find the **Addons** section, select **Install Mods**, search for the desired module and press install.  
+2. Automatic: When entering Rocketbot Studio on the right margin you will find the **Addons** section, select **Install Mods**, search for the desired module and press install.
 
 
 ## Overview
 
 
-1. Connect to O365  
+1. Connect to O365
 Connect to O365 application instance
 
-2. List all emails  
+2. List all emails
 List all email, you can specify a filter
 
-3. List unread emails  
+3. List unread emails
 List all unread emails from your mailbox
 
-4. Read email for ID  
+4. Read email for ID
 Read an email usign its ID
 
-5. Send Email  
+5. Send Email
 Send an email
 
-6. Reply Email  
+6. Reply Email
 Reply an email using its ID
 
-7. Forward Email  
+7. Forward Email
 Forward an email using its ID
 
-8. Download attachments  
+8. Download attachments
 Download attached files from an email
 
-9. Mark as unread  
+9. Mark as unread
 Mark an email as unread
 
-10. Download .eml  
+10. Download .eml
 Download an email in .eml format
 
-11. Email folders list  
+11. Email folders list
 List of email folders
 
-12. Move email  
+12. Move email
 Move an email from one folder to another
 
-13. Create folder  
+13. Create folder
 Creates a new folder in the email
 
-14. Get groups  
+14. Get groups
 Get the list of Groups that the account is part of
 
-15. Get group  
+15. Get group
 Get Group by its ID
 
-16. Get site  
+16. Get site
 Get the site of the Group
 
-17. Get site lists  
+17. Get site lists
 Get the lists of the Site
 
-18. Get lists by Site ID  
+18. Get lists by Site ID
 Get the lists of the Site
 
-19. Get list columns  
+19. Get list columns
 Get the editable columns of a specific List of the Site
 
-20. Create List  
+20. Create List
 Create a new list
 
-21. Get list Items  
+21. Get list Items
 Get the items of a List using its name
 
-22. Get Item  
+22. Get Item
 Get an Item, using its ID, from a List
 
-23. Create Item  
+23. Create Item
 Create an Item in a List
 
-24. Delete Item  
+24. Delete Item
 Delete an Item, using its ID, from a List
 
-25. Update Item  
+25. Update Item
 Update an Item data using its ID
 
-26. Get document libraries  
+26. Get document libraries
 Get a list of the Document Libraries within the Site
 
-27. Get documents  
+27. Get documents
 Get a list of the documents within a library
 
-28. Upload document  
+28. Upload document
 Upload a document to a Site library
 
-29. Download or modify document  
+29. Download or modify document
 Upload a document to a Site library
 
-30. Create folder Sharepoint  
-Create a new SharePoint folder  
+30. Create folder Sharepoint
+Create a new SharePoint folder
 
 
 
@@ -122,6 +122,6 @@ Create a new SharePoint folder
 ### Dependencies
 - [**bs4**](https://pypi.org/project/bs4/)- [**O365**](https://pypi.org/project/O365/)
 ### License
-  
-![MIT](https://img.shields.io/github/license/instaloader/instaloader.svg)  
-[MIT](https://opensource.org/license/mit)
+
+![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+[MIT](http://opensource.org/licenses/mit-license.ph)
